@@ -7,3 +7,6 @@ Thumbs.db
 .idea/
 *.swp
 
+# 임시 작업 파일
+temp_*
+
