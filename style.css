@@ -690,12 +690,71 @@ h2.section-title {
   border: none;
 }
 
+/* 영상 제작자 @perquunos 헌사 및 감사 명판 (Tribute to Creator) */
+.creator-tribute-box {
+  background: linear-gradient(135deg, rgba(254, 243, 199, 0.75) 0%, rgba(253, 230, 138, 0.55) 100%);
+  border: 2px solid rgba(217, 119, 6, 0.75);
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-top: 20px;
+  position: relative;
+  box-shadow: 0 10px 28px rgba(180, 83, 9, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.9);
+}
+
+.tribute-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.tribute-icon {
+  font-size: 2rem;
+  background: rgba(255, 255, 255, 0.85);
+  border: 2px solid rgba(217, 119, 6, 0.6);
+  border-radius: 50%;
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.25);
+  flex-shrink: 0;
+}
+
+.tribute-overhead {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: #b45309;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.tribute-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #78350f;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+}
+
+.tribute-title strong {
+  color: #b91c1c;
+  text-decoration: underline;
+  text-decoration-color: rgba(217, 119, 6, 0.5);
+  text-underline-offset: 4px;
+}
+
 .iliad-verse-quote {
-  background-color: rgba(254, 243, 199, 0.55);
+  background-color: rgba(255, 255, 255, 0.65);
   border-left: 4px solid #d97706;
   border-radius: 8px;
-  padding: 16px 20px;
-  margin-top: 12px;
+  padding: 14px 18px;
+  margin: 14px 0;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .iliad-verse-quote .greek-original {
@@ -703,7 +762,7 @@ h2.section-title {
   font-size: 1.05rem;
   font-weight: 700;
   color: #78350f;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   letter-spacing: 0.02em;
 }
 
@@ -711,15 +770,55 @@ h2.section-title {
   font-size: 0.95rem;
   font-weight: 600;
   color: #1e293b;
-  margin-bottom: 8px;
   font-family: "Pretendard Variable", sans-serif;
+  line-height: 1.5;
 }
 
-.iliad-verse-quote .verse-credit {
-  display: block;
-  font-size: 0.78rem;
-  color: #92400e;
-  opacity: 0.85;
+.tribute-desc {
+  font-size: 0.94rem;
+  line-height: 1.78;
+  color: #292524;
+  margin-top: 14px;
+  margin-bottom: 20px;
+  word-break: keep-all;
+}
+
+.tribute-desc strong {
+  color: #78350f;
+}
+
+.tribute-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-tribute-youtube {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  color: #ffffff;
+  padding: 11px 22px;
+  border-radius: 9999px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(185, 28, 28, 0.35);
+  transition: all 0.25s ease;
+  border: 1px solid rgba(254, 202, 202, 0.3);
+}
+
+.btn-tribute-youtube:hover {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(185, 28, 28, 0.5);
+  color: #ffffff;
+}
+
+.btn-tribute-icon {
+  font-size: 1.15rem;
 }
 
 .blank-canvas {
