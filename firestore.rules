@@ -1,0 +1,22 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /ostraka/{ostrakonId} {
+      // 1. 누구나 광장의 도편을 조회(읽기)할 수 있습니다.
+      allow read: if true;
+
+      // 2. 새 도편 작성(생성) 시 검증:
+      //    - 작성자명(author)과 본문(message)이 문자열이어야 함
+      //    - 도편 본문은 1자 이상 300자 이하여야 함 (도배 및 대량 데이터 방지)
+      allow create: if request.resource.data.author is string
+                    && request.resource.data.message is string
+                    && request.resource.data.message.size() <= 300
+                    && request.resource.data.message.size() > 0;
+
+      // 3. 이미 새겨진 도편의 수정 및 삭제는 금지 (위조/훼손 방지)
+      //    (관리자는 Firebase 콘솔 웹 화면에서 언제든 직접 삭제/수정 가능)
+      allow update, delete: if false;
+    }
+  }
+}
