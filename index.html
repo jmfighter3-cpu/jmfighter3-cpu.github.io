@@ -9,7 +9,10 @@
   <!-- 2. 외부 스타일시트(CSS) 파일 연결 -->
   <link rel="stylesheet" href="style.css">
 
-  <!-- 2-1. 트렌디하고 가독성 높은 한글 웹폰트 Pretendard 연결 -->
+  <!-- 2-1. 고전 그리스/로마 대리석 비문 서체 Cinzel 및 현대 한글 서체 Pretendard 연결 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 </head>
 <body>
@@ -33,26 +36,26 @@
     <div class="header-inner">
       <!-- 좌측: 로고 및 타이틀 -->
       <a href="#" class="site-logo">
-        <span>👨‍💻</span>
-        <span>jmfighter3-cpu</span>
+        <span class="logo-icon">🏛️</span>
+        <span class="logo-text">jmfighter3-cpu</span>
       </a>
 
-      <!-- 우측: 상단 3개 탭 버튼 (data-tab 속성으로 전환할 섹션 ID를 지정합니다) -->
+      <!-- 우측: 상단 3개 탭 버튼 (고대 그리스 서사 테마) -->
       <nav>
         <ul class="nav-tabs">
           <li>
             <button type="button" class="tab-button active" data-tab="about">
-              👤 자기소개
+              🏛️ 아고라 (소개)
             </button>
           </li>
           <li>
             <button type="button" class="tab-button" data-tab="projects">
-              🚀 프로젝트
+              🏺 오디세이아 (프로젝트)
             </button>
           </li>
           <li>
             <button type="button" class="tab-button" data-tab="blank">
-              📝 자유 공간
+              🎼 뮤즈의 신전 (휴식)
             </button>
           </li>
         </ul>
@@ -79,13 +82,13 @@
           <div class="profile-info">
             <div class="profile-header-row">
               <h1>jmfighter3-cpu</h1>
-              <!-- 5. 프로필 상태 실시간 펄스 뱃지 -->
+              <!-- 5. 프로필 상태 실시간 펄스 뱃지 (올림피아 월계관 모티프) -->
               <span class="status-pulse-badge">
                 <span class="pulse-dot"></span>
-                Currently Coding
+                🌿 Heroic Odyssey
               </span>
             </div>
-            <div class="role">🌱 배우는 중</div>
+            <div class="role">🏛️ 지혜와 탐구의 학도 · 배우는 중</div>
             <!-- 2. 한 줄 소개 인터랙티브 타이핑 애니메이션 영역 (JS 미작동 시 원본 문구 보존) -->
             <p class="typing-box">
               <span id="typing-text">아이고 힘들다.</span>
@@ -97,7 +100,7 @@
 
       <!-- 상세 소개 글 카드 -->
       <div class="card">
-        <h2 class="section-title">✨ 소개 및 목표</h2>
+        <h2 class="section-title">📜 소명과 목표 (The Quest)</h2>
         <p style="margin-bottom: 12px;">
           <strong>"6개월 버티기가 목표"</strong>
         </p>
@@ -108,7 +111,7 @@
 
       <!-- 기술 스택 카드 -->
       <div class="card">
-        <h2 class="section-title">🛠️ 기술 스택 (Skills)</h2>
+        <h2 class="section-title">🏺 기술과 지혜 (Tech Stack)</h2>
         <div class="skills-list">
           <span class="skill-tag">🐍 Python</span>
         </div>
@@ -116,7 +119,7 @@
 
       <!-- 연락처 및 링크 카드 -->
       <div class="card">
-        <h2 class="section-title">📬 소통 및 링크</h2>
+        <h2 class="section-title">🕊️ 서신과 교류 (Agora Links)</h2>
         <p style="margin-bottom: 12px;">계획 없음</p>
         <div class="btn-group">
           <a href="https://github.com/jmfighter3-cpu" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
@@ -214,13 +217,13 @@
          [탭 3] 빈 페이지 (자유 공간)
          -------------------------------------------------------------------- -->
     <section id="blank" class="tab-pane">
-      <!-- 4-C. 목가적인 자연의 소리 플레이어 (Pastoral Ambience Player) -->
+      <!-- 4-C. 아폴론과 뮤즈의 리라 선율 플레이어 (Apollo's Lyre & Breeze Player) -->
       <div class="card ambience-card">
         <div class="ambience-header">
-          <span class="ambience-badge">🍃 RELAX & FOCUS</span>
-          <h2 class="section-title" style="margin-top: 8px;">목가적인 자연의 소리 (Pastoral Ambience)</h2>
+          <span class="ambience-badge">🎼 APOLLO & MUSES</span>
+          <h2 class="section-title" style="margin-top: 8px;">🎼 아폴론과 뮤즈의 리라(Lyre) & 에게해 산들바람</h2>
           <p style="color: var(--text-muted); font-size: 0.95rem;">
-            토스카나의 푸른 언덕을 바라보며 편안하게 코딩에 몰입할 수 있는 산들바람과 자연의 백색 소음(ASMR)입니다.
+            오르페우스와 아폴론의 서정적인 고대 리라(Lyre) 하프 선율과 에게해의 온화한 산들바람이 브라우저에서 실시간으로 울려 퍼집니다.
           </p>
         </div>
 
@@ -240,7 +243,7 @@
           <div class="ambience-controls">
             <button type="button" class="btn btn-primary btn-sound" id="btnSoundToggle">
               <span id="soundIcon">▶️</span>
-              <span id="soundBtnText">산들바람 소리 재생하기</span>
+              <span id="soundBtnText">고대 리라 선율 재생하기</span>
             </button>
             <div class="volume-box">
               <label for="volumeSlider">🔊 볼륨</label>
@@ -248,16 +251,16 @@
             </div>
           </div>
           <p class="sound-status-hint" id="soundHint">
-            Web Audio API를 통해 브라우저에서 직접 생성되는 깨끗하고 잔잔한 자연 바람 소리입니다.
+            Web Audio API를 통해 브라우저에서 직접 합성되는 서정적인 리라 하프 선율과 잔잔한 지중해 바람입니다.
           </p>
         </div>
       </div>
 
       <!-- 기존 실험 캔버스 카드 (보존) -->
       <div class="card">
-        <h2 class="section-title">📝 빈 페이지 (자유 공간)</h2>
+        <h2 class="section-title">🧪 아르키메데스의 실험실 (자유 공간)</h2>
         <div class="blank-canvas">
-          <div class="blank-icon">🧪</div>
+          <div class="blank-icon">🏛️</div>
           <h3>나만의 새로운 실험을 위한 캔버스</h3>
           <p>
             이곳은 아직 비어 있는 공간입니다.<br>

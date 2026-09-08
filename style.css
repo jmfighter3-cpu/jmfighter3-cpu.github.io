@@ -3,19 +3,20 @@
    HTML 태그들을 예쁘게 꾸며주고 반응형 레이아웃을 제공합니다.
    ========================================================================== */
 
-/* 1. 기본 색상 변수 설정: 일관된 색상 테마를 쉽게 관리합니다 */
+/* 1. 기본 색상 변수 설정: 고대 그리스 신전 & 올림포스 골드 팔레트 */
 :root {
-  --primary-color: #2563eb;       /* 주 색상 (선명한 로열 블루) */
-  --primary-hover: #1d4ed8;       /* 마우스 올렸을 때 색상 */
-  --bg-color: #0f172a;            /* 전체 배경색 */
-  --card-bg: rgba(255, 255, 255, 0.42); /* 배경 명화가 은은하고 아름답게 비치는 반투명 글래스모피즘 */
-  --card-border: rgba(255, 255, 255, 0.65); /* 은은한 빛 반사 유리 외곽선 */
-  --text-main: #0f172a;           /* 기본 글자색 (가독성 높은 짙은 슬레이트) */
-  --text-muted: #334155;          /* 보조 글자색 (선명한 중간 먹색) */
-  --border-color: rgba(226, 232, 240, 0.7); /* 테두리선 색상 */
+  --primary-color: #d97706;       /* 올림피아 황금빛 (Olympian Amber Gold) */
+  --primary-hover: #b45309;       /* 짙은 앤틱 브론즈 골드 */
+  --primary-glow: rgba(217, 119, 6, 0.35);
+  --bg-color: #0c1222;            /* 에게해 심해 네이비 (Aegean Sea) */
+  --card-bg: rgba(255, 252, 245, 0.46); /* 파로스 대리석(Parian Marble) 반투명 글래스 */
+  --card-border: rgba(245, 158, 11, 0.45); /* 은은한 황금빛 대리석 외곽선 */
+  --text-main: #0f172a;           /* 기본 글자색 (짙은 슬레이트 남회색) */
+  --text-muted: #334155;          /* 보조 글자색 (중간 먹색) */
+  --border-color: rgba(217, 119, 6, 0.28); /* 고대 그리스풍 앤틱 구분선 */
   --radius: 16px;                 /* 모서리 둥글기 */
-  --shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.18), 0 6px 12px -3px rgba(0, 0, 0, 0.08);
-  --glass-blur: blur(16px);       /* 배경 그림을 우아하게 투영하는 프로스트 블러 필터 */
+  --shadow: 0 16px 36px -6px rgba(12, 18, 34, 0.25), 0 6px 12px -3px rgba(0, 0, 0, 0.08);
+  --glass-blur: blur(16px);       /* 대리석 프로스트 블러 필터 */
 }
 
 /* 2. 전체 공통 스타일 리셋 */
@@ -26,9 +27,9 @@
 }
 
 body {
-  /* 5. 트렌디한 한글 웹폰트 Pretendard 우선 적용 */
+  /* 5. 트렌디한 한글 웹폰트 Pretendard 및 고전 그리스 비문 세리프 폰트 계층 적용 */
   font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: #0f172a;
+  background-color: #0c1222;
   color: var(--text-main);
   line-height: 1.6;
   min-height: 100vh;
@@ -36,6 +37,12 @@ body {
   flex-direction: column;
   position: relative;
   overflow-x: hidden;
+}
+
+/* 고대 그리스 비문 서체 Cinzel 적용 계층 */
+.site-logo, h1, h2, h3, .tab-button, .status-pulse-badge, .ambience-badge {
+  font-family: 'Cinzel', "Pretendard Variable", Pretendard, serif;
+  letter-spacing: 0.04em;
 }
 
 /* ==========================================================================
@@ -52,7 +59,7 @@ body {
   z-index: -1;
   pointer-events: none;
   overflow: hidden;
-  background-color: #0f172a;
+  background-color: #0c1222;
 }
 
 /* 1. 배경 명화 이미지 - 화면 비율에 맞춰 중앙 정렬 및 선명하게 채움 */
@@ -75,19 +82,29 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.12) 0%, rgba(15, 23, 42, 0.38) 100%);
+  background: radial-gradient(circle at center, rgba(12, 18, 34, 0.1) 0%, rgba(12, 18, 34, 0.4) 100%);
 }
 
-/* 3. 상단 내비게이션 바 (Header & Nav) - 반투명 글래스모피즘 적용 */
+/* 3. 상단 내비게이션 바 (Header & Nav) - 파로스 대리석 글래스 및 메안드로스 문양 */
 .site-header {
-  background-color: rgba(255, 255, 255, 0.48);
+  background-color: rgba(255, 252, 245, 0.52);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.55);
+  border-bottom: 2px solid rgba(217, 119, 6, 0.35);
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* 헤더 하단 고대 그리스 전통 메안드로스(Greek Key / Meander) 문양 장식 */
+.site-header::after {
+  content: '';
+  display: block;
+  height: 6px;
+  width: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='8' viewBox='0 0 16 8'%3E%3Cpath d='M0,1 h14 v6 h-4 v-4 h2 v2 h1 v-3 h-11 v5 h9 v1 h-11 v-7 z' fill='%23d97706' fill-opacity='0.65'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
 }
 
 .header-inner {
@@ -102,13 +119,21 @@ body {
 }
 
 .site-logo {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1.3rem;
+  font-weight: 800;
   color: var(--primary-color);
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+}
+
+.site-logo .logo-text {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #b45309 0%, #d97706 50%, #f59e0b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* 4. 상단 탭 버튼 목록 */
@@ -123,23 +148,25 @@ body {
   border: 1px solid transparent;
   border-radius: 8px;
   padding: 8px 16px;
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 0.92rem;
+  font-weight: 700;
   color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .tab-button:hover {
-  background-color: #f1f5f9;
-  color: var(--text-main);
+  background-color: rgba(255, 255, 255, 0.65);
+  color: #b45309;
+  border-color: rgba(217, 119, 6, 0.3);
 }
 
-/* 활성화된 탭 스타일 */
+/* 활성화된 탭 스타일 (올림피아 골드) */
 .tab-button.active {
-  background-color: var(--primary-color);
+  background: linear-gradient(135deg, #d97706, #b45309);
   color: #ffffff;
-  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+  border-color: #f59e0b;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
 }
 
 /* 5. 메인 콘텐츠 영역 및 탭 화면 제어 */
@@ -211,7 +238,7 @@ h2.section-title {
   width: 90px;
   height: 90px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  background: linear-gradient(135deg, #d97706, #b45309);
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -219,7 +246,8 @@ h2.section-title {
   font-size: 2.2rem;
   font-weight: bold;
   flex-shrink: 0;
-  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.25);
+  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.35);
+  border: 3px solid rgba(255, 252, 245, 0.8);
   overflow: hidden;
 }
 
@@ -242,25 +270,26 @@ h2.section-title {
   font-size: 1.75rem;
 }
 
-/* 5. 프로필 상태 실시간 펄스 뱃지 */
+/* 5. 프로필 상태 실시간 펄스 뱃지 (올림피아 골드 & 월계수 테마) */
 .status-pulse-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background-color: rgba(16, 185, 129, 0.12);
-  color: #059669;
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  padding: 3px 10px;
+  background-color: rgba(254, 243, 199, 0.85);
+  color: #92400e;
+  border: 1px solid rgba(217, 119, 6, 0.45);
+  padding: 4px 12px;
   border-radius: 9999px;
   font-size: 0.76rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .pulse-dot {
   width: 8px;
   height: 8px;
-  background-color: #10b981;
+  background-color: #d97706;
   border-radius: 50%;
   position: relative;
   display: inline-block;
@@ -274,7 +303,7 @@ h2.section-title {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background-color: rgba(16, 185, 129, 0.6);
+  background-color: rgba(217, 119, 6, 0.6);
   animation: pulse-ring 1.8s cubic-bezier(0.24, 0, 0.38, 1) infinite;
 }
 
@@ -295,7 +324,7 @@ h2.section-title {
 
 .profile-info .role {
   color: var(--primary-color);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1.05rem;
   margin-bottom: 8px;
 }
@@ -323,8 +352,6 @@ h2.section-title {
   50% { opacity: 0; }
 }
 
-
-
 .skills-list {
   display: flex;
   flex-wrap: wrap;
@@ -333,13 +360,15 @@ h2.section-title {
 }
 
 .skill-tag {
-  background-color: #eff6ff;
-  color: #1d4ed8;
+  background-color: rgba(254, 243, 199, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #92400e;
   padding: 6px 14px;
   border-radius: 9999px;
   font-size: 0.85rem;
-  font-weight: 600;
-  border: 1px solid #dbeafe;
+  font-weight: 700;
+  border: 1px solid rgba(217, 119, 6, 0.4);
 }
 
 /* 8. [탭 2] 프로젝트 소개(Projects) 카드 그리드 */
@@ -404,11 +433,13 @@ h2.section-title {
 }
 
 .tag {
-  background-color: #f1f5f9;
-  color: #475569;
+  background-color: rgba(254, 243, 199, 0.85);
+  color: #92400e;
   font-size: 0.75rem;
+  font-weight: 700;
   padding: 3px 8px;
   border-radius: 4px;
+  border: 1px solid rgba(217, 119, 6, 0.35);
 }
 
 .btn-group {
@@ -422,35 +453,41 @@ h2.section-title {
   justify-content: center;
   padding: 8px 14px;
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 700;
   border-radius: 6px;
   text-decoration: none;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .btn-primary {
-  background-color: var(--primary-color);
+  background: linear-gradient(135deg, #d97706, #b45309);
   color: #ffffff;
+  border: 1px solid #f59e0b;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
 }
 
 .btn-primary:hover {
-  background-color: var(--primary-hover);
+  background: linear-gradient(135deg, #b45309, #92400e);
 }
 
 .btn-outline {
-  border: 1px solid var(--border-color);
-  color: var(--text-main);
+  border: 1px solid rgba(217, 119, 6, 0.45);
+  color: #92400e;
+  background-color: rgba(255, 252, 245, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .btn-outline:hover {
-  background-color: #f8fafc;
+  background-color: rgba(254, 243, 199, 0.9);
+  border-color: #d97706;
 }
 
 /* 9. [탭 3] 빈 페이지 (자유 공간) */
-/* 4-C. 목가적인 자연의 소리 플레이어 (Pastoral Ambience) 스타일 */
+/* 4-C. 아폴론과 뮤즈의 리라 선율 플레이어 (Apollo's Lyre & Breeze) 스타일 */
 .ambience-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.48), rgba(240, 253, 244, 0.38));
-  border: 1px solid rgba(187, 247, 208, 0.7);
+  background: linear-gradient(135deg, rgba(255, 252, 245, 0.52), rgba(254, 243, 199, 0.38));
+  border: 1px solid rgba(217, 119, 6, 0.45);
 }
 
 .ambience-header {
@@ -459,23 +496,24 @@ h2.section-title {
 
 .ambience-badge {
   display: inline-block;
-  background-color: rgba(220, 252, 231, 0.85);
-  color: #15803d;
+  background-color: rgba(254, 243, 199, 0.9);
+  color: #92400e;
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   padding: 4px 12px;
   border-radius: 9999px;
   text-transform: uppercase;
+  border: 1px solid rgba(217, 119, 6, 0.4);
 }
 
 .ambience-player-box {
-  background-color: rgba(255, 255, 255, 0.42);
+  background-color: rgba(255, 252, 245, 0.45);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border-radius: 14px;
   padding: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(245, 158, 11, 0.45);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -494,14 +532,14 @@ h2.section-title {
 .sound-visualizer .v-bar {
   width: 5px;
   height: 8px;
-  background-color: #cbd5e1;
+  background-color: rgba(217, 119, 6, 0.3);
   border-radius: 4px;
   transition: all 0.3s ease;
 }
 
-/* 재생 중일 때 부드럽게 춤추는 애니메이션 */
+/* 재생 중일 때 부드럽게 춤추는 애니메이션 (황금빛 리라 음파) */
 .sound-visualizer.playing .v-bar {
-  background: linear-gradient(to top, #10b981, #3b82f6);
+  background: linear-gradient(to top, #d97706, #f59e0b);
   animation: barBounce 1.1s infinite ease-in-out;
 }
 .sound-visualizer.playing .v-bar:nth-child(1) { animation-delay: 0.1s; height: 16px; }
@@ -532,7 +570,7 @@ h2.section-title {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }

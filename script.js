@@ -42,12 +42,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const typingElement = document.getElementById("typing-text");
 
   if (typingElement) {
-    // 번갈아 가며 출력할 소개 문구 목록
+    // 번갈아 가며 출력할 소개 문구 목록 (고전 그리스 서사 및 개발 철학 테마)
     const phrases = [
       "아이고 힘들다... 하지만 오늘도 성장 중! 🌱",
-      "6개월 버티기가 목표인 끈기 있는 개발자 💻",
-      "파이썬과 웹 개발을 사랑하는 jmfighter3-cpu 🚀",
-      "하나씩 배우고 직접 만들어가는 즐거움 ✨"
+      "너 자신을 알라 (Gnothi Seauton)... 오늘도 버그를 잡는다 ⚔️",
+      "험난한 항해 끝에 이타카에 도달하듯, 끈기 있는 개발자 ⛵",
+      "6개월 버티기가 목표인 끈기 있는 탐구자 💻",
+      "파이썬과 웹 개발을 사랑하는 jmfighter3-cpu 📜",
+      "배움에는 왕도가 없다 — 매일 한 걸음씩 성장 중 ✨"
     ];
 
     let phraseIndex = 0;   // 현재 출력 중인 문장 번호
@@ -93,8 +95,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ==========================================================================
-  // 4-C. 목가적인 자연의 소리 플레이어 (Web Audio API Pastoral Ambience)
-  // 외부 오디오 파일 다운로드 없이, 브라우저 내장 Web Audio API로 산들바람 ASMR을 실시간 합성합니다.
+  // 4-C. 아폴론과 뮤즈의 리라 선율 플레이어 (Web Audio API Ancient Lyre & Breeze)
+  // 외부 음원 파일 없이, 브라우저 내장 Web Audio API로 고대 리라 하프와 바람 소리를 실시간 합성합니다.
   // ==========================================================================
   const btnSoundToggle = document.getElementById("btnSoundToggle");
   const soundIcon = document.getElementById("soundIcon");
@@ -108,6 +110,52 @@ document.addEventListener("DOMContentLoaded", () => {
   let gainNode = null;
   let filterNode = null;
   let isPlaying = false;
+  let lyreTimeout = null;
+
+  // 고대 그리스 5음계 주파수 (D Dorian Pentatonic: D4, E4, G4, A4, C5, D5)
+  const lyreNotes = [293.66, 329.63, 392.00, 440.00, 523.25, 587.33];
+
+  // 고대 리라(Lyre) 현을 튕기는 플럭(Pluck) 음향 합성 함수
+  function pluckLyreNote(ctx, targetGain) {
+    if (!ctx || ctx.state !== "running" || !isPlaying) return;
+    try {
+      const now = ctx.currentTime;
+      const freq = lyreNotes[Math.floor(Math.random() * lyreNotes.length)];
+
+      const osc = ctx.createOscillator();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(freq, now);
+
+      const noteGain = ctx.createGain();
+      noteGain.gain.setValueAtTime(0.0001, now);
+      noteGain.gain.linearRampToValueAtTime(0.07, now + 0.02);
+      noteGain.gain.exponentialRampToValueAtTime(0.0001, now + 2.2);
+
+      const noteFilter = ctx.createBiquadFilter();
+      noteFilter.type = "lowpass";
+      noteFilter.frequency.setValueAtTime(1500, now);
+
+      osc.connect(noteGain);
+      noteGain.connect(noteFilter);
+      noteFilter.connect(targetGain);
+
+      osc.start(now);
+      osc.stop(now + 2.3);
+    } catch (e) {
+      // 오류 방지
+    }
+  }
+
+  // 지중해 바람 사이로 즉흥적인 리라 선율을 연주하는 스케줄러
+  function scheduleLyreArpeggio(ctx, targetGain) {
+    if (!isPlaying) return;
+    pluckLyreNote(ctx, targetGain);
+
+    const nextInterval = 1600 + Math.random() * 1600; // 1.6~3.2초 간격
+    lyreTimeout = setTimeout(() => {
+      scheduleLyreArpeggio(ctx, targetGain);
+    }, nextInterval);
+  }
 
   // 바람 소리를 생성하는 핑크 노이즈(Pink Noise) 오디오 버퍼 생성 함수
   function createWindBuffer(ctx) {
@@ -125,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
       b3 = 0.86650 * b3 + white * 0.3104856;
       b4 = 0.55000 * b4 + white * 0.5329522;
       b5 = -0.7616 * b5 - white * 0.0168980;
-      data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
+      data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.08;
       b6 = white * 0.115926;
     }
     return buffer;
@@ -150,14 +198,14 @@ document.addEventListener("DOMContentLoaded", () => {
     // 2. 부드러운 산들바람 느낌을 주는 저음역 로우패스 필터(Low-pass Filter) 연결
     filterNode = audioCtx.createBiquadFilter();
     filterNode.type = "lowpass";
-    filterNode.frequency.setValueAtTime(420, audioCtx.currentTime); // 따뜻하고 부드러운 바람 주파수
+    filterNode.frequency.setValueAtTime(380, audioCtx.currentTime); // 온화한 에게해 미풍 주파수
 
-    // 3. 볼륨 조절 노드 연결
+    // 3. 마스터 볼륨 조절 노드 연결
     gainNode = audioCtx.createGain();
     const currentVol = volumeSlider ? parseFloat(volumeSlider.value) : 0.5;
     gainNode.gain.setValueAtTime(currentVol * 0.8, audioCtx.currentTime);
 
-    // 노드들을 체인 형태로 연결: 소스 -> 필터 -> 볼륨 -> 스피커 출력
+    // 노드 체인 연결
     noiseNode.connect(filterNode);
     filterNode.connect(gainNode);
     gainNode.connect(audioCtx.destination);
@@ -165,14 +213,22 @@ document.addEventListener("DOMContentLoaded", () => {
     noiseNode.start();
     isPlaying = true;
 
+    // 고대 리라 하프 아르페지오 시작
+    scheduleLyreArpeggio(audioCtx, gainNode);
+
     // UI 상태 업데이트
     if (soundIcon) soundIcon.textContent = "⏸️";
-    if (soundBtnText) soundBtnText.textContent = "산들바람 소리 멈추기";
+    if (soundBtnText) soundBtnText.textContent = "고대 리라 선율 멈추기";
     if (soundVisualizer) soundVisualizer.classList.add("playing");
-    if (soundHint) soundHint.textContent = "🌿 잔잔한 시골 산들바람 소리가 재생 중입니다. 편안하게 감상해 보세요.";
+    if (soundHint) soundHint.textContent = "🎼 아폴론과 오르페우스의 서정적인 리라 하프 선율과 지중해 바람이 연주 중입니다.";
   }
 
   function stopAmbience() {
+    if (lyreTimeout) {
+      clearTimeout(lyreTimeout);
+      lyreTimeout = null;
+    }
+
     if (noiseNode) {
       try {
         noiseNode.stop();
@@ -186,9 +242,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // UI 상태 복원
     if (soundIcon) soundIcon.textContent = "▶️";
-    if (soundBtnText) soundBtnText.textContent = "산들바람 소리 재생하기";
+    if (soundBtnText) soundBtnText.textContent = "고대 리라 선율 재생하기";
     if (soundVisualizer) soundVisualizer.classList.remove("playing");
-    if (soundHint) soundHint.textContent = "버튼을 누르면 산들바람과 잔잔한 앰비언스 사운드가 흘러나옵니다.";
+    if (soundHint) soundHint.textContent = "버튼을 누르면 서정적인 리라 하프 선율과 지중해 산들바람이 울려 퍼집니다.";
   }
 
   // 재생/정지 버튼 클릭 이벤트 연결
