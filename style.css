@@ -1421,10 +1421,11 @@ h2.section-title {
 
 .agora-card .section-subtitle {
   color: var(--text-muted);
-  font-size: 0.95rem;
+  font-size: 0.91rem;
   line-height: 1.6;
-  max-width: 660px;
+  max-width: 900px;
   margin: 0 auto;
+  word-break: keep-all;
 }
 
 /* 도편 작성 폼 */
