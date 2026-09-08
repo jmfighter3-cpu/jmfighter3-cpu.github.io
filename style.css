@@ -1751,22 +1751,6 @@ h2.section-title {
   letter-spacing: 0.05em;
 }
 
-.btn-delete-ostrakon {
-  background: transparent;
-  border: none;
-  color: #94a3b8;
-  cursor: pointer;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  transition: all 0.2s ease;
-}
-
-.btn-delete-ostrakon:hover {
-  color: #ef4444;
-  background: rgba(239, 68, 68, 0.1);
-}
-
 /* 도편 일일 등록 제한 힌트 뱃지 */
 .daily-limit-badge {
   display: inline-block;

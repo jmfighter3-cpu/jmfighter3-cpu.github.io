@@ -653,27 +653,8 @@ document.addEventListener("DOMContentLoaded", () => {
           <p class="ostrakon-message">${escapeHtml(item.message)}</p>
           <div class="ostrakon-bottom">
             <span class="ostrakon-seal">✦ OSTRAKON · AGORA</span>
-            ${!item.isDefault ? `<button type="button" class="btn-delete-ostrakon" data-id="${item.id}" title="도편 삭제">지우기</button>` : ""}
           </div>
         `;
-
-        // 삭제 버튼 이벤트 연결
-        const delBtn = tile.querySelector(".btn-delete-ostrakon");
-        if (delBtn) {
-          delBtn.addEventListener("click", () => {
-            if (confirm("이 도편을 점토판에서 지우시겠습니까?")) {
-              if (item.isCloud && isFirebaseLive && db) {
-                db.collection("ostraka").doc(item.id).delete()
-                  .then(() => alert("도편이 클라우드 광장에서 삭제되었습니다."))
-                  .catch((err) => alert("삭제 권한이 없거나 오류가 발생했습니다: " + err.message));
-              } else {
-                ostrakaList = ostrakaList.filter(o => o.id !== item.id);
-                saveOstraka(ostrakaList);
-                renderOstraka();
-              }
-            }
-          });
-        }
 
         ostrakonGrid.appendChild(tile);
       });
