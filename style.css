@@ -868,31 +868,241 @@ h2.section-title {
   font-size: 1.15rem;
 }
 
-.blank-canvas {
-  text-align: center;
-  padding: 60px 20px;
-  border: 2px dashed rgba(203, 213, 225, 0.7);
-  border-radius: var(--radius);
-  background-color: rgba(255, 255, 255, 0.55);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+/* ==========================================================================
+   4-D. 델포이 아폴론 신전의 코딩 신탁 (The Delphic Oracle) 스타일
+   ========================================================================== */
+.delphic-oracle-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(217, 119, 6, 0.35);
+  box-shadow: 0 10px 30px rgba(180, 83, 9, 0.12);
+  margin-bottom: 24px;
 }
 
-.blank-icon {
-  font-size: 3.5rem;
+.delphic-oracle-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #f59e0b, #d97706, #b45309, #d97706, #f59e0b);
+}
+
+.oracle-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.oracle-badge {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #92400e;
+  background-color: rgba(254, 243, 199, 0.85);
+  border: 1px solid rgba(217, 119, 6, 0.35);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  margin-bottom: 10px;
+}
+
+.delphic-oracle-card .section-title {
+  margin-bottom: 10px;
+}
+
+.delphic-oracle-card .section-subtitle {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.oracle-altar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 0;
+}
+
+/* 신전 향로 / 성화 시각 효과 */
+.oracle-brazier {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(254, 243, 199, 0.9) 0%, rgba(251, 191, 36, 0.3) 60%, transparent 80%);
+}
+
+.brazier-glow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.65);
+  animation: brazierPulse 2.8s ease-in-out infinite;
+}
+
+@keyframes brazierPulse {
+  0%, 100% {
+    transform: scale(0.92);
+    opacity: 0.6;
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.95;
+    box-shadow: 0 0 35px rgba(245, 158, 11, 0.85);
+  }
+}
+
+.brazier-icon {
+  font-size: 2.2rem;
+  z-index: 1;
+  filter: drop-shadow(0 2px 6px rgba(180, 83, 9, 0.4));
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.oracle-altar.pulsing .brazier-icon {
+  transform: scale(1.25) rotate(-6deg);
+}
+
+/* 신탁 석판 (Display Box) */
+.oracle-display-box {
+  width: 100%;
+  max-width: 680px;
+  background: rgba(255, 252, 245, 0.88);
+  border: 1px solid rgba(217, 119, 6, 0.38);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(180, 83, 9, 0.1), inset 0 0 20px rgba(254, 243, 199, 0.35);
+  padding: 28px 24px;
+  text-align: center;
+  transition: all 0.35s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  position: relative;
+}
+
+.oracle-display-box.revealing {
+  animation: oracleReveal 0.5s ease-out;
+}
+
+@keyframes oracleReveal {
+  0% {
+    opacity: 0.3;
+    transform: scale(0.97) translateY(4px);
+    box-shadow: 0 0 30px rgba(245, 158, 11, 0.6);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    box-shadow: 0 8px 24px rgba(180, 83, 9, 0.1);
+  }
+}
+
+.oracle-greek-text {
+  font-family: 'Cinzel', serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #92400e;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+  text-shadow: 0 1px 2px rgba(254, 243, 199, 0.8);
+}
+
+.oracle-transcription {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: #b45309;
+  margin-bottom: 12px;
+  opacity: 0.9;
+}
+
+.oracle-korean-meaning {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.6;
   margin-bottom: 16px;
 }
 
-.blank-canvas h3 {
-  font-size: 1.4rem;
-  color: var(--text-main);
-  margin-bottom: 8px;
+.oracle-divider {
+  font-size: 0.85rem;
+  color: #d97706;
+  letter-spacing: 0.3em;
+  margin: 14px 0;
+  opacity: 0.7;
 }
 
-.blank-canvas p {
+.oracle-dev-commentary {
+  font-size: 0.96rem;
+  line-height: 1.75;
+  color: #334155;
+  background: rgba(254, 243, 199, 0.5);
+  border-left: 3px solid #d97706;
+  padding: 12px 16px;
+  border-radius: 0 8px 8px 0;
+  text-align: left;
+}
+
+.oracle-dev-commentary code {
+  background-color: rgba(217, 119, 6, 0.15);
+  color: #92400e;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.88em;
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-weight: 600;
+}
+
+/* 신탁 청하기 액션 버튼 */
+.oracle-actions {
+  text-align: center;
+  margin-top: 8px;
+}
+
+.btn-consult-oracle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 28px;
+  border-radius: 9999px;
+  border: 1px solid #f59e0b;
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(180, 83, 9, 0.32);
+  transition: all 0.25s ease;
+}
+
+.btn-consult-oracle:hover {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(180, 83, 9, 0.45);
+}
+
+.btn-consult-oracle:active {
+  transform: translateY(1px);
+  box-shadow: 0 3px 10px rgba(180, 83, 9, 0.3);
+}
+
+.oracle-btn-icon {
+  font-size: 1.2rem;
+}
+
+.oracle-hint {
+  font-size: 0.8rem;
   color: var(--text-muted);
-  max-width: 480px;
-  margin: 0 auto;
+  margin-top: 10px;
 }
 
 /* 10. 하단 푸터 (Footer) */

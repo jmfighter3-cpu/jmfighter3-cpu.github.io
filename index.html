@@ -246,20 +246,44 @@
         </div>
       </div>
 
-      <!-- 기존 실험 캔버스 카드 (보존) -->
-      <div class="card">
-        <h2 class="section-title">🧪 아르키메데스의 실험실 (자유 공간)</h2>
-        <div class="blank-canvas">
-          <div class="blank-icon">🏛️</div>
-          <h3>나만의 새로운 실험을 위한 캔버스</h3>
-          <p>
-            이곳은 아직 비어 있는 공간입니다.<br>
-            방명록, 메모장, 일기, 새롭게 배우고 싶은 웹 기능 등 무엇이든 자유롭게 추가해 보세요!
+      <!-- 델포이 아폴론 신전의 코딩 신탁 (The Delphic Oracle) 카드 -->
+      <div class="card delphic-oracle-card">
+        <div class="oracle-header">
+          <div class="oracle-badge">🏛️ PARNASSUS ORACLE</div>
+          <h2 class="section-title">🔮 델포이 아폴론 신전의 코딩 신탁 (The Delphic Oracle)</h2>
+          <p class="section-subtitle">
+            파르나소스 산 깊은 바위 틈에서 피어오르는 황금빛 영기 속에서, 
+            무녀 퓌티아(Pythia)가 전하는 고대 그리스 지혜와 디버깅의 계시를 청해보세요.
           </p>
-          <div style="margin-top: 24px;">
-            <button type="button" class="btn btn-primary" onclick="alert('축하합니다! 빈 페이지에서 버튼 클릭 이벤트가 동작했습니다 😊')">
-              클릭 테스트 해보기
+        </div>
+
+        <div class="oracle-altar">
+          <!-- 신전 삼발이 향로 및 시각 효과 요소 -->
+          <div class="oracle-brazier">
+            <span class="brazier-glow"></span>
+            <span class="brazier-icon">🏺</span>
+          </div>
+
+          <!-- 신탁이 현현되는 석판 명판 박스 -->
+          <div class="oracle-display-box" id="oracleDisplayBox">
+            <div class="oracle-stele-inner">
+              <div class="oracle-greek-text" id="oracleGreek">Γνῶθι σεαυτόν</div>
+              <div class="oracle-transcription" id="oracleTrans">[Gnōthi seauton]</div>
+              <div class="oracle-korean-meaning" id="oracleKorean">"너 자신을 알라" — 소크라테스 / 델포이 아폴론 신전 주춧돌 명문</div>
+              <div class="oracle-divider">✦ ✦ ✦</div>
+              <div class="oracle-dev-commentary" id="oracleDev">
+                "<code>console.log</code>를 찍기 전까지는 네 코드도 스스로를 모른다. 자신의 버그를 정직하게 응시하는 자만이 배포의 지혜를 얻으리라."
+              </div>
+            </div>
+          </div>
+
+          <!-- 신탁을 청하는 버튼 -->
+          <div class="oracle-actions">
+            <button type="button" class="btn-consult-oracle" id="btnConsultOracle">
+              <span class="oracle-btn-icon">⚡</span>
+              <span class="oracle-btn-text">퓌티아에게 신탁 청하기 (Consult Oracle)</span>
             </button>
+            <p class="oracle-hint">버튼을 누를 때마다 향로가 공명하며 새로운 고전 철학 격언과 개발자 해설이 점지됩니다.</p>
           </div>
         </div>
       </div>
