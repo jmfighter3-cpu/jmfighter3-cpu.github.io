@@ -468,12 +468,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // 키가 비어있거나 미설정된 상태에서는 자동으로 안전한 'LocalStorage 로컬 모드'로 동작합니다.
   // ==========================================================================
   const firebaseConfig = {
-    apiKey: "", // 발급받은 apiKey를 여기에 붙여넣으세요 (예: "AIzaSy...")
-    authDomain: "",
-    projectId: "",
-    storageBucket: "",
-    messagingSenderId: "",
-    appId: ""
+    apiKey: "AIzaSyD_Y0mGU9bflDdo5rp7EAo-qpkz5JVkbwg",
+    authDomain: "jmfighter3-agora.firebaseapp.com",
+    projectId: "jmfighter3-agora",
+    storageBucket: "jmfighter3-agora.firebasestorage.app",
+    messagingSenderId: "807611040092",
+    appId: "1:807611040092:web:bfb19e2ce9f3661c0e0199",
+    measurementId: "G-6L041MDW3G"
   };
 
   let db = null;
