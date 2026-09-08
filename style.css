@@ -39,40 +39,89 @@ body {
 }
 
 /* ==========================================================================
-   [시네마틱 영상 배경 효과 - Ken Burns & Vibrant HD Filter]
-   1. 원본 풍경 사진의 덮개를 완전히 제거하고, 채도와 명암을 쨍하게 보정(HD 필터)
-   2. 24초 주기로 천천히 유영하는 드론 카메라 무빙 애니메이션(Ken Burns Effect)으로
-      정지된 사진을 마치 살아있는 고화질 슬로우 비디오 영상처럼 연출합니다.
+   [목가적인 풍경 고정 배경 & 잔디/나무 바람 나부낌 연출]
+   1. 전체 사진 프레임(하늘, 먼 건물 등)은 흔들림 없이 화면에 100% 안정적으로 고정
+   2. 아래쪽 잔디밭과 사이프러스 나무 영역만 산들바람에 부드럽게 살랑살랑 나부끼는 유기적 효과
    ========================================================================== */
-body::before {
-  content: '';
+.scenic-background {
   position: fixed;
-  top: -5%;
-  left: -5%;
-  width: 110%;
-  height: 110%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: -1;
-  background: url('assets/pastoral_crete_dorcia.jpg') center top / cover no-repeat;
-  
-  /* 1. 색감과 입체감을 극대화하는 선명한 HD 비디오 색보정 필터 */
-  filter: contrast(1.08) saturate(1.22) brightness(1.03);
-  
-  /* 2. 드론 카메라로 푸른 언덕을 비행하는 듯한 시네마틱 켄 번스 무빙 */
-  animation: cinematicDroneMove 24s infinite alternate ease-in-out;
-  transform-origin: center center;
   pointer-events: none;
-  will-change: transform;
+  overflow: hidden;
 }
 
-@keyframes cinematicDroneMove {
+/* 1. 고정된 전체 베이스 레이어 (하늘, 언덕, 쨍하고 선명한 HD 원본) */
+.scenic-static-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('assets/pastoral_crete_dorcia.jpg') center top / cover no-repeat;
+  filter: contrast(1.08) saturate(1.22) brightness(1.03);
+}
+
+/* 2. 바람에 살랑살랑 나부끼는 잔디/나무 레이어 (SVG 필터 및 마스킹 적용) */
+.scenic-wind-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('assets/pastoral_crete_dorcia.jpg') center top / cover no-repeat;
+  /* SVG gentleWind 필터로 유기적인 산들바람 파동 생성 */
+  filter: url(#gentleWind) contrast(1.08) saturate(1.22) brightness(1.03);
+  /* 하늘과 먼 산은 완벽히 고정하고, 아래쪽 65% 영역(잔디와 나무)에만 바람 나부낌 집중 */
+  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.95) 45%, rgba(0, 0, 0, 0) 75%);
+  mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.95) 45%, rgba(0, 0, 0, 0) 75%);
+  animation: windSway 7s infinite alternate ease-in-out;
+  transform-origin: center bottom;
+  will-change: transform, filter;
+}
+
+/* 3. 살랑이는 바람결에 맞춰 잔디밭을 스쳐 지나가는 자연의 햇살(Shimmer) */
+.scenic-breeze-shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%);
+  animation: windGust 12s infinite ease-in-out;
+  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 65%);
+  mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 65%);
+}
+
+/* 잔디와 나뭇잎이 살랑살랑 흔들리는 유기적 미세 모션 */
+@keyframes windSway {
   0% {
-    transform: scale(1.0) translate(0, 0);
+    transform: skewX(0deg) scale(1.0);
   }
-  50% {
-    transform: scale(1.06) translate(-1.2%, -0.8%);
+  35% {
+    transform: skewX(0.4deg) scale(1.002);
+  }
+  70% {
+    transform: skewX(-0.3deg) scale(0.999);
   }
   100% {
-    transform: scale(1.03) translate(1.2%, -0.4%);
+    transform: skewX(0.25deg) scale(1.001);
+  }
+}
+
+/* 바람이 스쳐 지나가는 빛의 흐름 */
+@keyframes windGust {
+  0% {
+    transform: translateX(-100%);
+  }
+  40% {
+    transform: translateX(15%);
+  }
+  100% {
+    transform: translateX(100%);
   }
 }
 
