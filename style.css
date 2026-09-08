@@ -39,9 +39,9 @@ body {
 }
 
 /* ==========================================================================
-   [실제 카메라 촬영 자연 풍경 루프 비디오 배경 스타일]
-   1. 전체 화면에 여백 없이 꽉 차도록 object-fit: cover 및 중앙 정렬 적용
-   2. 코드로 비틀지 않고, 실제 바람에 풀잎과 나무가 살랑살랑 흔들리는 리얼한 자연 연출
+   [호메로스 일리아스 명화 배경 스타일]
+   - 작품: The Triumph of Achilles (1892) by Franz von Matsch
+   - 모니터 해상도에 맞춰 웅장하게 전체 화면을 채우며, 텍스트 가독성을 위한 은은한 비네트 틴트 적용
    ========================================================================== */
 .scenic-background {
   position: fixed;
@@ -52,31 +52,30 @@ body {
   z-index: -1;
   pointer-events: none;
   overflow: hidden;
-  background-color: #f1f5f9;
+  background-color: #0f172a;
 }
 
-/* 1. 배경 비디오 - 모니터/모바일 어떤 비율에서도 화면을 꽉 채우도록 설정 */
-.bg-nature-video {
+/* 1. 배경 명화 이미지 - 화면 비율에 맞춰 중앙 정렬 및 선명하게 채움 */
+.bg-masterpiece-img {
   position: absolute;
   top: 50%;
   left: 50%;
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
+  width: 100%;
+  height: 100%;
   transform: translate(-50%, -50%);
   object-fit: cover;
-  filter: contrast(1.05) saturate(1.15) brightness(1.02);
+  object-position: center center;
+  filter: contrast(1.03) brightness(0.95);
 }
 
-/* 2. 글자 가독성을 부드럽게 받쳐주는 은은한 투명 틴트 레이어 */
-.bg-video-tint {
+/* 2. 글자 가독성과 유리 카드(Glassmorphism)의 입체감을 살려주는 은은한 비네트 틴트 레이어 */
+.bg-painting-tint {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(248, 250, 252, 0.1);
+  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.18) 0%, rgba(15, 23, 42, 0.48) 100%);
 }
 
 /* 3. 상단 내비게이션 바 (Header & Nav) - 글래스모피즘 적용 */
@@ -594,5 +593,12 @@ h2.section-title {
   border-top: 1px solid var(--border-color);
   background-color: var(--card-bg);
   margin-top: auto;
+}
+
+.footer-subtext {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+  opacity: 0.85;
 }
 

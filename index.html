@@ -15,19 +15,14 @@
 <body>
 
   <!-- ======================================================================
-       실제 카메라로 촬영된 고화질 자연 풍경 루프 비디오 배경 (Real Nature Loop Video)
-       코드로 비틀지 않고 실제 바람에 풀잎과 나무가 자연스럽게 살랑살랑 물결칩니다.
-       - autoplay: 자동 재생
-       - loop: 무한 반복 재생
-       - muted: 브라우저 자동 재생 정책을 통과하기 위한 필수 음소거
-       - playsinline: 모바일(iOS 등)에서 전체화면 튕김 없이 배경으로 재생
-       - poster: 비디오 로딩 전이나 미지원 환경을 위한 고화질 대체 사진
+       호메로스 『일리아스』 명장면 고전 명화 배경 (The Triumph of Achilles, 1892)
+       - 작가: Franz von Matsch (프란츠 폰 마치, 그리스 아킬레이온 궁전 벽화)
+       - 출처: File:The Triumph of Achilles by Franz von Matsch.jpg (Wikimedia Commons)
+       - 왜곡이나 어지러움 없이 웅장하고 품격 있는 고전 서사시 분위기를 연출합니다.
        ====================================================================== -->
   <div class="scenic-background" aria-hidden="true">
-    <video class="bg-nature-video" autoplay loop muted playsinline poster="assets/pastoral_crete_dorcia.jpg">
-      <source src="assets/nature_wind_grass.webm" type="video/webm">
-    </video>
-    <div class="bg-video-tint"></div>
+    <img src="assets/The_Triumph_of_Achilles_by_Franz_von_Matsch.jpg" alt="The Triumph of Achilles by Franz von Matsch" class="bg-masterpiece-img">
+    <div class="bg-painting-tint"></div>
   </div>
 
   <!-- ======================================================================
@@ -283,6 +278,7 @@
        ====================================================================== -->
   <footer class="site-footer">
     <p>&copy; 2026 jmfighter3-cpu. Powered by HTML5, CSS3, Vanilla JS & GitHub Pages.</p>
+    <p class="footer-subtext">배경 명화: Franz von Matsch - <em>The Triumph of Achilles</em> (1892, 아킬레이온 궁전 벽화)</p>
   </footer>
 
   <!-- ======================================================================
