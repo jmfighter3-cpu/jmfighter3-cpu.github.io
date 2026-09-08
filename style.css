@@ -39,10 +39,9 @@ body {
 }
 
 /* ==========================================================================
-   [목가적인 풍경 고정 배경 & 잔디/나무 자연 산들바람 연출]
-   1. 전체 사진(하늘, 먼 건물 등)은 흔들림이나 왜곡 없이 100% 완벽히 고정
-   2. 울렁거리는 인위적 왜곡 필터를 완전히 배제하고,
-      잔디와 나무의 풀잎 끝이 산들바람에 햇살을 받아 소폭 살랑살랑거리는 자연스러운 결 연출
+   [목가적인 풍경 100% 고정 배경 - Stable & Relaxing Background]
+   지각변동이나 어지러움을 유발하는 인위적 흔들림을 완전히 배제하고,
+   토스카나의 평화로운 푸른 언덕과 하늘을 100% 선명하고 편안하게 고정합니다.
    ========================================================================== */
 .scenic-background {
   position: fixed;
@@ -55,7 +54,6 @@ body {
   overflow: hidden;
 }
 
-/* 1. 100% 고정된 전체 원본 베이스 레이어 (울렁거림 ZERO, 맑고 선명한 HD 화질) */
 .scenic-static-layer {
   position: absolute;
   top: 0;
@@ -64,85 +62,6 @@ body {
   height: 100%;
   background: url('assets/pastoral_crete_dorcia.jpg') center top / cover no-repeat;
   filter: contrast(1.06) saturate(1.18) brightness(1.02);
-}
-
-/* 2. 잔디와 나무 영역만 바람을 타며 눈에 띄게 살랑살랑 나부끼는 레이어 */
-.scenic-grass-rustle {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: url('assets/pastoral_crete_dorcia.jpg') center top / cover no-repeat;
-  /* 하늘과 먼 산은 100% 미동도 없이 완벽히 고정하고, 아래쪽 62% 잔디와 나무 영역만 마스킹 */
-  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 68%);
-  mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 68%);
-  /* 땅바닥(bottom)을 축으로 하여 풀잎 끝과 나뭇가지가 바람을 타고 오른쪽으로 기우는 자연스러운 물리 모션 */
-  transform-origin: center bottom;
-  animation: dynamicGrassSway 5s infinite ease-in-out;
-  filter: contrast(1.08) saturate(1.22) brightness(1.03);
-  will-change: transform;
-}
-
-/* 3. 잔디밭 위로 스쳐 지나가는 선명하고 맑은 바람결 파동 (Wind Wave) */
-.scenic-wind-breeze {
-  position: absolute;
-  bottom: 0;
-  left: -60%;
-  width: 220%;
-  height: 60%;
-  background: linear-gradient(105deg, 
-    transparent 0%, 
-    rgba(255, 255, 255, 0.0) 35%, 
-    rgba(255, 255, 255, 0.12) 48%, 
-    rgba(255, 255, 255, 0.16) 52%, 
-    rgba(255, 255, 255, 0.0) 65%, 
-    transparent 100%);
-  animation: windWavePass 6.5s infinite ease-in-out;
-  pointer-events: none;
-  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 65%);
-  mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 65%);
-}
-
-/* 잔디와 나무가 바람에 나부끼는 역동적이면서도 자연스러운 스웨이 모션 */
-@keyframes dynamicGrassSway {
-  0% {
-    transform: skewX(0deg) translateX(0px);
-  }
-  25% {
-    /* 1차 바람: 나뭇가지와 잔디가 바람을 타고 오른쪽으로 약 3.5px 기울어지며 살랑거림 */
-    transform: skewX(-0.8deg) translateX(3.5px);
-  }
-  50% {
-    /* 바람이 살짝 잦아들며 제자리 근처로 복귀 */
-    transform: skewX(-0.2deg) translateX(1px);
-  }
-  75% {
-    /* 2차 바람: 다시 기분 좋게 나부낌 */
-    transform: skewX(-0.6deg) translateX(2.8px);
-  }
-  100% {
-    transform: skewX(0deg) translateX(0px);
-  }
-}
-
-/* 바람의 파도가 잔디밭을 스쳐 지나가는 시각적 연출 */
-@keyframes windWavePass {
-  0% {
-    transform: translateX(-35%);
-    opacity: 0;
-  }
-  20% {
-    opacity: 0.9;
-  }
-  60% {
-    transform: translateX(30%);
-    opacity: 0.8;
-  }
-  100% {
-    transform: translateX(70%);
-    opacity: 0;
-  }
 }
 
 /* 3. 상단 내비게이션 바 (Header & Nav) - 글래스모피즘 적용 */
