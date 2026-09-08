@@ -1376,10 +1376,9 @@ h2.section-title {
 }
 
 /* ==========================================================================
-   4-F. [탭 4] 아고라 도편(Ostrakon) 방명록 및 회합소 스타일
+   4-F. [탭 4] 아고라 도편(Ostrakon) 방명록 스타일
    ========================================================================== */
-.agora-card,
-.giscus-card {
+.agora-card {
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(217, 119, 6, 0.35);
@@ -1387,8 +1386,7 @@ h2.section-title {
   margin-bottom: 24px;
 }
 
-.agora-card::before,
-.giscus-card::before {
+.agora-card::before {
   content: "";
   position: absolute;
   top: 0;
@@ -1398,14 +1396,12 @@ h2.section-title {
   background: linear-gradient(90deg, #b45309, #d97706, #f59e0b, #d97706, #b45309);
 }
 
-.agora-header,
-.giscus-header {
+.agora-header {
   text-align: center;
   margin-bottom: 24px;
 }
 
-.agora-badge,
-.giscus-badge {
+.agora-badge {
   display: inline-block;
   font-family: 'Cinzel', serif;
   font-size: 0.75rem;
@@ -1419,13 +1415,11 @@ h2.section-title {
   margin-bottom: 10px;
 }
 
-.agora-card .section-title,
-.giscus-card .section-title {
+.agora-card .section-title {
   margin-bottom: 10px;
 }
 
-.agora-card .section-subtitle,
-.giscus-card .section-subtitle {
+.agora-card .section-subtitle {
   color: var(--text-muted);
   font-size: 0.95rem;
   line-height: 1.6;
@@ -1737,77 +1731,40 @@ h2.section-title {
   background: rgba(239, 68, 68, 0.1);
 }
 
-/* 2. 깃허브 원로원 회합소 (Giscus Card) */
-.giscus-info-box {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  background: rgba(254, 243, 199, 0.45);
+/* 도편 일일 등록 제한 힌트 뱃지 */
+.daily-limit-badge {
+  display: inline-block;
+  background: rgba(254, 243, 199, 0.7);
   border: 1px solid rgba(217, 119, 6, 0.3);
-  border-radius: 8px;
-  padding: 14px 18px;
-  margin-bottom: 24px;
-}
-
-.giscus-info-icon {
-  font-size: 1.3rem;
-  line-height: 1;
-}
-
-.giscus-info-text {
-  font-size: 0.88rem;
-  line-height: 1.6;
   color: #78350f;
-}
-
-.giscus-embed-area {
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px dashed rgba(217, 119, 6, 0.35);
-  border-radius: 12px;
-  padding: 36px 20px;
-  text-align: center;
-}
-
-.giscus-placeholder-icon {
-  font-size: 2.2rem;
-  margin-bottom: 12px;
-}
-
-.giscus-placeholder-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #78350f;
-  margin-bottom: 8px;
-}
-
-.giscus-placeholder-desc {
-  font-size: 0.88rem;
-  color: var(--text-muted);
-  max-width: 480px;
-  margin: 0 auto 20px auto;
-  line-height: 1.6;
-}
-
-.btn-github-discussions {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 11px 24px;
+  padding: 3px 12px;
   border-radius: 9999px;
-  background: #24292f;
-  color: #ffffff;
-  text-decoration: none;
-  font-size: 0.92rem;
-  font-weight: 700;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
-  transition: all 0.25s ease;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 6px;
 }
 
-.btn-github-discussions:hover {
-  background: #0f172a;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
-  color: #ffffff;
+.daily-limit-badge strong {
+  color: #b45309;
+}
+
+.daily-limit-badge.limit-reached {
+  background: rgba(254, 226, 226, 0.85);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #991b1b;
+}
+
+.daily-limit-badge.limit-reached strong {
+  color: #b91c1c;
+}
+
+.btn-etch-ostrakon:disabled {
+  background: #cbd5e1;
+  border-color: #94a3b8;
+  color: #64748b;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
 /* 10. 하단 푸터 (Footer) */

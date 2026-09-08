@@ -456,8 +456,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const charCountSpan = document.getElementById("charCount");
   const btnRandomName = document.getElementById("btnRandomName");
   const btnResetDemo = document.getElementById("btnResetDemo");
+  const dailyLimitHint = document.getElementById("dailyLimitHint");
+  const btnEtchOstrakon = document.getElementById("btnEtchOstrakon");
 
   const OSTRAKON_STORAGE_KEY = "hellenic_ostrakon_guestbook";
+  const OSTRAKON_RATE_LIMIT_KEY = "hellenic_ostrakon_daily_limit";
+  const MAX_DAILY_POSTS = 3;         // 1인당 1일 최대 등록 가능 횟수
+  const POST_COOLDOWN_SECONDS = 30;   // 연속 도배 방지 쿨다운 시간(초)
 
   // 기본 탑재 고대 그리스 철학자 및 운영자 도편 목록
   const defaultOstraka = [
@@ -525,6 +530,51 @@ document.addEventListener("DOMContentLoaded", () => {
     // 2. LocalStorage에 도편 목록 저장하기
     function saveOstraka(list) {
       localStorage.setItem(OSTRAKON_STORAGE_KEY, JSON.stringify(list));
+    }
+
+    // 2-1. 오늘 날짜 문자열 반환 (YYYY-MM-DD 형식)
+    function getTodayDateString() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    }
+
+    // 2-2. 일일 등록 제한 데이터 로드
+    function loadRateLimitData() {
+      const todayStr = getTodayDateString();
+      const saved = localStorage.getItem(OSTRAKON_RATE_LIMIT_KEY);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed && parsed.date === todayStr) {
+            return parsed;
+          }
+        } catch (e) {
+          console.error("도편 등록 제한 데이터를 파싱하는 중 오류가 발생했습니다:", e);
+        }
+      }
+      return { date: todayStr, count: 0, lastTime: 0 };
+    }
+
+    // 2-3. 일일 등록 제한 데이터 저장
+    function saveRateLimitData(data) {
+      localStorage.setItem(OSTRAKON_RATE_LIMIT_KEY, JSON.stringify(data));
+    }
+
+    // 2-4. 일일 등록 가능 잔여 횟수 UI 갱신
+    function updateDailyLimitUI() {
+      if (!dailyLimitHint) return;
+      const data = loadRateLimitData();
+      const remaining = Math.max(0, MAX_DAILY_POSTS - data.count);
+
+      if (remaining > 0) {
+        dailyLimitHint.className = "daily-limit-badge";
+        dailyLimitHint.innerHTML = `🏺 오늘 새길 수 있는 도편: <strong>${remaining}회 남음</strong> (1일 최대 ${MAX_DAILY_POSTS}회)`;
+        if (btnEtchOstrakon) btnEtchOstrakon.disabled = false;
+      } else {
+        dailyLimitHint.className = "daily-limit-badge limit-reached";
+        dailyLimitHint.innerHTML = `🏺 오늘의 도편 수량(최대 ${MAX_DAILY_POSTS}회)을 <strong>모두 소진</strong>했습니다. 내일 다시 만나요!`;
+        if (btnEtchOstrakon) btnEtchOstrakon.disabled = true;
+      }
     }
 
     let ostrakaList = loadOstraka();
@@ -599,9 +649,27 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // 6. 도편 작성 폼 제출(Submit) 핸들러
+    // 6. 도편 작성 폼 제출(Submit) 핸들러 (1일 3회 등록 제한 & 30초 쿨다운 검사)
     ostrakonForm.addEventListener("submit", (e) => {
       e.preventDefault();
+
+      const rateData = loadRateLimitData();
+
+      // 6-1. 일일 한도 초과 검사
+      if (rateData.count >= MAX_DAILY_POSTS) {
+        alert(`🏺 [아고라 원로원 공고]\n하루에 새길 수 있는 도편의 수량(최대 ${MAX_DAILY_POSTS}회)을 모두 소진하셨습니다.\n다양한 시민들의 원활한 공론을 위해 내일 다시 새겨주세요!`);
+        updateDailyLimitUI();
+        return;
+      }
+
+      // 6-2. 도배 방지 쿨다운 시간(30초) 검사
+      const nowTime = Date.now();
+      const elapsedSec = Math.floor((nowTime - (rateData.lastTime || 0)) / 1000);
+      if (rateData.lastTime && elapsedSec < POST_COOLDOWN_SECONDS) {
+        const remainingSec = POST_COOLDOWN_SECONDS - elapsedSec;
+        alert(`⏳ [아고라 규율]\n점토판이 굳을 시간이 필요합니다. ${remainingSec}초 후에 다시 새겨주세요.`);
+        return;
+      }
 
       const author = ostrakonAuthorInput.value.trim();
       const message = ostrakonContentInput.value.trim();
@@ -630,6 +698,12 @@ document.addEventListener("DOMContentLoaded", () => {
       saveOstraka(ostrakaList);
       renderOstraka();
 
+      // 일일 등록 횟수 갱신
+      rateData.count += 1;
+      rateData.lastTime = nowTime;
+      saveRateLimitData(rateData);
+      updateDailyLimitUI();
+
       // 입력 폼 초기화
       ostrakonContentInput.value = "";
       if (charCountSpan) charCountSpan.textContent = "0";
@@ -641,16 +715,21 @@ document.addEventListener("DOMContentLoaded", () => {
     // 7. 초기 도편 복구 버튼
     if (btnResetDemo) {
       btnResetDemo.addEventListener("click", () => {
-        if (confirm("방명록을 초기 고대 그리스 철학자 도편 상태로 복구하시겠습니까? (직접 작성한 도편이 모두 초기화됩니다)")) {
+        if (confirm("방명록을 초기 고대 그리스 철학자 도편 상태로 복구하시겠습니까? (직접 작성한 도편 및 등록 제한 기록이 모두 초기화됩니다)")) {
           ostrakaList = [...defaultOstraka];
           saveOstraka(ostrakaList);
           renderOstraka();
+
+          // 일일 등록 제한 기록도 함께 리셋
+          localStorage.removeItem(OSTRAKON_RATE_LIMIT_KEY);
+          updateDailyLimitUI();
         }
       });
     }
 
     // 첫 실행 시 렌더링
     renderOstraka();
+    updateDailyLimitUI();
   }
 
 });

@@ -400,11 +400,14 @@
           </div>
 
           <div class="form-actions">
-            <button type="submit" class="btn-etch-ostrakon">
+            <button type="submit" class="btn-etch-ostrakon" id="btnEtchOstrakon">
               <span class="btn-etch-icon">🖋️</span>
               <span class="btn-etch-text">점토판에 새기기 (Etch Ostrakon)</span>
             </button>
-            <p class="form-hint">작성하신 도편은 브라우저(LocalStorage)에 안전하게 보존되며 언제든 다시 확인하실 수 있습니다.</p>
+            <p class="form-hint">
+              <span class="daily-limit-badge" id="dailyLimitHint">🏺 오늘 새길 수 있는 도편: <strong>3회 남음</strong> (1일 최대 3회)</span><br>
+              작성하신 도편은 브라우저(LocalStorage)에 안전하게 보존되며 언제든 다시 확인하실 수 있습니다.
+            </p>
           </div>
         </form>
 
@@ -418,40 +421,6 @@
 
         <div class="ostrakon-grid" id="ostrakonGrid">
           <!-- 자바스크립트로 도편 타일들이 렌더링됩니다 -->
-        </div>
-      </div>
-
-      <!-- 2. 깃허브 원로원 회합소 (Giscus 연동부) 카드 -->
-      <div class="card giscus-card">
-        <div class="giscus-header">
-          <div class="giscus-badge">💬 GITHUB DISCUSSIONS</div>
-          <h2 class="section-title">🏛️ 아고라 원로원 회합소 (공개 댓글)</h2>
-          <p class="section-subtitle">
-            GitHub 계정으로 로그인하여 전 세계 개발자 및 방문자들과 영구적인 공개 대화와 응원을 나눌 수 있는 공식 토론의 장입니다.
-          </p>
-        </div>
-
-        <div class="giscus-info-box">
-          <div class="giscus-info-icon">💡</div>
-          <div class="giscus-info-text">
-            <strong>Giscus(GitHub Discussions) 연동 안내:</strong><br>
-            GitHub 저장소(<code>jmfighter3-cpu/jmfighter3-cpu.github.io</code>)의 <strong>Settings &gt; Discussions</strong> 기능을 켜두시면, GitHub 계정을 가진 모든 방문자가 아래 공간에서 자유롭게 실시간 댓글과 이모지 리액션을 남길 수 있습니다.
-          </div>
-        </div>
-
-        <!-- Giscus 댓글 위젯 임베드 영역 -->
-        <div class="giscus-embed-area" id="giscusContainer">
-          <div class="giscus-placeholder">
-            <div class="giscus-placeholder-icon">🏺 💬 🏛️</div>
-            <p class="giscus-placeholder-title">GitHub 계정으로 공개 방명록 남기기</p>
-            <p class="giscus-placeholder-desc">
-              저장소의 GitHub Discussions와 연동된 실시간 댓글 시스템입니다.<br>
-              아래 공식 링크를 통해 저장소의 Discussions 토론장에 직접 방문하시거나 의견을 남기실 수 있습니다.
-            </p>
-            <a href="https://github.com/jmfighter3-cpu/jmfighter3-cpu.github.io/discussions" target="_blank" rel="noopener noreferrer" class="btn-github-discussions">
-              <span>🐙 GitHub Discussions 방문하기</span>
-            </a>
-          </div>
         </div>
       </div>
     </section>
