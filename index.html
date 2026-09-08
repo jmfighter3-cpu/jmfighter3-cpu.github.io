@@ -174,45 +174,37 @@
     </section>
 
     <!-- --------------------------------------------------------------------
-         [탭 3] 빈 페이지 (자유 공간)
+         [탭 3] 휴식 공간
          -------------------------------------------------------------------- -->
     <section id="blank" class="tab-pane">
-      <!-- 4-C. 아폴론과 뮤즈의 리라 선율 플레이어 (Apollo's Lyre & Breeze Player) -->
-      <div class="card ambience-card">
+      <!-- 호메로스 일리아스 제1권 고대 그리스어 복원 영창 플레이어 -->
+      <div class="card iliad-music-card">
         <div class="ambience-header">
-          <span class="ambience-badge">🎼 APOLLO & MUSES</span>
-          <h2 class="section-title" style="margin-top: 8px;">🎼 아폴론과 뮤즈의 리라(Lyre) & 에게해 산들바람</h2>
-          <p style="color: var(--text-muted); font-size: 0.95rem;">
-            오르페우스와 아폴론의 서정적인 고대 리라(Lyre) 하프 선율과 에게해의 온화한 산들바람이 브라우저에서 실시간으로 울려 퍼집니다.
+          <span class="ambience-badge">🏛️ HOMER'S ILIAD · BOOK 1</span>
+          <h2 class="section-title" style="margin-top: 8px;">🎼 호메로스 『일리아스』 제1권 고대 그리스어 복원 영창</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 16px;">
+            고대 그리스 고졸기(Archaic Greek)의 고저 악센트와 단장격 6보격(Dactylic Hexameter) 운율을 복원하여, 
+            고대 하프 포르밍크스(리라) 반주와 함께 영창한 『일리아스』 제1권 1~21행의 역사적 재현 음원입니다.
           </p>
         </div>
 
-        <div class="ambience-player-box">
-          <!-- 음파 시각화 애니메이션 바 -->
-          <div class="sound-visualizer" id="soundVisualizer" aria-hidden="true">
-            <span class="v-bar"></span>
-            <span class="v-bar"></span>
-            <span class="v-bar"></span>
-            <span class="v-bar"></span>
-            <span class="v-bar"></span>
-            <span class="v-bar"></span>
-            <span class="v-bar"></span>
-          </div>
+        <!-- 유튜브 반응형 임베드 프레임 -->
+        <div class="video-responsive-frame">
+          <iframe 
+            src="https://www.youtube-nocookie.com/embed/KX4yuMN6pPI?rel=0" 
+            title="The Iliad Book 1 Lines 1-21 sung | Restored Archaic Greek" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            referrerpolicy="strict-origin-when-cross-origin" 
+            allowfullscreen>
+          </iframe>
+        </div>
 
-          <!-- 컨트롤 버튼 및 볼륨 슬라이더 -->
-          <div class="ambience-controls">
-            <button type="button" class="btn btn-primary btn-sound" id="btnSoundToggle">
-              <span id="soundIcon">▶️</span>
-              <span id="soundBtnText">고대 리라 선율 재생하기</span>
-            </button>
-            <div class="volume-box">
-              <label for="volumeSlider">🔊 볼륨</label>
-              <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.5">
-            </div>
-          </div>
-          <p class="sound-status-hint" id="soundHint">
-            Web Audio API를 통해 브라우저에서 직접 합성되는 서정적인 리라 하프 선율과 잔잔한 지중해 바람입니다.
-          </p>
+        <!-- 일리아스 첫 구절 원문 및 번역 인용문 -->
+        <div class="iliad-verse-quote">
+          <p class="greek-original">Μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος οὐλομένην...</p>
+          <p class="korean-translation">"노래하소서, 여신이여! 펠레우스의 아들 아킬레우스의 파멸적인 분노를..."</p>
+          <span class="verse-credit">출처: @perquunos · The Iliad Book 1 Lines 1-21 sung in Restored Archaic Greek</span>
         </div>
       </div>
 

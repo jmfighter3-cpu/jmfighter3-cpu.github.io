@@ -659,98 +659,67 @@ h2.section-title {
   border: 1px solid rgba(217, 119, 6, 0.4);
 }
 
-.ambience-player-box {
-  background-color: rgba(255, 252, 245, 0.45);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border-radius: 14px;
-  padding: 24px;
-  border: 1px solid rgba(245, 158, 11, 0.45);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
+/* ==========================================================================
+   [호메로스 일리아스 유튜브 음악 플레이어 카드]
+   ========================================================================== */
+.iliad-music-card {
+  padding: 32px;
+  border: 1.5px solid rgba(217, 119, 6, 0.55);
+  box-shadow: 0 16px 36px -6px rgba(12, 18, 34, 0.15);
+  background: linear-gradient(135deg, rgba(255, 252, 245, 0.65), rgba(254, 243, 199, 0.45));
 }
 
-/* 음파 시각화 막대 */
-.sound-visualizer {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 6px;
-  height: 38px;
+.video-responsive-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid rgba(245, 158, 11, 0.7);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+  background-color: #000000;
+  margin: 16px 0 20px;
 }
 
-.sound-visualizer .v-bar {
-  width: 5px;
-  height: 8px;
-  background-color: rgba(217, 119, 6, 0.3);
-  border-radius: 4px;
-  transition: all 0.3s ease;
+.video-responsive-frame iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
-/* 재생 중일 때 부드럽게 춤추는 애니메이션 (황금빛 리라 음파) */
-.sound-visualizer.playing .v-bar {
-  background: linear-gradient(to top, #d97706, #f59e0b);
-  animation: barBounce 1.1s infinite ease-in-out;
-}
-.sound-visualizer.playing .v-bar:nth-child(1) { animation-delay: 0.1s; height: 16px; }
-.sound-visualizer.playing .v-bar:nth-child(2) { animation-delay: 0.3s; height: 28px; }
-.sound-visualizer.playing .v-bar:nth-child(3) { animation-delay: 0.15s; height: 36px; }
-.sound-visualizer.playing .v-bar:nth-child(4) { animation-delay: 0.45s; height: 22px; }
-.sound-visualizer.playing .v-bar:nth-child(5) { animation-delay: 0.25s; height: 32px; }
-.sound-visualizer.playing .v-bar:nth-child(6) { animation-delay: 0.35s; height: 24px; }
-.sound-visualizer.playing .v-bar:nth-child(7) { animation-delay: 0.2s; height: 14px; }
-
-@keyframes barBounce {
-  0%, 100% { transform: scaleY(0.35); }
-  50% { transform: scaleY(1); }
+.iliad-verse-quote {
+  background-color: rgba(254, 243, 199, 0.55);
+  border-left: 4px solid #d97706;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-top: 12px;
 }
 
-.ambience-controls {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  flex-wrap: wrap;
-  justify-content: center;
+.iliad-verse-quote .greek-original {
+  font-family: 'Cinzel', serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #78350f;
+  margin-bottom: 6px;
+  letter-spacing: 0.02em;
 }
 
-.btn-sound {
-  padding: 11px 22px;
+.iliad-verse-quote .korean-translation {
   font-size: 0.95rem;
-  border-radius: 9999px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.btn-sound:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(59, 130, 246, 0.4);
-}
-
-.volume-box {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.9rem;
-  color: var(--text-muted);
   font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 8px;
+  font-family: "Pretendard Variable", sans-serif;
 }
 
-.volume-box input[type="range"] {
-  cursor: pointer;
-  accent-color: var(--primary-color);
-  width: 110px;
-}
-
-.sound-status-hint {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  text-align: center;
+.iliad-verse-quote .verse-credit {
+  display: block;
+  font-size: 0.78rem;
+  color: #92400e;
+  opacity: 0.85;
 }
 
 .blank-canvas {
