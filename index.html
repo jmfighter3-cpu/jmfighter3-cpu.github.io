@@ -15,11 +15,19 @@
 <body>
 
   <!-- ======================================================================
-       목가적인 풍경 100% 고정 배경 (Stable & Comfortable HD Background)
-       지각변동이나 어지러움 없이, 맑고 선명한 토스카나 푸른 언덕을 편안하게 감상할 수 있습니다.
+       실제 카메라로 촬영된 고화질 자연 풍경 루프 비디오 배경 (Real Nature Loop Video)
+       코드로 비틀지 않고 실제 바람에 풀잎과 나무가 자연스럽게 살랑살랑 물결칩니다.
+       - autoplay: 자동 재생
+       - loop: 무한 반복 재생
+       - muted: 브라우저 자동 재생 정책을 통과하기 위한 필수 음소거
+       - playsinline: 모바일(iOS 등)에서 전체화면 튕김 없이 배경으로 재생
+       - poster: 비디오 로딩 전이나 미지원 환경을 위한 고화질 대체 사진
        ====================================================================== -->
   <div class="scenic-background" aria-hidden="true">
-    <div class="scenic-static-layer"></div>
+    <video class="bg-nature-video" autoplay loop muted playsinline poster="assets/pastoral_crete_dorcia.jpg">
+      <source src="assets/nature_wind_grass.webm" type="video/webm">
+    </video>
+    <div class="bg-video-tint"></div>
   </div>
 
   <!-- ======================================================================

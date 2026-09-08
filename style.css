@@ -39,9 +39,9 @@ body {
 }
 
 /* ==========================================================================
-   [목가적인 풍경 100% 고정 배경 - Stable & Relaxing Background]
-   지각변동이나 어지러움을 유발하는 인위적 흔들림을 완전히 배제하고,
-   토스카나의 평화로운 푸른 언덕과 하늘을 100% 선명하고 편안하게 고정합니다.
+   [실제 카메라 촬영 자연 풍경 루프 비디오 배경 스타일]
+   1. 전체 화면에 여백 없이 꽉 차도록 object-fit: cover 및 중앙 정렬 적용
+   2. 코드로 비틀지 않고, 실제 바람에 풀잎과 나무가 살랑살랑 흔들리는 리얼한 자연 연출
    ========================================================================== */
 .scenic-background {
   position: fixed;
@@ -52,16 +52,31 @@ body {
   z-index: -1;
   pointer-events: none;
   overflow: hidden;
+  background-color: #f1f5f9;
 }
 
-.scenic-static-layer {
+/* 1. 배경 비디오 - 모니터/모바일 어떤 비율에서도 화면을 꽉 채우도록 설정 */
+.bg-nature-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  filter: contrast(1.05) saturate(1.15) brightness(1.02);
+}
+
+/* 2. 글자 가독성을 부드럽게 받쳐주는 은은한 투명 틴트 레이어 */
+.bg-video-tint {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('assets/pastoral_crete_dorcia.jpg') center top / cover no-repeat;
-  filter: contrast(1.06) saturate(1.18) brightness(1.02);
+  background: rgba(248, 250, 252, 0.1);
 }
 
 /* 3. 상단 내비게이션 바 (Header & Nav) - 글래스모피즘 적용 */
