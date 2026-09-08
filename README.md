@@ -1,18 +1,72 @@
-# jmfighter3-cpu.github.io
+# 🏛️ 고대 그리스 테마 포트폴리오 & 아고라 실시간 방명록
 
-`jmfighter3-cpu`님의 GitHub Pages 포트폴리오 웹사이트 저장소입니다.  
-외부 프레임워크나 라이브러리 없이 **순수 HTML5, CSS3, Vanilla JavaScript**만을 활용하여 구축되었습니다.
+고대 그리스 올림포스 및 호메로스 서사시 미학과 현대적인 **글래스모피즘(Glassmorphism)** 인터랙션을 결합한 개인 공식 웹 포트폴리오이자, **Google Firebase Firestore** 기반의 전 세계 실시간 도편(Ostrakon) 방명록 웹 애플리케이션입니다.
 
-## 🌐 사이트 주소
-- **URL**: [https://jmfighter3-cpu.github.io](https://jmfighter3-cpu.github.io)
+외부 프론트엔드 프레임워크(React, Vue 등) 없이 **순수 HTML5, CSS3, Vanilla JavaScript**만을 활용하여 가볍고 견고하게 구축되었습니다.
 
-## 📁 주요 구성 파일
-- [`index.html`](index.html): 상단 3개 탭 및 콘텐츠가 포함된 메인 마크업 문서
-- [`style.css`](style.css): 모던 반응형 카드 그리드 및 탭 전환 디자인 스타일시트
-- [`script.js`](script.js): 상단 탭 전환 인터랙션을 담당하는 순수 자바스크립트
-- [`.gitignore`](.gitignore): Git 추적 제외 설정 파일
+---
 
-## 📑 상단 탭 구성
-1. **👤 자기소개**: 프로필, 관심 분야, 보유 기술 스택, 연락처 안내
-2. **🚀 프로젝트**: 주요 개발 및 학습 프로젝트 카드 그리드
-3. **📝 자유 공간**: 실험 및 새 아이디어를 위한 빈 캔버스 영역
+## 🌐 라이브 웹사이트
+* **공식 배포 URL**: [https://jmfighter3-cpu.github.io/](https://jmfighter3-cpu.github.io/)
+
+---
+
+## ✨ 주요 탭 구성 및 핵심 기능
+
+### 1. 👤 자기소개 (About Me)
+- **고대 비석(Stele) 양식 프로필**: 앤틱 골드 이중 테두리와 파피루스 질감이 어우러진 비문 형태의 프로필 카드.
+- **배경 명화 아트워크**: 존 윌리엄 워터하우스의 명작 *《율리시스와 세이렌 (Ulysses and the Sirens, 1891)》* 고화질 배경과 화사한 에게해 지중해 틴트 오버레이.
+- **인적 사항 & 기술 스택**: 개발자로서의 비전, 주력 언어 및 도구 뱃지 쇼케이스.
+
+### 2. 🚀 프로젝트 (Projects)
+- **프로젝트 쇼케이스 카드**: 진행한 주요 프로젝트들을 반응형 카드 그리드로 일목요연하게 배치.
+- **기술 태그 및 링크**: 사용된 기술 스택 뱃지 및 GitHub 저장소 바로가기 버튼 제공.
+
+### 3. 🌿 휴식 공간 (Rest & Reflection)
+- **🔮 델포이 아폴론 신전 신탁 시뮬레이터**:
+  - 버튼 클릭 시 신전 향로가 진동하며, 소크라테스·플라톤·헤라클레이토스 등 고대 그리스 현인들의 14가지 철학 명언과 개발자 맞춤형 해설이 무작위로 현현.
+- **🎬 호메로스 《일리아스》 고대 음성 복원 헌정 영상**:
+  - 기원전 고졸기 그리스어(Archaic Greek) 고저 악센트와 단장격 6보격을 재현한 학술 복원 콘텐츠(@perquunos 님)에 바치는 경의와 순수 비영리 감상 안내(Disclaimer).
+
+### 4. 📜 아고라 도편(Ostrakon) 방명록 (Agora Guestbook)
+- **고대 아테네 도편 추방제 및 점토판 양식**: 방문자가 자신만의 고대 그리스식 별칭과 함께 점토판에 방명록을 새기는 인터랙티브 공간.
+- **Google Cloud Firebase Firestore 실시간 연동**:
+  - 전 세계 방문자가 남긴 도편이 `onSnapshot` 리스너를 통해 새로고침 없이 0.1초 만에 실시간 스트리밍.
+  - 클라우드 미연동 시 안전한 브라우저 `localStorage` 모드로 자동 폴백(Fallback).
+- **고대 그리스 별칭 랜덤 생성기**: '아테네의 현자', '스파르타의 방패' 등 16가지 고대 그리스식 칭호 원클릭 생성.
+- **도배 방지 시스템(Rate Limiting)**:
+  - 1인당 1일 최대 3회 등록 제한 및 30초 쿨다운 타이머 탑재.
+- **영구 보존 및 훼손 방지 보안 규칙(`firestore.rules`)**:
+  - 읽기 및 유효성 검증된 새 도편 작성만 허용하며, 웹 상에서의 임의 수정/삭제를 전면 차단하여 영구 보존. (관리자는 Firebase 콘솔에서 직접 관리 가능)
+
+---
+
+## 🛠️ 기술 스택 (Tech Stack)
+
+| 계층 | 사용 기술 | 설명 |
+| :--- | :--- | :--- |
+| **Markup** | **HTML5** | 시맨틱 태그 기반 레이아웃, 웹 접근성, Open Graph 메타데이터 |
+| **Styling** | **CSS3** | CSS 커스텀 변수, 글래스모피즘 블러, 반응형 Flexbox/Grid, 메안드로스 문양 |
+| **Logic** | **Vanilla JavaScript (ES6+)** | 무프레임워크 SPA 탭 라우팅, 난수 신탁 추첨, 실시간 이벤트 처리 |
+| **Database** | **Google Firebase Firestore (v10)** | 클라우드 NoSQL 실시간 DB 스트리밍 연동 및 보안 규칙 설정 |
+| **Hosting** | **GitHub Pages** | Git 기반 무중단 정적 웹 호스팅 |
+| **Typography** | **Pretendard & Cinzel** | 현대적 한글 가독성(Pretendard)과 고전 그리스 비문 세리프(Cinzel)의 조화 |
+
+---
+
+## 📁 디렉토리 및 주요 파일 구조
+
+```text
+jmfighter3-cpu.github.io/
+├── index.html         # 전체 4개 탭 마크업 및 Firebase SDK 연결 메인 문서
+├── style.css          # 고대 그리스 신전 팔레트, 글래스모피즘, 반응형 스타일시트
+├── script.js          # 탭 전환, 델포이 신탁, 아고라 방명록 Firestore 연동 로직
+├── firestore.rules    # Google Cloud Firestore 보안 규칙 정의 파일
+└── README.md          # 프로젝트 공식 소개 및 기술 명세서
+```
+
+---
+
+## 📜 라이선스 및 저작권
+- 본 프로젝트의 웹 소스 코드는 MIT 라이선스를 따릅니다.
+- 휴식 공간에 인용된 고대 그리스어 낭송 영상은 연구자 **@perquunos** 님의 학술 복원 저작물이며, 순수한 학술 존경 및 비영리 문화 감상 목적으로만 임베드되었습니다.
