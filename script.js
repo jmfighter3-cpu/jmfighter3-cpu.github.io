@@ -34,5 +34,182 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
+
+  // ==========================================================================
+  // 3. 한 줄 소개 타이핑 애니메이션 (Typing Effect)
+  // 타자기를 치듯이 글자가 한 글자씩 써지고 지워지며 다음 문구로 넘어갑니다.
+  // ==========================================================================
+  const typingElement = document.getElementById("typing-text");
+
+  if (typingElement) {
+    // 번갈아 가며 출력할 소개 문구 목록
+    const phrases = [
+      "아이고 힘들다... 하지만 오늘도 성장 중! 🌱",
+      "6개월 버티기가 목표인 끈기 있는 개발자 💻",
+      "파이썬과 웹 개발을 사랑하는 jmfighter3-cpu 🚀",
+      "하나씩 배우고 직접 만들어가는 즐거움 ✨"
+    ];
+
+    let phraseIndex = 0;   // 현재 출력 중인 문장 번호
+    let charIndex = 0;     // 현재 출력 중인 글자 위치
+    let isDeleting = false; // 글자를 지우는 중인지 여부
+    const typeSpeed = 100; // 글자 타이핑 속도 (밀리초)
+    const deleteSpeed = 50; // 글자 지우는 속도 (밀리초)
+    const pauseTime = 1800; // 문장이 완성된 후 머무는 시간 (밀리초)
+
+    function typeLoop() {
+      const currentPhrase = phrases[phraseIndex];
+
+      if (isDeleting) {
+        // 글자를 하나씩 지워나갑니다.
+        typingElement.textContent = currentPhrase.substring(0, charIndex - 1);
+        charIndex--;
+      } else {
+        // 글자를 하나씩 써내려갑니다.
+        typingElement.textContent = currentPhrase.substring(0, charIndex + 1);
+        charIndex++;
+      }
+
+      // 글자 타이핑 속도 조절
+      let delay = isDeleting ? deleteSpeed : typeSpeed;
+
+      // 문장이 전부 완성되었을 때
+      if (!isDeleting && charIndex === currentPhrase.length) {
+        delay = pauseTime; // 잠시 멈추고 방문자가 읽을 수 있게 대기
+        isDeleting = true; // 다음 단계로 지우기 시작
+      } 
+      // 문장이 전부 지워졌을 때
+      else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        phraseIndex = (phraseIndex + 1) % phrases.length; // 다음 문장으로 순환
+        delay = 400; // 다음 문장 시작 전 잠깐 대기
+      }
+
+      setTimeout(typeLoop, delay);
+    }
+
+    // 타이핑 애니메이션 시작
+    typeLoop();
+  }
+
+  // ==========================================================================
+  // 4-C. 목가적인 자연의 소리 플레이어 (Web Audio API Pastoral Ambience)
+  // 외부 오디오 파일 다운로드 없이, 브라우저 내장 Web Audio API로 산들바람 ASMR을 실시간 합성합니다.
+  // ==========================================================================
+  const btnSoundToggle = document.getElementById("btnSoundToggle");
+  const soundIcon = document.getElementById("soundIcon");
+  const soundBtnText = document.getElementById("soundBtnText");
+  const soundHint = document.getElementById("soundHint");
+  const volumeSlider = document.getElementById("volumeSlider");
+  const soundVisualizer = document.getElementById("soundVisualizer");
+
+  let audioCtx = null;
+  let noiseNode = null;
+  let gainNode = null;
+  let filterNode = null;
+  let isPlaying = false;
+
+  // 바람 소리를 생성하는 핑크 노이즈(Pink Noise) 오디오 버퍼 생성 함수
+  function createWindBuffer(ctx) {
+    const bufferSize = ctx.sampleRate * 3; // 3초 분량의 루프 버퍼
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+
+    // 자연의 바람소리와 가장 유사한 핑크 노이즈 알고리즘 (Paul Kellet 필터)
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      b0 = 0.99886 * b0 + white * 0.0555179;
+      b1 = 0.99332 * b1 + white * 0.0750759;
+      b2 = 0.96900 * b2 + white * 0.1538520;
+      b3 = 0.86650 * b3 + white * 0.3104856;
+      b4 = 0.55000 * b4 + white * 0.5329522;
+      b5 = -0.7616 * b5 - white * 0.0168980;
+      data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
+      b6 = white * 0.115926;
+    }
+    return buffer;
+  }
+
+  function startAmbience() {
+    // 사용자가 첫 클릭을 했을 때 오디오 컨텍스트를 생성합니다 (브라우저 자동 재생 정책 준수)
+    if (!audioCtx) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AudioContext();
+    }
+
+    if (audioCtx.state === "suspended") {
+      audioCtx.resume();
+    }
+
+    // 1. 노이즈 소스 노드 생성 및 무한 반복 설정
+    noiseNode = audioCtx.createBufferSource();
+    noiseNode.buffer = createWindBuffer(audioCtx);
+    noiseNode.loop = true;
+
+    // 2. 부드러운 산들바람 느낌을 주는 저음역 로우패스 필터(Low-pass Filter) 연결
+    filterNode = audioCtx.createBiquadFilter();
+    filterNode.type = "lowpass";
+    filterNode.frequency.setValueAtTime(420, audioCtx.currentTime); // 따뜻하고 부드러운 바람 주파수
+
+    // 3. 볼륨 조절 노드 연결
+    gainNode = audioCtx.createGain();
+    const currentVol = volumeSlider ? parseFloat(volumeSlider.value) : 0.5;
+    gainNode.gain.setValueAtTime(currentVol * 0.8, audioCtx.currentTime);
+
+    // 노드들을 체인 형태로 연결: 소스 -> 필터 -> 볼륨 -> 스피커 출력
+    noiseNode.connect(filterNode);
+    filterNode.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    noiseNode.start();
+    isPlaying = true;
+
+    // UI 상태 업데이트
+    if (soundIcon) soundIcon.textContent = "⏸️";
+    if (soundBtnText) soundBtnText.textContent = "산들바람 소리 멈추기";
+    if (soundVisualizer) soundVisualizer.classList.add("playing");
+    if (soundHint) soundHint.textContent = "🌿 잔잔한 시골 산들바람 소리가 재생 중입니다. 편안하게 감상해 보세요.";
+  }
+
+  function stopAmbience() {
+    if (noiseNode) {
+      try {
+        noiseNode.stop();
+        noiseNode.disconnect();
+      } catch (e) {
+        // 이미 중지된 경우 예외 방지
+      }
+      noiseNode = null;
+    }
+    isPlaying = false;
+
+    // UI 상태 복원
+    if (soundIcon) soundIcon.textContent = "▶️";
+    if (soundBtnText) soundBtnText.textContent = "산들바람 소리 재생하기";
+    if (soundVisualizer) soundVisualizer.classList.remove("playing");
+    if (soundHint) soundHint.textContent = "버튼을 누르면 산들바람과 잔잔한 앰비언스 사운드가 흘러나옵니다.";
+  }
+
+  // 재생/정지 버튼 클릭 이벤트 연결
+  if (btnSoundToggle) {
+    btnSoundToggle.addEventListener("click", () => {
+      if (isPlaying) {
+        stopAmbience();
+      } else {
+        startAmbience();
+      }
+    });
+  }
+
+  // 볼륨 슬라이더 조절 이벤트 연결
+  if (volumeSlider) {
+    volumeSlider.addEventListener("input", (e) => {
+      if (gainNode && audioCtx) {
+        const val = parseFloat(e.target.value);
+        gainNode.gain.setValueAtTime(val * 0.8, audioCtx.currentTime);
+      }
+    });
+  }
 });
 

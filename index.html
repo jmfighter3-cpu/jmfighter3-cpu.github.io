@@ -8,6 +8,9 @@
 
   <!-- 2. 외부 스타일시트(CSS) 파일 연결 -->
   <link rel="stylesheet" href="style.css">
+
+  <!-- 2-1. 트렌디하고 가독성 높은 한글 웹폰트 Pretendard 연결 -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 </head>
 <body>
 
@@ -59,10 +62,19 @@
         <div class="profile-box">
           <div class="profile-avatar">JM</div>
           <div class="profile-info">
-            <h1>jmfighter3-cpu</h1>
+            <div class="profile-header-row">
+              <h1>jmfighter3-cpu</h1>
+              <!-- 5. 프로필 상태 실시간 펄스 뱃지 -->
+              <span class="status-pulse-badge">
+                <span class="pulse-dot"></span>
+                Currently Coding
+              </span>
+            </div>
             <div class="role">🌱 배우는 중</div>
-            <p>
-              아이고 힘들다.<br>
+            <!-- 2. 한 줄 소개 인터랙티브 타이핑 애니메이션 영역 (JS 미작동 시 원본 문구 보존) -->
+            <p class="typing-box">
+              <span id="typing-text">아이고 힘들다.</span>
+              <span class="typing-cursor" aria-hidden="true">|</span>
             </p>
           </div>
         </div>
@@ -84,6 +96,23 @@
         <h2 class="section-title">🛠️ 기술 스택 (Skills)</h2>
         <div class="skills-list">
           <span class="skill-tag">🐍 Python</span>
+        </div>
+      </div>
+
+      <!-- 3. GitHub 실시간 활동 및 잔디 통계 카드 -->
+      <div class="card github-card">
+        <h2 class="section-title">📊 GitHub 활동 및 통계</h2>
+        <p style="margin-bottom: 16px; color: var(--text-muted); font-size: 0.95rem;">
+          GitHub 원격 저장소와 연동되어 실시간으로 집계되는 나의 개발 활동 현황입니다.
+        </p>
+        <!-- 실시간 통계 뱃지 및 언어 비율 -->
+        <div class="github-stats-grid">
+          <img src="https://github-readme-stats.vercel.app/api?username=jmfighter3-cpu&show_icons=true&theme=vue&locale=kr&hide_border=true&bg_color=ffffff80" alt="jmfighter3-cpu의 GitHub 통계" class="github-stat-badge" loading="lazy">
+          <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=jmfighter3-cpu&layout=compact&theme=vue&locale=kr&hide_border=true&bg_color=ffffff80" alt="jmfighter3-cpu의 사용 언어" class="github-stat-badge" loading="lazy">
+        </div>
+        <!-- 실시간 GitHub 잔디(Contributions) 차트 -->
+        <div class="github-grass-box">
+          <img src="https://ghchart.rshah.org/3b82f6/jmfighter3-cpu" alt="jmfighter3-cpu의 GitHub 잔디 차트" class="github-grass-img" loading="lazy">
         </div>
       </div>
 
@@ -187,6 +216,46 @@
          [탭 3] 빈 페이지 (자유 공간)
          -------------------------------------------------------------------- -->
     <section id="blank" class="tab-pane">
+      <!-- 4-C. 목가적인 자연의 소리 플레이어 (Pastoral Ambience Player) -->
+      <div class="card ambience-card">
+        <div class="ambience-header">
+          <span class="ambience-badge">🍃 RELAX & FOCUS</span>
+          <h2 class="section-title" style="margin-top: 8px;">목가적인 자연의 소리 (Pastoral Ambience)</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">
+            토스카나의 푸른 언덕을 바라보며 편안하게 코딩에 몰입할 수 있는 산들바람과 자연의 백색 소음(ASMR)입니다.
+          </p>
+        </div>
+
+        <div class="ambience-player-box">
+          <!-- 음파 시각화 애니메이션 바 -->
+          <div class="sound-visualizer" id="soundVisualizer" aria-hidden="true">
+            <span class="v-bar"></span>
+            <span class="v-bar"></span>
+            <span class="v-bar"></span>
+            <span class="v-bar"></span>
+            <span class="v-bar"></span>
+            <span class="v-bar"></span>
+            <span class="v-bar"></span>
+          </div>
+
+          <!-- 컨트롤 버튼 및 볼륨 슬라이더 -->
+          <div class="ambience-controls">
+            <button type="button" class="btn btn-primary btn-sound" id="btnSoundToggle">
+              <span id="soundIcon">▶️</span>
+              <span id="soundBtnText">산들바람 소리 재생하기</span>
+            </button>
+            <div class="volume-box">
+              <label for="volumeSlider">🔊 볼륨</label>
+              <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.5">
+            </div>
+          </div>
+          <p class="sound-status-hint" id="soundHint">
+            Web Audio API를 통해 브라우저에서 직접 생성되는 깨끗하고 잔잔한 자연 바람 소리입니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- 기존 실험 캔버스 카드 (보존) -->
       <div class="card">
         <h2 class="section-title">📝 빈 페이지 (자유 공간)</h2>
         <div class="blank-canvas">
