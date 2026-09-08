@@ -5,17 +5,17 @@
 
 /* 1. 기본 색상 변수 설정: 일관된 색상 테마를 쉽게 관리합니다 */
 :root {
-  --primary-color: #3b82f6;       /* 주 색상 (파란색) */
-  --primary-hover: #2563eb;       /* 마우스 올렸을 때 색상 */
-  --bg-color: #f8fafc;            /* 전체 배경색 (연한 회색) */
-  --card-bg: rgba(255, 255, 255, 0.82); /* 1. 글래스모피즘 반투명 카드 배경 */
-  --card-border: rgba(255, 255, 255, 0.7); /* 글래스모피즘 은은한 외곽선 */
-  --text-main: #1e293b;           /* 기본 글자색 (짙은 남회색) */
-  --text-muted: #64748b;          /* 보조 글자색 (중간 회색) */
-  --border-color: #e2e8f0;        /* 테두리선 색상 */
+  --primary-color: #2563eb;       /* 주 색상 (선명한 로열 블루) */
+  --primary-hover: #1d4ed8;       /* 마우스 올렸을 때 색상 */
+  --bg-color: #0f172a;            /* 전체 배경색 */
+  --card-bg: rgba(255, 255, 255, 0.42); /* 배경 명화가 은은하고 아름답게 비치는 반투명 글래스모피즘 */
+  --card-border: rgba(255, 255, 255, 0.65); /* 은은한 빛 반사 유리 외곽선 */
+  --text-main: #0f172a;           /* 기본 글자색 (가독성 높은 짙은 슬레이트) */
+  --text-muted: #334155;          /* 보조 글자색 (선명한 중간 먹색) */
+  --border-color: rgba(226, 232, 240, 0.7); /* 테두리선 색상 */
   --radius: 16px;                 /* 모서리 둥글기 */
-  --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
-  --glass-blur: blur(12px);       /* 블러 필터 */
+  --shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.18), 0 6px 12px -3px rgba(0, 0, 0, 0.08);
+  --glass-blur: blur(16px);       /* 배경 그림을 우아하게 투영하는 프로스트 블러 필터 */
 }
 
 /* 2. 전체 공통 스타일 리셋 */
@@ -28,7 +28,7 @@
 body {
   /* 5. 트렌디한 한글 웹폰트 Pretendard 우선 적용 */
   font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: #f1f5f9;
+  background-color: #0f172a;
   color: var(--text-main);
   line-height: 1.6;
   min-height: 100vh;
@@ -40,8 +40,8 @@ body {
 
 /* ==========================================================================
    [호메로스 오디세이아 명화 배경 스타일]
-   - 작품: Ulysses deriding Polyphemus - Homer's Odyssey (1829) by J.M.W. Turner
-   - 모니터 해상도에 맞춰 웅장하게 전체 화면을 채우며, 텍스트 가독성을 위한 은은한 비네트 틴트 적용
+   - 작품: Ulysses and the Sirens (1891) by John William Waterhouse
+   - 화면비 2.04:1의 초광폭 파노라마를 전체 화면에 여백 없이 배치하고 텍스트 가독성을 위한 비네트 적용
    ========================================================================== */
 .scenic-background {
   position: fixed;
@@ -65,29 +65,29 @@ body {
   transform: translate(-50%, -50%);
   object-fit: cover;
   object-position: center center;
-  filter: contrast(1.03) brightness(0.95);
+  filter: contrast(1.04) brightness(0.95);
 }
 
-/* 2. 글자 가독성과 유리 카드(Glassmorphism)의 입체감을 살려주는 은은한 비네트 틴트 레이어 */
+/* 2. 글자 가독성과 반투명 유리 카드의 입체감을 살려주는 은은한 비네트 틴트 레이어 */
 .bg-painting-tint {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.18) 0%, rgba(15, 23, 42, 0.48) 100%);
+  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.12) 0%, rgba(15, 23, 42, 0.38) 100%);
 }
 
-/* 3. 상단 내비게이션 바 (Header & Nav) - 글래스모피즘 적용 */
+/* 3. 상단 내비게이션 바 (Header & Nav) - 반투명 글래스모피즘 적용 */
 .site-header {
-  background-color: rgba(255, 255, 255, 0.86);
+  background-color: rgba(255, 255, 255, 0.48);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.55);
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
 }
 
 .header-inner {
@@ -351,7 +351,9 @@ h2.section-title {
 
 .project-card {
   background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--card-border);
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--shadow);
@@ -362,12 +364,12 @@ h2.section-title {
 
 .project-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 16px 32px -4px rgba(0, 0, 0, 0.2);
 }
 
 .project-thumbnail {
   height: 140px;
-  background: linear-gradient(135deg, #e0e7ff, #f3e8ff);
+  background: linear-gradient(135deg, rgba(224, 231, 255, 0.55), rgba(243, 232, 255, 0.45));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -447,8 +449,8 @@ h2.section-title {
 /* 9. [탭 3] 빈 페이지 (자유 공간) */
 /* 4-C. 목가적인 자연의 소리 플레이어 (Pastoral Ambience) 스타일 */
 .ambience-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(240, 253, 244, 0.88));
-  border: 1px solid rgba(187, 247, 208, 0.85);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.48), rgba(240, 253, 244, 0.38));
+  border: 1px solid rgba(187, 247, 208, 0.7);
 }
 
 .ambience-header {
@@ -457,7 +459,7 @@ h2.section-title {
 
 .ambience-badge {
   display: inline-block;
-  background-color: #dcfce7;
+  background-color: rgba(220, 252, 231, 0.85);
   color: #15803d;
   font-size: 0.72rem;
   font-weight: 800;
@@ -468,10 +470,12 @@ h2.section-title {
 }
 
 .ambience-player-box {
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: rgba(255, 255, 255, 0.42);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-radius: 14px;
   padding: 24px;
-  border: 1px solid rgba(226, 232, 240, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -562,9 +566,11 @@ h2.section-title {
 .blank-canvas {
   text-align: center;
   padding: 60px 20px;
-  border: 2px dashed #cbd5e1;
+  border: 2px dashed rgba(203, 213, 225, 0.7);
   border-radius: var(--radius);
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.35);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
 }
 
 .blank-icon {
@@ -590,8 +596,10 @@ h2.section-title {
   padding: 24px;
   color: var(--text-muted);
   font-size: 0.85rem;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--card-border);
   background-color: var(--card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   margin-top: auto;
 }
 
