@@ -455,7 +455,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const ostrakonCountSpan = document.getElementById("ostrakonCount");
   const charCountSpan = document.getElementById("charCount");
   const btnRandomName = document.getElementById("btnRandomName");
-  const btnResetDemo = document.getElementById("btnResetDemo");
   const dailyLimitHint = document.getElementById("dailyLimitHint");
   const btnEtchOstrakon = document.getElementById("btnEtchOstrakon");
   const liveStatusBadge = document.getElementById("liveStatusBadge");
@@ -823,21 +822,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ostrakonContentInput.value = "";
       if (charCountSpan) charCountSpan.textContent = "0";
     });
-
-    // 7. 초기 도편 복구 버튼
-    if (btnResetDemo) {
-      btnResetDemo.addEventListener("click", () => {
-        if (confirm("방명록을 초기 고대 그리스 철학자 도편 상태로 복구하시겠습니까? (직접 작성한 도편 및 등록 제한 기록이 모두 초기화됩니다)")) {
-          ostrakaList = [...defaultOstraka];
-          saveOstraka(ostrakaList);
-          renderOstraka();
-
-          // 일일 등록 제한 기록도 함께 리셋
-          localStorage.removeItem(OSTRAKON_RATE_LIMIT_KEY);
-          updateDailyLimitUI();
-        }
-      });
-    }
 
     // 첫 실행 시 렌더링 및 상태 초기화
     initOstrakaSync();
