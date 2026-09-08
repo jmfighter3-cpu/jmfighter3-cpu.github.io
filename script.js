@@ -257,6 +257,193 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // ==========================================================================
+  // 5. 고대 그리스어와 소프트웨어 렉시콘 (Hellenic Lexicon)
+  // 고전 철학 어휘와 현대 소프트웨어 엔지니어링 철학을 연결하는 낱말 카드 탐색기
+  // ==========================================================================
+  const lexiconChips = document.getElementById("lexiconChips");
+  const lexiconDisplayBox = document.getElementById("lexiconDisplayBox");
+  const lexiconGreek = document.getElementById("lexiconGreek");
+  const lexiconTrans = document.getElementById("lexiconTrans");
+  const lexiconPos = document.getElementById("lexiconPos");
+  const lexiconCoreMeaning = document.getElementById("lexiconCoreMeaning");
+  const lexiconDerivatives = document.getElementById("lexiconDerivatives");
+  const lexiconExplanation = document.getElementById("lexiconExplanation");
+
+  const btnLexiconPrev = document.getElementById("btnLexiconPrev");
+  const btnLexiconNext = document.getElementById("btnLexiconNext");
+  const btnLexiconRandom = document.getElementById("btnLexiconRandom");
+
+  if (lexiconDisplayBox && lexiconChips) {
+    const lexiconWords = [
+      {
+        greek: "Τέχνη",
+        trans: "[Technē / 텍네]",
+        pos: "명사 (여성)",
+        meaning: "“기술, 기예, 장인정신, 예술 (Art / Craft / Craftsmanship)”",
+        derivatives: "<code>Technology</code>(기술), <code>Technique</code>(기법/기교), <code>Technical</code>(전문적인)",
+        explanation: "아리스토텔레스는 《니코마코스 윤리학》에서 테크네를 단순히 무언가를 만들어내는 손재주가 아니라, <strong>'원리를 깊이 이해하고 목적에 맞게 구현해내는 참된 이성적 능력'</strong>으로 정의했습니다. 오늘날 단순한 타이핑을 넘어 가독성, 유지보수성, 견고함을 갖춘 클린 코드를 짓고자 하는 <em>소프트웨어 장인정신(Software Craftsmanship)</em>의 본질이 바로 이 고대 테크네에 닿아 있습니다."
+      },
+      {
+        greek: "Λόγος",
+        trans: "[Logos / 로고스]",
+        pos: "명사 (남성)",
+        meaning: "“말, 말씀, 논리, 이성, 법칙 (Word / Reason / Logic)”",
+        derivatives: "<code>Logic</code>(논리), <code>Algorithm</code>(알고리즘), <code>-logy</code>(학문 접미사)",
+        explanation: "헤라클레이토스와 스토아 철학자들은 만물을 조화롭게 다스리는 우주의 궁극적인 질서이자 원리를 '로고스'라 불렀습니다. 컴퓨터 과학의 토대인 <strong>불리언 논리(Boolean Logic), 조건문과 루프, 데이터 파이프라인의 엄밀한 법칙성</strong> 전체가 현대 디지털 세계에 구현된 거대한 로고스의 실현체입니다."
+      },
+      {
+        greek: "Ἀρετή",
+        trans: "[Aretē / 아레테]",
+        pos: "명사 (여성)",
+        meaning: "“탁월함, 최고의 기량, 덕(Virtue), 잠재력의 온전한 실현”",
+        derivatives: "<code>Aristocracy</code>(탁월한 자들의 지혜), <code>Arete</code>",
+        explanation: "고대 그리스인에게 아레테는 사물이나 인간이 자신이 지닌 본질적인 목적을 가장 훌륭하고 탁월하게 발휘하는 상태를 뜻했습니다. 칼의 아레테가 날카로움이듯, 소프트웨어의 아레테는 <strong>최적의 성능과 가독성, 에러에 흔들리지 않는 견고함</strong>입니다. 개발자의 배움은 코드의 아레테를 향한 끝없는 여정입니다."
+      },
+      {
+        greek: "Κυβερνήτης",
+        trans: "[Kybernētēs / 키베르네테스]",
+        pos: "명사 (남성)",
+        meaning: "“조타수, 키잡이, 배를 모는 항해사 (Steersman / Pilot / Helmsman)”",
+        derivatives: "<code>Kubernetes</code>(쿠버네티스 k8s), <code>Cybernetics</code>(인공두뇌학), <code>Cyber</code>(사이버)",
+        explanation: "플라톤은 《국가》에서 거친 파도 속에서 배를 지혜롭게 조종하는 조타수를 '키베르네테스'로 비유했습니다. 구글(Google)의 엔지니어들은 바로 이 단어에서 착안하여 수많은 컨테이너를 지휘하고 자원을 지혜롭게 조율하는 현대 클라우드 오케스트레이션 도구에 <strong>‘쿠버네티스(Kubernetes)’</strong>라는 이름을 붙였습니다. (쿠버네티스 로고가 선박의 조타 핸들인 이유입니다!)"
+      },
+      {
+        greek: "Κάθαρσις",
+        trans: "[Catharsis / 카타르시스]",
+        pos: "명사 (여성)",
+        meaning: "“정화, 배설, 찌꺼기를 씻어냄, 영혼의 맑아짐 (Cleansing / Purification)”",
+        derivatives: "<code>Catharsis</code>(카타르시스), <code>Cathartic</code>(정화하는)",
+        explanation: "아리스토텔레스는 비극을 관람하며 겪는 감정의 정화를 카타르시스라 칭했습니다. 프로그래밍에서도 복잡하게 얽혀 있던 불필요한 코드를 덜어내고, 메모리 누수를 해소하는 <strong>가비지 컬렉션(Garbage Collection)</strong>과 마침내 붉은색 에러 창을 깨끗한 녹색(Green Pass)으로 바꿀 때 느끼는 전율이야말로 개발자가 맛보는 현대적 카타르시스입니다."
+      },
+      {
+        greek: "Ἐπιστήμη",
+        trans: "[Epistēmē / 에피스테메]",
+        pos: "명사 (여성)",
+        meaning: "“체계적 지식, 학문, 과학적 앎 (Scientific Knowledge)”",
+        derivatives: "<code>Epistemology</code>(인식론), <code>Epistemic</code>(인식적인)",
+        explanation: "고대 그리스에서 어렴풋한 믿음이나 개인적 의견(독사, Doxa)과 구별되는 '원인과 근거가 분명한 객관적 지식'을 에피스테메라고 했습니다. 복사-붙여넣기에 의존하는 파편적 코딩이 아니라, <strong>컴퓨터 구조, 메모리 모델, 운영체제의 기본 원리를 깊이 이해하고 코딩하는 컴퓨터 과학(Computer Science)</strong>의 탐구 정신이 곧 에피스테메입니다."
+      },
+      {
+        greek: "Φρόνησις",
+        trans: "[Phronēsis / 프로네시스]",
+        pos: "명사 (여성)",
+        meaning: "“실천적 지혜, 분별력, 상황에 맞는 올바른 판단력 (Practical Wisdom)”",
+        derivatives: "<code>Prudence</code>(신중함, 사려깊음)",
+        explanation: "이론적 지식(소피아)과 달리, 복잡하고 예측 불가능한 현실 상황 속에서 최선의 결정을 내리는 실천적 판단력을 뜻합니다. 굳이 무거운 최신 기술을 도입하지 않고 주어진 일정과 리소스에 가장 적합한 도구를 골라내는 능력, 즉 <em>‘적정 기술의 선택과 트레이드오프 조율’</em>이야말로 시니어 엔지니어의 프로네시스입니다."
+      },
+      {
+        greek: "Ἀταραξία",
+        trans: "[Ataraxia / 아타락시아]",
+        pos: "명사 (여성)",
+        meaning: "“마음의 평정, 동요나 불안이 없는 고요한 상태 (Tranquility / Peace of Mind)”",
+        derivatives: "<code>Ataraxy</code>, <code>Ataractic</code>",
+        explanation: "에피쿠로스와 피론 회의주의 학파가 추구한 최고선으로, 어떤 외적 혼란에도 흔들리지 않는 내면의 고요입니다. 프로덕션 서버에서 예기치 못한 에러 알림이 쏟아져도 당황하거나 패닉에 빠지지 않고, <strong>차분하게 시스템 로그와 스택 트레이스를 추적해 나가는 베테랑 엔지니어의 멘탈리티</strong>가 바로 아타락시아입니다."
+      },
+      {
+        greek: "Κόσμος & Χάος",
+        trans: "[Kosmos & Chaos / 코스모스와 카오스]",
+        pos: "명사",
+        meaning: "“질서와 조화(우주) ↔ 입을 벌린 혼돈(원초적 무질서)”",
+        derivatives: "<code>Cosmos</code>(우주), <code>Cosmetic</code>(정돈/화장품), <code>Chaos</code>(혼돈), <code>Chaotic</code>(혼란한)",
+        explanation: "그리스 신화에서 세상은 아무것도 형태가 잡히지 않은 어두운 심연(Chaos)에서 조화로운 질서와 아름다움을 갖춘 우주(Kosmos)로 변모해 갑니다. 수많은 기능이 덕지덕지 얽혀 유지보수가 불가능해진 <strong>스파게티 코드(Chaos)를 정갈한 모듈과 레이어로 다듬어내는 리팩토링(Kosmos)</strong>은 우주를 창조하는 일과 닮아 있습니다."
+      },
+      {
+        greek: "Εὐδαιμονία",
+        trans: "[Eudaimonia / 에우다이모니아]",
+        pos: "명사 (여성)",
+        meaning: "“행복, 번영, 인간다운 번성 (Flourishing / Well-being)”",
+        derivatives: "<code>Eudaimonia</code>, <code>Eudaemonism</code>(행복주의)",
+        explanation: "단순한 순간적 쾌락이 아니라, 인간으로서 가진 잠재력을 온전히 꽃피워 가치 있는 삶을 영위하는 충만한 상태를 의미합니다. 우리가 소프트웨어를 짓는 궁극적인 목적 역시 시스템을 통해 인간의 수고를 덜어주고 삶을 이롭게 만드는 것, 그리고 그 과정에서 <strong>창작자 자신도 깊은 지적 성취와 자아실현을 누리는 에우다이모니아</strong>에 있습니다."
+      },
+      {
+        greek: "Διάλογος",
+        trans: "[Dialogos / 디알로고스]",
+        pos: "명사 (남성)",
+        meaning: "“대화, 문답, 이성을 통한 교류 (Conversation / Dialogue)”",
+        derivatives: "<code>Dialogue</code>(대화), <code>Dialectic</code>(변증법)",
+        explanation: "dia(통하여) + logos(이성/말)의 결합으로, 서로 다른 시선이 만나 더 높은 진리에 다가가는 소크라테스식 탐구 방식입니다. 혼자 짠 코드의 맹점을 함께 짚어주는 <strong>코드 리뷰(Code Review)와 페어 프로그래밍(Pair Programming)</strong>이야말로 동료와 나누는 가장 생산적이고 지적인 디알로고스입니다."
+      },
+      {
+        greek: "Μῦθος",
+        trans: "[Mythos / 뮈토스]",
+        pos: "명사 (남성)",
+        meaning: "“이야기, 설화, 서사, 플롯 (Story / Narrative / Myth)”",
+        derivatives: "<code>Myth</code>(신화), <code>Mythology</code>(신화학)",
+        explanation: "논리적이고 분석적인 로고스(Logos)와 대비되어, 인간의 감정과 경험을 연결하고 감동을 주는 서사를 뜻합니다. 차가운 기능 명세서에 머물지 않고, 제품을 사용하는 사용자가 어떤 여정을 거치고 어떤 기쁨을 느낄지 설계하는 <strong>사용자 경험(UX)과 제품 스토리텔링</strong>의 중심에는 언제나 뮈토스가 살아 숨쉽니다."
+      }
+    ];
+
+    let currentLexiconIndex = 0;
+
+    // 1. 단어 칩 버튼 생성
+    lexiconWords.forEach((wordObj, idx) => {
+      const chipBtn = document.createElement("button");
+      chipBtn.type = "button";
+      chipBtn.className = "chip-btn" + (idx === 0 ? " active" : "");
+      chipBtn.textContent = wordObj.greek;
+      chipBtn.setAttribute("title", wordObj.meaning);
+
+      chipBtn.addEventListener("click", () => {
+        displayLexiconWord(idx);
+      });
+
+      lexiconChips.appendChild(chipBtn);
+    });
+
+    // 2. 단어 렌더링 함수
+    function displayLexiconWord(index) {
+      if (index < 0) index = lexiconWords.length - 1;
+      if (index >= lexiconWords.length) index = 0;
+
+      currentLexiconIndex = index;
+      const word = lexiconWords[index];
+
+      // 칩 활성화 상태 갱신
+      const allChips = lexiconChips.querySelectorAll(".chip-btn");
+      allChips.forEach((chip, i) => {
+        chip.classList.toggle("active", i === index);
+      });
+
+      // 석판 전환 애니메이션
+      lexiconDisplayBox.classList.remove("revealing");
+      void lexiconDisplayBox.offsetWidth; // Reflow 강제
+      lexiconDisplayBox.classList.add("revealing");
+
+      // 텍스트 내용 갱신
+      if (lexiconGreek) lexiconGreek.textContent = word.greek;
+      if (lexiconTrans) lexiconTrans.textContent = word.trans;
+      if (lexiconPos) lexiconPos.textContent = word.pos;
+      if (lexiconCoreMeaning) lexiconCoreMeaning.textContent = word.meaning;
+      if (lexiconDerivatives) lexiconDerivatives.innerHTML = word.derivatives;
+      if (lexiconExplanation) lexiconExplanation.innerHTML = word.explanation;
+    }
+
+    // 3. 네비게이션 버튼 이벤트 리스너
+    if (btnLexiconPrev) {
+      btnLexiconPrev.addEventListener("click", () => {
+        displayLexiconWord(currentLexiconIndex - 1);
+      });
+    }
+
+    if (btnLexiconNext) {
+      btnLexiconNext.addEventListener("click", () => {
+        displayLexiconWord(currentLexiconIndex + 1);
+      });
+    }
+
+    if (btnLexiconRandom) {
+      btnLexiconRandom.addEventListener("click", () => {
+        let randIdx;
+        do {
+          randIdx = Math.floor(Math.random() * lexiconWords.length);
+        } while (randIdx === currentLexiconIndex && lexiconWords.length > 1);
+        displayLexiconWord(randIdx);
+      });
+    }
+  }
+
 });
+
 
 

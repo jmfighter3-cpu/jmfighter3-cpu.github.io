@@ -287,6 +287,67 @@
           </div>
         </div>
       </div>
+
+      <!-- 고대 그리스어와 소프트웨어: 헬레닉 렉시콘 (Hellenic Lexicon) 카드 -->
+      <div class="card lexicon-card">
+        <div class="lexicon-header">
+          <div class="lexicon-badge">📜 HELLENIC LEXICON</div>
+          <h2 class="section-title">📜 고대 그리스어와 소프트웨어 (Ancient Greek Lexicon)</h2>
+          <p class="section-subtitle">
+            2,500년 전 아테네 아고라에서 울려 퍼지던 고대 그리스 단어들이 오늘날 소프트웨어 엔지니어링의 본질과 어떻게 맞닿아 있는지 살펴보는 인문학 낱말 사전입니다.
+          </p>
+        </div>
+
+        <!-- 빠른 단어 탐색 칩 바 (가로 스크롤 및 칩 선택) -->
+        <div class="lexicon-chips-container">
+          <div class="lexicon-chips" id="lexiconChips">
+            <!-- 자바스크립트에 의해 단어 목록 칩 버튼이 자동 생성됩니다 -->
+          </div>
+        </div>
+
+        <!-- 메인 단어 전시 석판 (Display Box) -->
+        <div class="lexicon-display-box" id="lexiconDisplayBox">
+          <div class="lexicon-stele-header">
+            <div class="lexicon-word-row">
+              <span class="lexicon-greek" id="lexiconGreek">Τέχνη</span>
+              <span class="lexicon-trans" id="lexiconTrans">[Technē / 텍네]</span>
+              <span class="lexicon-pos" id="lexiconPos">명사 (여성형)</span>
+            </div>
+            <div class="lexicon-core-meaning" id="lexiconCoreMeaning">
+              "기술, 기예, 장인정신, 예술 (Art, Craft, Craftsmanship)"
+            </div>
+          </div>
+
+          <div class="lexicon-derivatives-box">
+            <span class="derivatives-label">파생된 현대어:</span>
+            <span class="derivatives-list" id="lexiconDerivatives">
+              <code>Technology</code>(기술), <code>Technique</code>(기법/기교), <code>Technical</code>(전문적인)
+            </span>
+          </div>
+
+          <div class="lexicon-divider">✦ ✦ ✦</div>
+
+          <div class="lexicon-explanation-box">
+            <h4 class="explanation-title">🏛️ 고전 철학 맥락과 개발자적 통찰</h4>
+            <p class="explanation-desc" id="lexiconExplanation">
+              아리스토텔레스는 《니코마코스 윤리학》에서 테크네를 단순히 무언가를 만드는 손재주가 아니라, <strong>'원리를 이해하고 목적에 맞게 구현해내는 참된 이성적 능력'</strong>으로 정의했습니다. 오늘날 단순한 타이핑을 넘어 가독성, 유지보수성, 견고함을 갖춘 클린 코드를 짓고자 하는 <em>소프트웨어 장인정신(Software Craftsmanship)</em>의 뿌리가 바로 이 고대 테크네에 닿아 있습니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- 하단 단어 이동 네비게이션 버튼 -->
+        <div class="lexicon-navigation">
+          <button type="button" class="btn-lexicon-nav" id="btnLexiconPrev">
+            <span>◀ 이전 단어</span>
+          </button>
+          <button type="button" class="btn-lexicon-nav btn-lexicon-random" id="btnLexiconRandom">
+            <span>🎲 무작위 탐색</span>
+          </button>
+          <button type="button" class="btn-lexicon-nav" id="btnLexiconNext">
+            <span>다음 단어 ▶</span>
+          </button>
+        </div>
+      </div>
     </section>
 
   </main>

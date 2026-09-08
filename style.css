@@ -1105,6 +1105,275 @@ h2.section-title {
   margin-top: 10px;
 }
 
+/* ==========================================================================
+   4-E. 고대 그리스어와 소프트웨어 렉시콘 (Hellenic Lexicon) 스타일
+   ========================================================================== */
+.lexicon-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(217, 119, 6, 0.35);
+  box-shadow: 0 10px 30px rgba(180, 83, 9, 0.12);
+  margin-bottom: 24px;
+}
+
+.lexicon-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #d97706, #f59e0b, #b45309, #f59e0b, #d97706);
+}
+
+.lexicon-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.lexicon-badge {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #92400e;
+  background-color: rgba(254, 243, 199, 0.85);
+  border: 1px solid rgba(217, 119, 6, 0.35);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  margin-bottom: 10px;
+}
+
+.lexicon-card .section-title {
+  margin-bottom: 10px;
+}
+
+.lexicon-card .section-subtitle {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* 칩 바 (빠른 단어 선택 버튼들) */
+.lexicon-chips-container {
+  overflow-x: auto;
+  padding: 6px 4px 14px 4px;
+  margin-bottom: 12px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.lexicon-chips {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.chip-btn {
+  background: rgba(255, 252, 245, 0.85);
+  border: 1px solid rgba(217, 119, 6, 0.3);
+  color: #78350f;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.chip-btn:hover {
+  background: rgba(254, 243, 199, 0.95);
+  border-color: #d97706;
+  transform: translateY(-1px);
+}
+
+.chip-btn.active {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  color: #ffffff;
+  border-color: #b45309;
+  box-shadow: 0 2px 8px rgba(180, 83, 9, 0.3);
+}
+
+/* 메인 단어 전시 석판 (Display Box) */
+.lexicon-display-box {
+  background: rgba(255, 252, 245, 0.88);
+  border: 1px solid rgba(217, 119, 6, 0.38);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(180, 83, 9, 0.08), inset 0 0 20px rgba(254, 243, 199, 0.3);
+  padding: 28px 26px;
+  transition: all 0.35s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.lexicon-display-box.revealing {
+  animation: lexiconFade 0.45s ease-out;
+}
+
+@keyframes lexiconFade {
+  0% {
+    opacity: 0.35;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lexicon-word-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.lexicon-greek {
+  font-family: 'Cinzel', serif;
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #92400e;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 2px rgba(254, 243, 199, 0.8);
+}
+
+.lexicon-trans {
+  font-size: 1rem;
+  font-style: italic;
+  color: #b45309;
+  font-weight: 600;
+}
+
+.lexicon-pos {
+  font-size: 0.78rem;
+  background: rgba(217, 119, 6, 0.15);
+  color: #92400e;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.lexicon-core-meaning {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 14px;
+}
+
+.lexicon-derivatives-box {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(254, 243, 199, 0.4);
+  border-radius: 8px;
+  border: 1px dashed rgba(217, 119, 6, 0.3);
+  font-size: 0.88rem;
+  color: #78350f;
+}
+
+.derivatives-label {
+  font-weight: 700;
+  color: #92400e;
+}
+
+.lexicon-derivatives-box code {
+  background-color: rgba(217, 119, 6, 0.15);
+  color: #92400e;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Consolas', monospace;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+.lexicon-divider {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #d97706;
+  letter-spacing: 0.3em;
+  margin: 18px 0;
+  opacity: 0.65;
+}
+
+.lexicon-explanation-box {
+  background: rgba(255, 255, 255, 0.65);
+  border-left: 3px solid #d97706;
+  padding: 16px 18px;
+  border-radius: 0 8px 8px 0;
+}
+
+.explanation-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #92400e;
+  margin-bottom: 8px;
+}
+
+.explanation-desc {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: #334155;
+  margin: 0;
+}
+
+.explanation-desc strong {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.explanation-desc em {
+  color: #92400e;
+  font-style: normal;
+  font-weight: 700;
+}
+
+/* 네비게이션 버튼 그룹 */
+.lexicon-navigation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.btn-lexicon-nav {
+  padding: 9px 18px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 1px solid rgba(217, 119, 6, 0.4);
+  background-color: rgba(255, 252, 245, 0.8);
+  color: #92400e;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-lexicon-nav:hover {
+  background-color: rgba(254, 243, 199, 0.95);
+  border-color: #d97706;
+  transform: translateY(-1px);
+}
+
+.btn-lexicon-random {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  color: #ffffff;
+  border-color: #b45309;
+  box-shadow: 0 4px 12px rgba(180, 83, 9, 0.25);
+}
+
+.btn-lexicon-random:hover {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  box-shadow: 0 6px 16px rgba(180, 83, 9, 0.35);
+}
+
 /* 10. 하단 푸터 (Footer) */
 .site-footer {
   text-align: center;
