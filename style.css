@@ -141,6 +141,7 @@ body {
   display: flex;
   gap: 8px;
   list-style: none;
+  flex-wrap: wrap;
 }
 
 .tab-button {
@@ -1372,6 +1373,441 @@ h2.section-title {
 .btn-lexicon-random:hover {
   background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
   box-shadow: 0 6px 16px rgba(180, 83, 9, 0.35);
+}
+
+/* ==========================================================================
+   4-F. [탭 4] 아고라 도편(Ostrakon) 방명록 및 회합소 스타일
+   ========================================================================== */
+.agora-card,
+.giscus-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(217, 119, 6, 0.35);
+  box-shadow: 0 10px 30px rgba(180, 83, 9, 0.12);
+  margin-bottom: 24px;
+}
+
+.agora-card::before,
+.giscus-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #b45309, #d97706, #f59e0b, #d97706, #b45309);
+}
+
+.agora-header,
+.giscus-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.agora-badge,
+.giscus-badge {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #92400e;
+  background-color: rgba(254, 243, 199, 0.85);
+  border: 1px solid rgba(217, 119, 6, 0.35);
+  padding: 4px 14px;
+  border-radius: 9999px;
+  margin-bottom: 10px;
+}
+
+.agora-card .section-title,
+.giscus-card .section-title {
+  margin-bottom: 10px;
+}
+
+.agora-card .section-subtitle,
+.giscus-card .section-subtitle {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  max-width: 660px;
+  margin: 0 auto;
+}
+
+/* 도편 작성 폼 */
+.ostrakon-form {
+  background: rgba(255, 252, 245, 0.88);
+  border: 1px solid rgba(217, 119, 6, 0.35);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 30px;
+  box-shadow: 0 6px 18px rgba(180, 83, 9, 0.06);
+}
+
+.form-row-author {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 640px) {
+  .form-row-author {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #78350f;
+}
+
+.input-with-btn {
+  display: flex;
+  gap: 8px;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 0.92rem;
+  border: 1px solid rgba(217, 119, 6, 0.35);
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #1e293b;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #d97706;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
+  background-color: #ffffff;
+}
+
+.btn-random-name {
+  white-space: nowrap;
+  padding: 0 14px;
+  background: rgba(254, 243, 199, 0.9);
+  border: 1px solid rgba(217, 119, 6, 0.4);
+  color: #92400e;
+  font-weight: 700;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-random-name:hover {
+  background: #fef3c7;
+  border-color: #d97706;
+  transform: translateY(-1px);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.6;
+}
+
+.char-count {
+  text-align: right;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.form-actions {
+  text-align: center;
+  margin-top: 14px;
+}
+
+.btn-etch-ostrakon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: 9999px;
+  border: 1px solid #f59e0b;
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  color: #ffffff;
+  font-size: 0.98rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(180, 83, 9, 0.3);
+  transition: all 0.25s ease;
+}
+
+.btn-etch-ostrakon:hover {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(180, 83, 9, 0.42);
+}
+
+.btn-etch-ostrakon:active {
+  transform: translateY(1px);
+}
+
+.btn-etch-icon {
+  font-size: 1.15rem;
+}
+
+.form-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+/* 도편 보드 헤더 */
+.ostrakon-board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed rgba(217, 119, 6, 0.35);
+}
+
+.board-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #78350f;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.board-title span {
+  color: #d97706;
+}
+
+.btn-reset-demo {
+  background: transparent;
+  border: 1px solid rgba(217, 119, 6, 0.3);
+  color: var(--text-muted);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-reset-demo:hover {
+  background: rgba(254, 243, 199, 0.6);
+  color: #92400e;
+  border-color: #d97706;
+}
+
+/* 도편 그리드 (Ostrakon Grid) */
+.ostrakon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+/* 개별 도편 타일 스타일 */
+.ostrakon-tile {
+  position: relative;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  animation: ostrakonPop 0.4s ease-out;
+}
+
+@keyframes ostrakonPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.ostrakon-tile:hover {
+  transform: translateY(-4px) rotate(-0.5deg);
+  box-shadow: 0 10px 24px rgba(180, 83, 9, 0.18);
+}
+
+/* 테라코타(붉은 점토판) 질감 */
+.ostrakon-tile.style-terracotta {
+  background: linear-gradient(135deg, rgba(254, 242, 232, 0.95) 0%, rgba(254, 226, 203, 0.92) 100%);
+  border: 1px solid rgba(234, 88, 12, 0.35);
+  border-left: 4px solid #c2410c;
+}
+
+/* 파로스(백색 대리석) 질감 */
+.ostrakon-tile.style-parian {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.92) 100%);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  border-left: 4px solid #64748b;
+}
+
+/* 올림포스(황금 판) 질감 */
+.ostrakon-tile.style-olympian {
+  background: linear-gradient(135deg, rgba(254, 249, 195, 0.95) 0%, rgba(253, 230, 138, 0.9) 100%);
+  border: 1px solid rgba(217, 119, 6, 0.45);
+  border-left: 4px solid #d97706;
+}
+
+.ostrakon-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.ostrakon-author {
+  font-weight: 700;
+  font-size: 0.96rem;
+  color: #78350f;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ostrakon-author-badge {
+  font-size: 0.72rem;
+  background: rgba(217, 119, 6, 0.15);
+  color: #92400e;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.ostrakon-date {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.ostrakon-message {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: #1e293b;
+  margin-bottom: 14px;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.ostrakon-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(217, 119, 6, 0.2);
+}
+
+.ostrakon-seal {
+  font-size: 0.76rem;
+  color: #b45309;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.05em;
+}
+
+.btn-delete-ostrakon {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.btn-delete-ostrakon:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* 2. 깃허브 원로원 회합소 (Giscus Card) */
+.giscus-info-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(254, 243, 199, 0.45);
+  border: 1px solid rgba(217, 119, 6, 0.3);
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 24px;
+}
+
+.giscus-info-icon {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.giscus-info-text {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #78350f;
+}
+
+.giscus-embed-area {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px dashed rgba(217, 119, 6, 0.35);
+  border-radius: 12px;
+  padding: 36px 20px;
+  text-align: center;
+}
+
+.giscus-placeholder-icon {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+}
+
+.giscus-placeholder-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #78350f;
+  margin-bottom: 8px;
+}
+
+.giscus-placeholder-desc {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  max-width: 480px;
+  margin: 0 auto 20px auto;
+  line-height: 1.6;
+}
+
+.btn-github-discussions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 24px;
+  border-radius: 9999px;
+  background: #24292f;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  transition: all 0.25s ease;
+}
+
+.btn-github-discussions:hover {
+  background: #0f172a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+  color: #ffffff;
 }
 
 /* 10. 하단 푸터 (Footer) */

@@ -443,7 +443,214 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // ==========================================================================
+  // 6. [탭 4] 아고라 도편(Ostrakon) 방문자 방명록 시스템
+  // 브라우저 LocalStorage를 활용한 실시간 점토판 방명록 및 닉네임 생성기
+  // ==========================================================================
+  const ostrakonForm = document.getElementById("ostrakonForm");
+  const ostrakonAuthorInput = document.getElementById("ostrakonAuthor");
+  const ostrakonContentInput = document.getElementById("ostrakonContent");
+  const ostrakonStyleSelect = document.getElementById("ostrakonStyle");
+  const ostrakonGrid = document.getElementById("ostrakonGrid");
+  const ostrakonCountSpan = document.getElementById("ostrakonCount");
+  const charCountSpan = document.getElementById("charCount");
+  const btnRandomName = document.getElementById("btnRandomName");
+  const btnResetDemo = document.getElementById("btnResetDemo");
+
+  const OSTRAKON_STORAGE_KEY = "hellenic_ostrakon_guestbook";
+
+  // 기본 탑재 고대 그리스 철학자 및 운영자 도편 목록
+  const defaultOstraka = [
+    {
+      id: "default-1",
+      author: "아테네의 소크라테스",
+      badge: "고대 현자",
+      date: "기원전 399년 어느 날",
+      style: "terracotta",
+      message: "방문자여, 그대가 이 아고라에 발을 디딘 것만으로도 이미 훌륭한 배움의 여정이 시작되었소. 너 자신을 알라!",
+      isDefault: true
+    },
+    {
+      id: "default-2",
+      author: "시라쿠사의 아르키메데스",
+      badge: "기하학자",
+      date: "기원전 212년",
+      style: "olympian",
+      message: "유레카! 나만의 생각과 인사를 남길 수 있는 아름다운 도편을 발견했도다. 오류 없는 코딩의 축복을 빈다.",
+      isDefault: true
+    },
+    {
+      id: "default-3",
+      author: "키오스의 호메로스",
+      badge: "서사시인",
+      date: "기원전 8세기",
+      style: "parian",
+      message: "인문학과 코딩의 돛을 올리고 이타카를 향해 항해하는 그대의 서사적 모험담을 아폴론과 뮤즈 여신께서 굽어살피시리라.",
+      isDefault: true
+    },
+    {
+      id: "default-4",
+      author: "jmfighter3-cpu",
+      badge: "운영자",
+      date: "2026년 봄날의 아고라",
+      style: "terracotta",
+      message: "웹 서사시 포트폴리오를 찾아주신 모든 분을 진심으로 환영합니다! 여러분만의 도편을 점토판에 새겨 따뜻한 발자취를 남겨주세요 🏛️",
+      isDefault: true
+    }
+  ];
+
+  // 랜덤 생성용 고대 그리스 별칭 후보군
+  const greekNicknames = [
+    "아테네의 방랑자", "시라쿠사의 기하학자", "델포이의 시인", 
+    "올림피아의 달리기선수", "코린토스의 항해사", "이타카의 나그네", 
+    "스파르타의 코더", "크레타의 미궁탐험가", "밀레토스의 철학자", 
+    "테베의 번역가", "로도스의 거상", "아르고스의 영웅"
+  ];
+
+  if (ostrakonForm && ostrakonGrid) {
+    // 1. LocalStorage에서 도편 목록 불러오기
+    function loadOstraka() {
+      const saved = localStorage.getItem(OSTRAKON_STORAGE_KEY);
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch (e) {
+          console.error("도편 데이터를 파싱하는 중 오류가 발생했습니다:", e);
+          return [...defaultOstraka];
+        }
+      }
+      return [...defaultOstraka];
+    }
+
+    // 2. LocalStorage에 도편 목록 저장하기
+    function saveOstraka(list) {
+      localStorage.setItem(OSTRAKON_STORAGE_KEY, JSON.stringify(list));
+    }
+
+    let ostrakaList = loadOstraka();
+
+    // 3. 화면에 도편 목록 렌더링
+    function renderOstraka() {
+      ostrakonGrid.innerHTML = "";
+
+      if (ostrakonCountSpan) {
+        ostrakonCountSpan.textContent = ostrakaList.length;
+      }
+
+      ostrakaList.forEach((item) => {
+        const tile = document.createElement("div");
+        tile.className = `ostrakon-tile style-${item.style || "terracotta"}`;
+
+        tile.innerHTML = `
+          <div class="ostrakon-top">
+            <div class="ostrakon-author">
+              <span>${escapeHtml(item.author)}</span>
+              ${item.badge ? `<span class="ostrakon-author-badge">${escapeHtml(item.badge)}</span>` : ""}
+            </div>
+            <span class="ostrakon-date">${escapeHtml(item.date)}</span>
+          </div>
+          <p class="ostrakon-message">${escapeHtml(item.message)}</p>
+          <div class="ostrakon-bottom">
+            <span class="ostrakon-seal">✦ OSTRAKON · AGORA</span>
+            ${!item.isDefault ? `<button type="button" class="btn-delete-ostrakon" data-id="${item.id}" title="도편 삭제">지우기</button>` : ""}
+          </div>
+        `;
+
+        // 삭제 버튼 이벤트 연결
+        const delBtn = tile.querySelector(".btn-delete-ostrakon");
+        if (delBtn) {
+          delBtn.addEventListener("click", () => {
+            if (confirm("이 도편을 점토판에서 지우시겠습니까?")) {
+              ostrakaList = ostrakaList.filter(o => o.id !== item.id);
+              saveOstraka(ostrakaList);
+              renderOstraka();
+            }
+          });
+        }
+
+        ostrakonGrid.appendChild(tile);
+      });
+    }
+
+    // XSS 방지를 위한 간단한 HTML 특수문자 이스케이프 함수
+    function escapeHtml(text) {
+      if (!text) return "";
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // 4. 글자 수 카운터 리스너
+    if (ostrakonContentInput && charCountSpan) {
+      ostrakonContentInput.addEventListener("input", () => {
+        charCountSpan.textContent = ostrakonContentInput.value.length;
+      });
+    }
+
+    // 5. 랜덤 그리스 별칭 생성 버튼
+    if (btnRandomName && ostrakonAuthorInput) {
+      btnRandomName.addEventListener("click", () => {
+        const randName = greekNicknames[Math.floor(Math.random() * greekNicknames.length)];
+        ostrakonAuthorInput.value = randName;
+        ostrakonAuthorInput.focus();
+      });
+    }
+
+    // 6. 도편 작성 폼 제출(Submit) 핸들러
+    ostrakonForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const author = ostrakonAuthorInput.value.trim();
+      const message = ostrakonContentInput.value.trim();
+      const style = ostrakonStyleSelect ? ostrakonStyleSelect.value : "terracotta";
+
+      if (!author || !message) {
+        alert("작성자 명칭과 메시지를 모두 입력해 주세요!");
+        return;
+      }
+
+      const now = new Date();
+      const dateString = `${now.getFullYear()}.${now.getMonth() + 1}.${now.getDate()}`;
+
+      const newOstrakon = {
+        id: "ostrakon-" + Date.now(),
+        author: author,
+        badge: "아고라 시민",
+        date: dateString,
+        style: style,
+        message: message,
+        isDefault: false
+      };
+
+      // 목록 맨 앞(최신순)에 추가
+      ostrakaList.unshift(newOstrakon);
+      saveOstraka(ostrakaList);
+      renderOstraka();
+
+      // 입력 폼 초기화
+      ostrakonContentInput.value = "";
+      if (charCountSpan) charCountSpan.textContent = "0";
+
+      // 알림
+      alert("🎉 아고라 광장에 그대의 도편이 성공적으로 새겨졌습니다!");
+    });
+
+    // 7. 초기 도편 복구 버튼
+    if (btnResetDemo) {
+      btnResetDemo.addEventListener("click", () => {
+        if (confirm("방명록을 초기 고대 그리스 철학자 도편 상태로 복구하시겠습니까? (직접 작성한 도편이 모두 초기화됩니다)")) {
+          ostrakaList = [...defaultOstraka];
+          saveOstraka(ostrakaList);
+          renderOstraka();
+        }
+      });
+    }
+
+    // 첫 실행 시 렌더링
+    renderOstraka();
+  }
+
 });
-
-
-

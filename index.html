@@ -58,6 +58,11 @@
               휴식 공간
             </button>
           </li>
+          <li>
+            <button type="button" class="tab-button" data-tab="agora">
+              아고라 방명록
+            </button>
+          </li>
         </ul>
       </nav>
     </div>
@@ -346,6 +351,107 @@
           <button type="button" class="btn-lexicon-nav" id="btnLexiconNext">
             <span>다음 단어 ▶</span>
           </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- --------------------------------------------------------------------
+         [탭 4] 아고라 도편(Ostrakon) 방명록 페이지
+         -------------------------------------------------------------------- -->
+    <section id="agora" class="tab-pane">
+      <!-- 1. 아테네 아고라 도편 방명록 카드 -->
+      <div class="card agora-card">
+        <div class="agora-header">
+          <div class="agora-badge">🏺 ATHENIAN AGORA · OSTRAKON</div>
+          <h2 class="section-title">🏺 아고라 도편(Ostrakon) 방명록</h2>
+          <p class="section-subtitle">
+            기원전 아테네 시민들은 아고라 광장에 모여 도자기 파편(도편, <em>Ostrakon</em>)이나 점토판에 자신들의 의견, 염원, 시구를 새겼습니다.<br>
+            이곳에 여러분만의 고대 그리스식 별칭과 함께 따뜻한 방명록 한마디를 점토판에 새겨보세요.
+          </p>
+        </div>
+
+        <!-- 도편 작성 폼 -->
+        <form class="ostrakon-form" id="ostrakonForm">
+          <div class="form-row-author">
+            <div class="form-group author-input-group">
+              <label for="ostrakonAuthor">작성자 명칭 (고대 그리스 별칭)</label>
+              <div class="input-with-btn">
+                <input type="text" id="ostrakonAuthor" class="form-input" placeholder="예: 아테네의 방랑자, 호메로스..." maxlength="24" required>
+                <button type="button" class="btn-random-name" id="btnRandomName" title="고대 그리스식 랜덤 별칭 생성">
+                  🎲 별칭 생성
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group style-select-group">
+              <label for="ostrakonStyle">도편 질감 선택</label>
+              <select id="ostrakonStyle" class="form-select">
+                <option value="terracotta">🏺 테라코타 (붉은 점토판)</option>
+                <option value="parian">🏛️ 파로스 (백색 대리석)</option>
+                <option value="olympian">⚡ 올림포스 (황금 판)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="ostrakonContent">점토판에 새길 메시지</label>
+            <textarea id="ostrakonContent" class="form-textarea" rows="3" placeholder="아고라를 지나가는 길에 남기고 싶은 응원, 코딩 감상평, 혹은 철학적 사유를 적어주세요..." maxlength="300" required></textarea>
+            <div class="char-count"><span id="charCount">0</span> / 300자</div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-etch-ostrakon">
+              <span class="btn-etch-icon">🖋️</span>
+              <span class="btn-etch-text">점토판에 새기기 (Etch Ostrakon)</span>
+            </button>
+            <p class="form-hint">작성하신 도편은 브라우저(LocalStorage)에 안전하게 보존되며 언제든 다시 확인하실 수 있습니다.</p>
+          </div>
+        </form>
+
+        <!-- 도편 전시 그리드 보드 -->
+        <div class="ostrakon-board-header">
+          <h3 class="board-title">📜 아고라에 모인 도편들 (<span id="ostrakonCount">0</span>)</h3>
+          <button type="button" class="btn-reset-demo" id="btnResetDemo" title="기본 철학자 도편으로 복구">
+            🔄 초기 도편 복구
+          </button>
+        </div>
+
+        <div class="ostrakon-grid" id="ostrakonGrid">
+          <!-- 자바스크립트로 도편 타일들이 렌더링됩니다 -->
+        </div>
+      </div>
+
+      <!-- 2. 깃허브 원로원 회합소 (Giscus 연동부) 카드 -->
+      <div class="card giscus-card">
+        <div class="giscus-header">
+          <div class="giscus-badge">💬 GITHUB DISCUSSIONS</div>
+          <h2 class="section-title">🏛️ 아고라 원로원 회합소 (공개 댓글)</h2>
+          <p class="section-subtitle">
+            GitHub 계정으로 로그인하여 전 세계 개발자 및 방문자들과 영구적인 공개 대화와 응원을 나눌 수 있는 공식 토론의 장입니다.
+          </p>
+        </div>
+
+        <div class="giscus-info-box">
+          <div class="giscus-info-icon">💡</div>
+          <div class="giscus-info-text">
+            <strong>Giscus(GitHub Discussions) 연동 안내:</strong><br>
+            GitHub 저장소(<code>jmfighter3-cpu/jmfighter3-cpu.github.io</code>)의 <strong>Settings &gt; Discussions</strong> 기능을 켜두시면, GitHub 계정을 가진 모든 방문자가 아래 공간에서 자유롭게 실시간 댓글과 이모지 리액션을 남길 수 있습니다.
+          </div>
+        </div>
+
+        <!-- Giscus 댓글 위젯 임베드 영역 -->
+        <div class="giscus-embed-area" id="giscusContainer">
+          <div class="giscus-placeholder">
+            <div class="giscus-placeholder-icon">🏺 💬 🏛️</div>
+            <p class="giscus-placeholder-title">GitHub 계정으로 공개 방명록 남기기</p>
+            <p class="giscus-placeholder-desc">
+              저장소의 GitHub Discussions와 연동된 실시간 댓글 시스템입니다.<br>
+              아래 공식 링크를 통해 저장소의 Discussions 토론장에 직접 방문하시거나 의견을 남기실 수 있습니다.
+            </p>
+            <a href="https://github.com/jmfighter3-cpu/jmfighter3-cpu.github.io/discussions" target="_blank" rel="noopener noreferrer" class="btn-github-discussions">
+              <span>🐙 GitHub Discussions 방문하기</span>
+            </a>
+          </div>
         </div>
       </div>
     </section>
