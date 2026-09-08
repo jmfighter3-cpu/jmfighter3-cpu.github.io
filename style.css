@@ -66,7 +66,7 @@ body {
   filter: contrast(1.06) saturate(1.18) brightness(1.02);
 }
 
-/* 2. 잔디와 나무 영역에만 부드러운 산들바람이 스치는 미세 나부낌 레이어 */
+/* 2. 잔디와 나무 영역만 바람을 타며 눈에 띄게 살랑살랑 나부끼는 레이어 */
 .scenic-grass-rustle {
   position: absolute;
   top: 0;
@@ -74,61 +74,73 @@ body {
   width: 100%;
   height: 100%;
   background: url('assets/pastoral_crete_dorcia.jpg') center top / cover no-repeat;
-  /* 하늘과 먼 산은 완벽히 고정하고, 아래쪽 60% 잔디밭과 나무 영역에만 부드러운 마스킹 */
-  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 40%, rgba(0, 0, 0, 0) 65%);
-  mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 40%, rgba(0, 0, 0, 0) 65%);
-  /* 젤리 왜곡 없이, 바람에 풀잎이 살짝 눕혀지며 빛을 반사하는 자연스러운 찰랑임 */
-  animation: naturalGrassRustle 6s infinite ease-in-out;
-  will-change: filter, opacity;
+  /* 하늘과 먼 산은 100% 미동도 없이 완벽히 고정하고, 아래쪽 62% 잔디와 나무 영역만 마스킹 */
+  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 68%);
+  mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 68%);
+  /* 땅바닥(bottom)을 축으로 하여 풀잎 끝과 나뭇가지가 바람을 타고 오른쪽으로 기우는 자연스러운 물리 모션 */
+  transform-origin: center bottom;
+  animation: dynamicGrassSway 5s infinite ease-in-out;
+  filter: contrast(1.08) saturate(1.22) brightness(1.03);
+  will-change: transform;
 }
 
-/* 3. 산들바람이 불어올 때 풀밭 위를 부드럽게 스쳐 지나가는 자연스러운 바람결 */
+/* 3. 잔디밭 위로 스쳐 지나가는 선명하고 맑은 바람결 파동 (Wind Wave) */
 .scenic-wind-breeze {
   position: absolute;
   bottom: 0;
-  left: -40%;
-  width: 180%;
+  left: -60%;
+  width: 220%;
   height: 60%;
-  background: radial-gradient(ellipse 55% 45% at 50% 60%, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.015) 45%, transparent 70%);
-  animation: windBreezeSweep 9s infinite ease-in-out;
+  background: linear-gradient(105deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.0) 35%, 
+    rgba(255, 255, 255, 0.12) 48%, 
+    rgba(255, 255, 255, 0.16) 52%, 
+    rgba(255, 255, 255, 0.0) 65%, 
+    transparent 100%);
+  animation: windWavePass 6.5s infinite ease-in-out;
   pointer-events: none;
+  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 65%);
+  mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 65%);
 }
 
-/* 잔디와 나뭇가지의 자연스러운 풀잎 살랑임 (왜곡 없는 미세 광택 & 미동 파동) */
-@keyframes naturalGrassRustle {
-  0%, 100% {
-    filter: brightness(1.0) contrast(1.06) saturate(1.18);
-    opacity: 0.92;
-    transform: translateY(0);
+/* 잔디와 나무가 바람에 나부끼는 역동적이면서도 자연스러운 스웨이 모션 */
+@keyframes dynamicGrassSway {
+  0% {
+    transform: skewX(0deg) translateX(0px);
   }
-  35% {
-    /* 산들바람이 불어와 풀잎 끝이 살짝 나부끼며 은은한 햇살 반사 */
-    filter: brightness(1.03) contrast(1.08) saturate(1.22);
-    opacity: 1;
-    transform: translateY(-0.8px);
+  25% {
+    /* 1차 바람: 나뭇가지와 잔디가 바람을 타고 오른쪽으로 약 3.5px 기울어지며 살랑거림 */
+    transform: skewX(-0.8deg) translateX(3.5px);
   }
-  70% {
-    filter: brightness(0.985) contrast(1.05) saturate(1.16);
-    opacity: 0.88;
-    transform: translateY(0.4px);
+  50% {
+    /* 바람이 살짝 잦아들며 제자리 근처로 복귀 */
+    transform: skewX(-0.2deg) translateX(1px);
+  }
+  75% {
+    /* 2차 바람: 다시 기분 좋게 나부낌 */
+    transform: skewX(-0.6deg) translateX(2.8px);
+  }
+  100% {
+    transform: skewX(0deg) translateX(0px);
   }
 }
 
-/* 풀밭 위를 부드럽게 훑고 지나가는 산들바람 결 */
-@keyframes windBreezeSweep {
+/* 바람의 파도가 잔디밭을 스쳐 지나가는 시각적 연출 */
+@keyframes windWavePass {
   0% {
     transform: translateX(-35%);
     opacity: 0;
   }
-  30% {
-    opacity: 0.75;
+  20% {
+    opacity: 0.9;
   }
-  65% {
-    transform: translateX(25%);
-    opacity: 0.6;
+  60% {
+    transform: translateX(30%);
+    opacity: 0.8;
   }
   100% {
-    transform: translateX(65%);
+    transform: translateX(70%);
     opacity: 0;
   }
 }
