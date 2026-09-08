@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const poemContainer = document.getElementById("typing-poem-box");
 
   if (poemContainer) {
-    // 호메로스 오디세이아 오마주 시구 목록
+    // 호메로스 오디세이아 오마주 시구 목록 (총 10행 서사시)
     const phrases = [
       "들려주소서, 뮤즈 여신이여!",
       "인문대를 졸업하고 많이도 방황한 그 사람 이야기를.",
@@ -50,7 +50,10 @@ document.addEventListener("DOMContentLoaded", () => {
       "바다 건너 사람들 말과 풍토와 심성을 알고자",
       "마음 속으로 숱한 고난을 겪었습니다.",
       "그토록 애썼으나 결국 취업하지는 못했으니",
-      "번역 인공지능의 등장으로 파멸한 것이라!"
+      "번역 AI의 등장으로 파멸한 것이라!",
+      "사악한 자들! 졸업학년에 내 일자리를 잡아먹다니.",
+      "하여 나도 AI 업계 밥그릇 좀 앗아먹고자 하나니",
+      "어느 분야든, 제우스의 따님이여, 나에게도 들려주소서!"
     ];
 
     // HTML 내 초기 폴백 내용 비우기
@@ -61,8 +64,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentTextSpan = null;
     let cursorSpan = null;
 
-    const typeSpeed = 50;  // 한 글자 타이핑 속도 (밀리초)
-    const linePause = 450; // 한 행 완료 후 다음 행 시작 전 호흡 (밀리초)
+    const typeSpeed = 70;  // 한 글자 타이핑 속도 (기존 50ms에서 약 0.5초 여유로워진 서정적 템포)
+    const linePause = 950; // 한 행 완료 후 다음 행 시작 전 대기 시간 (기존 450ms + 500ms(0.5초) 호흡)
 
     function startNewLine() {
       if (lineIndex >= phrases.length) {
