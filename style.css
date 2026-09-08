@@ -289,51 +289,7 @@ h2.section-title {
   50% { opacity: 0; }
 }
 
-/* 3. GitHub 공식 배지 및 활동 프리뷰 카드 스타일 */
-.github-card {
-  overflow: hidden;
-}
 
-.github-badges-row {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
-}
-
-.badge-item {
-  height: 28px;
-  border-radius: 6px;
-  transition: transform 0.2s ease;
-  display: block;
-}
-
-.badge-item:hover {
-  transform: translateY(-2px);
-}
-
-.github-profile-preview {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 24px;
-  background-color: rgba(255, 255, 255, 0.75);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  flex-wrap: wrap;
-  gap: 14px;
-}
-
-.preview-info h4 {
-  font-size: 1.15rem;
-  color: var(--text-main);
-  margin-bottom: 4px;
-}
-
-.preview-info p {
-  color: var(--text-muted);
-  font-size: 0.9rem;
-}
 
 .skills-list {
   display: flex;
