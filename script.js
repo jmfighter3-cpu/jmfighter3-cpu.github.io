@@ -36,63 +36,83 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ==========================================================================
-  // 3. 한 줄 소개 타이핑 애니메이션 (Typing Effect)
-  // 타자기를 치듯이 글자가 한 글자씩 써지고 지워지며 다음 문구로 넘어갑니다.
+  // 3. 오디세이아 서사시 누적 타이핑 애니메이션 (Cumulative Epic Poem Typing)
+  // 이전 행을 지우지 않고 한 행씩 누적하여 써내려가며, 최종적으로 전체 시구를 화면에 보여줍니다.
   // ==========================================================================
-  const typingElement = document.getElementById("typing-text");
+  const poemContainer = document.getElementById("typing-poem-box");
 
-  if (typingElement) {
-    // 번갈아 가며 출력할 소개 문구 목록 (오디세이아 서사시 오마주)
+  if (poemContainer) {
+    // 호메로스 오디세이아 오마주 시구 목록
     const phrases = [
-      "들려 주소서, 무사 여신이여!",
+      "들려주소서, 뮤즈 여신이여!",
       "인문대를 졸업하고 많이도 방황한 그 사람 이야기를.",
       "그는 번역가를 꿈꿨고 수많은 문헌을 보았으며",
       "바다 건너 사람들 말과 풍토와 심성을 알고자",
       "마음 속으로 숱한 고난을 겪었습니다.",
-      "그토록 애썼으나 결국 취업하지는 못했으니,",
+      "그토록 애썼으나 결국 취업하지는 못했으니",
       "번역 인공지능의 등장으로 파멸한 것이라!"
     ];
 
-    let phraseIndex = 0;   // 현재 출력 중인 문장 번호
-    let charIndex = 0;     // 현재 출력 중인 글자 위치
-    let isDeleting = false; // 글자를 지우는 중인지 여부
-    const typeSpeed = 100; // 글자 타이핑 속도 (밀리초)
-    const deleteSpeed = 50; // 글자 지우는 속도 (밀리초)
-    const pauseTime = 1800; // 문장이 완성된 후 머무는 시간 (밀리초)
+    // HTML 내 초기 폴백 내용 비우기
+    poemContainer.innerHTML = "";
 
-    function typeLoop() {
-      const currentPhrase = phrases[phraseIndex];
+    let lineIndex = 0;
+    let charIndex = 0;
+    let currentTextSpan = null;
+    let cursorSpan = null;
 
-      if (isDeleting) {
-        // 글자를 하나씩 지워나갑니다.
-        typingElement.textContent = currentPhrase.substring(0, charIndex - 1);
-        charIndex--;
-      } else {
-        // 글자를 하나씩 써내려갑니다.
-        typingElement.textContent = currentPhrase.substring(0, charIndex + 1);
-        charIndex++;
+    const typeSpeed = 50;  // 한 글자 타이핑 속도 (밀리초)
+    const linePause = 450; // 한 행 완료 후 다음 행 시작 전 호흡 (밀리초)
+
+    function startNewLine() {
+      if (lineIndex >= phrases.length) {
+        // 모든 시구가 완성되었을 때: 마지막 행 끝에 커서가 깜빡이며 전체 시구가 영구히 표시됩니다.
+        return;
       }
 
-      // 글자 타이핑 속도 조절
-      let delay = isDeleting ? deleteSpeed : typeSpeed;
-
-      // 문장이 전부 완성되었을 때
-      if (!isDeleting && charIndex === currentPhrase.length) {
-        delay = pauseTime; // 잠시 멈추고 방문자가 읽을 수 있게 대기
-        isDeleting = true; // 다음 단계로 지우기 시작
-      } 
-      // 문장이 전부 지워졌을 때
-      else if (isDeleting && charIndex === 0) {
-        isDeleting = false;
-        phraseIndex = (phraseIndex + 1) % phrases.length; // 다음 문장으로 순환
-        delay = 400; // 다음 문장 시작 전 잠깐 대기
+      // 이전 행에 있던 깜빡이는 커서 분리/제거
+      if (cursorSpan && cursorSpan.parentNode) {
+        cursorSpan.parentNode.removeChild(cursorSpan);
       }
 
-      setTimeout(typeLoop, delay);
+      // 새로운 시구 행(Paragraph) 생성
+      const lineEl = document.createElement("p");
+      lineEl.className = "poem-line";
+
+      currentTextSpan = document.createElement("span");
+      currentTextSpan.className = "poem-text";
+
+      cursorSpan = document.createElement("span");
+      cursorSpan.className = "typing-cursor";
+      cursorSpan.setAttribute("aria-hidden", "true");
+      cursorSpan.textContent = "|";
+
+      lineEl.appendChild(currentTextSpan);
+      lineEl.appendChild(cursorSpan);
+      poemContainer.appendChild(lineEl);
+
+      charIndex = 0;
+      typeChar();
     }
 
-    // 타이핑 애니메이션 시작
-    typeLoop();
+    function typeChar() {
+      const currentPhrase = phrases[lineIndex];
+
+      if (charIndex < currentPhrase.length) {
+        currentTextSpan.textContent += currentPhrase.charAt(charIndex);
+        charIndex++;
+        setTimeout(typeChar, typeSpeed);
+      } else {
+        // 현재 행 완료: 다음 행으로 진행
+        lineIndex++;
+        if (lineIndex < phrases.length) {
+          setTimeout(startNewLine, linePause);
+        }
+      }
+    }
+
+    // 첫 번째 시구 행 타이핑 시작
+    startNewLine();
   }
 
   // ==========================================================================

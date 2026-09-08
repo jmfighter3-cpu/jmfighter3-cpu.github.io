@@ -288,6 +288,7 @@ h2.section-title {
   height: 96px;
   border: 3px solid rgba(245, 158, 11, 0.9);
   box-shadow: 0 0 0 4px rgba(255, 252, 245, 0.85), 0 8px 24px rgba(0, 0, 0, 0.45);
+  margin-top: 4px;
 }
 
 /* 그리스 비문 양식의 영웅 이름 타이틀 */
@@ -320,7 +321,7 @@ h2.section-title {
 
 .profile-box {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 24px;
   flex-wrap: wrap;
 }
@@ -420,15 +421,37 @@ h2.section-title {
   margin-bottom: 8px;
 }
 
-/* 2. 한 줄 소개 타이핑 애니메이션 박스 및 깜빡이는 커서 */
+/* 2. 오디세이아 서사시 누적 타이핑 애니메이션 박스 및 행 스타일 */
 .typing-box {
   font-size: 1.05rem;
   font-weight: 500;
   color: var(--text-main);
   min-height: 28px;
   display: flex;
-  align-items: center;
-  gap: 2px;
+  flex-direction: column;
+  gap: 8px;
+  line-height: 1.72;
+}
+
+.poem-line {
+  margin: 0;
+  word-break: keep-all;
+  animation: lineFadeIn 0.35s ease-out;
+}
+
+@keyframes lineFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.poem-text {
+  display: inline;
 }
 
 .typing-cursor {
@@ -436,6 +459,8 @@ h2.section-title {
   font-weight: 700;
   font-size: 1.1rem;
   animation: blink-caret 0.9s infinite;
+  display: inline;
+  margin-left: 2px;
 }
 
 @keyframes blink-caret {
