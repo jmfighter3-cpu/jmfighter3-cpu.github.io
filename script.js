@@ -458,6 +458,57 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnResetDemo = document.getElementById("btnResetDemo");
   const dailyLimitHint = document.getElementById("dailyLimitHint");
   const btnEtchOstrakon = document.getElementById("btnEtchOstrakon");
+  const liveStatusBadge = document.getElementById("liveStatusBadge");
+  const liveStatusText = document.getElementById("liveStatusText");
+
+  // ==========================================================================
+  // ⭐️ [Firebase 실시간 클라우드 DB 연동 설정]
+  // Firebase 콘솔(console.firebase.google.com)에서 발급받은 본인 프로젝트의
+  // firebaseConfig 객체 값을 아래에 입력해 주시면 전 세계 실시간 광장이 활성화됩니다.
+  // 키가 비어있거나 미설정된 상태에서는 자동으로 안전한 'LocalStorage 로컬 모드'로 동작합니다.
+  // ==========================================================================
+  const firebaseConfig = {
+    apiKey: "", // 발급받은 apiKey를 여기에 붙여넣으세요 (예: "AIzaSy...")
+    authDomain: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: ""
+  };
+
+  let db = null;
+  let isFirebaseLive = false;
+
+  // Firebase 초기화 검사 (SDK 로드 여부 및 apiKey 유효성 확인)
+  if (
+    typeof firebase !== "undefined" &&
+    firebaseConfig.apiKey &&
+    firebaseConfig.apiKey.trim() !== "" &&
+    firebaseConfig.apiKey !== "YOUR_API_KEY"
+  ) {
+    try {
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      db = firebase.firestore();
+      isFirebaseLive = true;
+      console.log("🏛️ [Agora] Firebase Firestore 글로벌 실시간 광장에 연결되었습니다.");
+    } catch (err) {
+      console.warn("Firebase 초기화 중 오류가 발생하여 로컬 저장소 모드로 전환합니다:", err);
+      isFirebaseLive = false;
+    }
+  }
+
+  function updateConnectionStatusUI() {
+    if (!liveStatusBadge || !liveStatusText) return;
+    if (isFirebaseLive) {
+      liveStatusBadge.classList.add("live-connected");
+      liveStatusText.textContent = "아고라 글로벌 실시간 광장 연결됨";
+    } else {
+      liveStatusBadge.classList.remove("live-connected");
+      liveStatusText.textContent = "로컬 저장소 모드 (개인 보관함)";
+    }
+  }
 
   const OSTRAKON_STORAGE_KEY = "hellenic_ostrakon_guestbook";
   const OSTRAKON_RATE_LIMIT_KEY = "hellenic_ostrakon_daily_limit";
@@ -577,7 +628,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    let ostrakaList = loadOstraka();
+    let ostrakaList = [];
 
     // 3. 화면에 도편 목록 렌더링
     function renderOstraka() {
@@ -611,15 +662,57 @@ document.addEventListener("DOMContentLoaded", () => {
         if (delBtn) {
           delBtn.addEventListener("click", () => {
             if (confirm("이 도편을 점토판에서 지우시겠습니까?")) {
-              ostrakaList = ostrakaList.filter(o => o.id !== item.id);
-              saveOstraka(ostrakaList);
-              renderOstraka();
+              if (item.isCloud && isFirebaseLive && db) {
+                db.collection("ostraka").doc(item.id).delete()
+                  .then(() => alert("도편이 클라우드 광장에서 삭제되었습니다."))
+                  .catch((err) => alert("삭제 권한이 없거나 오류가 발생했습니다: " + err.message));
+              } else {
+                ostrakaList = ostrakaList.filter(o => o.id !== item.id);
+                saveOstraka(ostrakaList);
+                renderOstraka();
+              }
             }
           });
         }
 
         ostrakonGrid.appendChild(tile);
       });
+    }
+
+    // 3-1. Firebase 실시간 연동 리스너 초기화 (미설정 시 로컬 저장소 로드)
+    function initOstrakaSync() {
+      if (isFirebaseLive && db) {
+        db.collection("ostraka")
+          .orderBy("createdAt", "desc")
+          .limit(50)
+          .onSnapshot((snapshot) => {
+            const cloudOstraka = [];
+            snapshot.forEach((doc) => {
+              const data = doc.data();
+              cloudOstraka.push({
+                id: doc.id,
+                author: data.author || "아고라 시민",
+                badge: data.badge || "아고라 시민",
+                date: data.date || "최근",
+                style: data.style || "terracotta",
+                message: data.message || "",
+                isDefault: false,
+                isCloud: true
+              });
+            });
+            // 클라우드 실시간 도편들 + 기본 고대 철학자 도편 4개 병합
+            ostrakaList = [...cloudOstraka, ...defaultOstraka];
+            renderOstraka();
+          }, (error) => {
+            console.error("Firestore 실시간 데이터 수신 오류:", error);
+            ostrakaList = loadOstraka();
+            renderOstraka();
+          });
+      } else {
+        // Firebase 미연동 시 로컬 모드로 동작
+        ostrakaList = loadOstraka();
+        renderOstraka();
+      }
     }
 
     // XSS 방지를 위한 간단한 HTML 특수문자 이스케이프 함수
@@ -693,10 +786,31 @@ document.addEventListener("DOMContentLoaded", () => {
         isDefault: false
       };
 
-      // 목록 맨 앞(최신순)에 추가
-      ostrakaList.unshift(newOstrakon);
-      saveOstraka(ostrakaList);
-      renderOstraka();
+      if (isFirebaseLive && db) {
+        // 1) 클라우드 Firestore에 저장 (성공 시 onSnapshot이 전 세계 모든 브라우저에 실시간 렌더링!)
+        db.collection("ostraka").add({
+          author: author,
+          badge: "아고라 시민",
+          date: dateString,
+          style: style,
+          message: message,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+          alert("🎉 아고라 글로벌 광장에 그대의 도편이 실시간으로 새겨졌습니다!");
+        }).catch((err) => {
+          console.error("클라우드 전송 실패:", err);
+          alert("클라우드 전송에 실패하여 로컬에 저장합니다: " + err.message);
+          ostrakaList.unshift(newOstrakon);
+          saveOstraka(ostrakaList);
+          renderOstraka();
+        });
+      } else {
+        // 2) 로컬 모드일 때
+        ostrakaList.unshift(newOstrakon);
+        saveOstraka(ostrakaList);
+        renderOstraka();
+        alert("🎉 아고라 광장에 그대의 도편이 성공적으로 새겨졌습니다! (로컬 모드)");
+      }
 
       // 일일 등록 횟수 갱신
       rateData.count += 1;
@@ -707,9 +821,6 @@ document.addEventListener("DOMContentLoaded", () => {
       // 입력 폼 초기화
       ostrakonContentInput.value = "";
       if (charCountSpan) charCountSpan.textContent = "0";
-
-      // 알림
-      alert("🎉 아고라 광장에 그대의 도편이 성공적으로 새겨졌습니다!");
     });
 
     // 7. 초기 도편 복구 버튼
@@ -727,9 +838,10 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // 첫 실행 시 렌더링
-    renderOstraka();
+    // 첫 실행 시 렌더링 및 상태 초기화
+    initOstrakaSync();
     updateDailyLimitUI();
+    updateConnectionStatusUI();
   }
 
 });

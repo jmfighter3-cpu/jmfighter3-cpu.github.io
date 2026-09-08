@@ -413,7 +413,13 @@
 
         <!-- 도편 전시 그리드 보드 -->
         <div class="ostrakon-board-header">
-          <h3 class="board-title">📜 아고라에 모인 도편들 (<span id="ostrakonCount">0</span>)</h3>
+          <div class="board-title-group">
+            <h3 class="board-title">📜 아고라에 모인 도편들 (<span id="ostrakonCount">0</span>)</h3>
+            <span class="live-status-badge" id="liveStatusBadge">
+              <span class="live-dot"></span>
+              <span class="live-text" id="liveStatusText">로컬 저장소 모드</span>
+            </span>
+          </div>
           <button type="button" class="btn-reset-demo" id="btnResetDemo" title="기본 철학자 도편으로 복구">
             🔄 초기 도편 복구
           </button>
@@ -437,8 +443,12 @@
   </footer>
 
   <!-- ======================================================================
-       6. 외부 자바스크립트(JS) 파일 연결 (화면 렌더링 후 실행되도록 바닥에 위치)
+       6. Google Firebase SDK 및 인터랙션 자바스크립트 연결
        ====================================================================== -->
+  <!-- Firebase v10 Compat SDK (글로벌 실시간 데이터베이스 연동 지원) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <!-- 커스텀 웹 서사시 인터랙션 스크립트 -->
   <script src="script.js"></script>
 </body>
 </html>
