@@ -39,9 +39,10 @@ body {
 }
 
 /* ==========================================================================
-   [목가적인 풍경 고정 배경 & 잔디/나무 바람 나부낌 연출]
-   1. 전체 사진 프레임(하늘, 먼 건물 등)은 흔들림 없이 화면에 100% 안정적으로 고정
-   2. 아래쪽 잔디밭과 사이프러스 나무 영역만 산들바람에 부드럽게 살랑살랑 나부끼는 유기적 효과
+   [목가적인 풍경 고정 배경 & 잔디/나무 자연 산들바람 연출]
+   1. 전체 사진(하늘, 먼 건물 등)은 흔들림이나 왜곡 없이 100% 완벽히 고정
+   2. 울렁거리는 인위적 왜곡 필터를 완전히 배제하고,
+      잔디와 나무의 풀잎 끝이 산들바람에 햇살을 받아 소폭 살랑살랑거리는 자연스러운 결 연출
    ========================================================================== */
 .scenic-background {
   position: fixed;
@@ -54,7 +55,7 @@ body {
   overflow: hidden;
 }
 
-/* 1. 고정된 전체 베이스 레이어 (하늘, 언덕, 쨍하고 선명한 HD 원본) */
+/* 1. 100% 고정된 전체 원본 베이스 레이어 (울렁거림 ZERO, 맑고 선명한 HD 화질) */
 .scenic-static-layer {
   position: absolute;
   top: 0;
@@ -62,66 +63,73 @@ body {
   width: 100%;
   height: 100%;
   background: url('assets/pastoral_crete_dorcia.jpg') center top / cover no-repeat;
-  filter: contrast(1.08) saturate(1.22) brightness(1.03);
+  filter: contrast(1.06) saturate(1.18) brightness(1.02);
 }
 
-/* 2. 바람에 살랑살랑 나부끼는 잔디/나무 레이어 (SVG 필터 및 마스킹 적용) */
-.scenic-wind-layer {
+/* 2. 잔디와 나무 영역에만 부드러운 산들바람이 스치는 미세 나부낌 레이어 */
+.scenic-grass-rustle {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background: url('assets/pastoral_crete_dorcia.jpg') center top / cover no-repeat;
-  /* SVG gentleWind 필터로 유기적인 산들바람 파동 생성 */
-  filter: url(#gentleWind) contrast(1.08) saturate(1.22) brightness(1.03);
-  /* 하늘과 먼 산은 완벽히 고정하고, 아래쪽 65% 영역(잔디와 나무)에만 바람 나부낌 집중 */
-  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.95) 45%, rgba(0, 0, 0, 0) 75%);
-  mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.95) 45%, rgba(0, 0, 0, 0) 75%);
-  animation: windSway 7s infinite alternate ease-in-out;
-  transform-origin: center bottom;
-  will-change: transform, filter;
+  /* 하늘과 먼 산은 완벽히 고정하고, 아래쪽 60% 잔디밭과 나무 영역에만 부드러운 마스킹 */
+  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 40%, rgba(0, 0, 0, 0) 65%);
+  mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 40%, rgba(0, 0, 0, 0) 65%);
+  /* 젤리 왜곡 없이, 바람에 풀잎이 살짝 눕혀지며 빛을 반사하는 자연스러운 찰랑임 */
+  animation: naturalGrassRustle 6s infinite ease-in-out;
+  will-change: filter, opacity;
 }
 
-/* 3. 살랑이는 바람결에 맞춰 잔디밭을 스쳐 지나가는 자연의 햇살(Shimmer) */
-.scenic-breeze-shimmer {
+/* 3. 산들바람이 불어올 때 풀밭 위를 부드럽게 스쳐 지나가는 자연스러운 바람결 */
+.scenic-wind-breeze {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 200%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%);
-  animation: windGust 12s infinite ease-in-out;
-  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 65%);
-  mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 65%);
+  bottom: 0;
+  left: -40%;
+  width: 180%;
+  height: 60%;
+  background: radial-gradient(ellipse 55% 45% at 50% 60%, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.015) 45%, transparent 70%);
+  animation: windBreezeSweep 9s infinite ease-in-out;
+  pointer-events: none;
 }
 
-/* 잔디와 나뭇잎이 살랑살랑 흔들리는 유기적 미세 모션 */
-@keyframes windSway {
-  0% {
-    transform: skewX(0deg) scale(1.0);
+/* 잔디와 나뭇가지의 자연스러운 풀잎 살랑임 (왜곡 없는 미세 광택 & 미동 파동) */
+@keyframes naturalGrassRustle {
+  0%, 100% {
+    filter: brightness(1.0) contrast(1.06) saturate(1.18);
+    opacity: 0.92;
+    transform: translateY(0);
   }
   35% {
-    transform: skewX(0.4deg) scale(1.002);
+    /* 산들바람이 불어와 풀잎 끝이 살짝 나부끼며 은은한 햇살 반사 */
+    filter: brightness(1.03) contrast(1.08) saturate(1.22);
+    opacity: 1;
+    transform: translateY(-0.8px);
   }
   70% {
-    transform: skewX(-0.3deg) scale(0.999);
-  }
-  100% {
-    transform: skewX(0.25deg) scale(1.001);
+    filter: brightness(0.985) contrast(1.05) saturate(1.16);
+    opacity: 0.88;
+    transform: translateY(0.4px);
   }
 }
 
-/* 바람이 스쳐 지나가는 빛의 흐름 */
-@keyframes windGust {
+/* 풀밭 위를 부드럽게 훑고 지나가는 산들바람 결 */
+@keyframes windBreezeSweep {
   0% {
-    transform: translateX(-100%);
+    transform: translateX(-35%);
+    opacity: 0;
   }
-  40% {
-    transform: translateX(15%);
+  30% {
+    opacity: 0.75;
+  }
+  65% {
+    transform: translateX(25%);
+    opacity: 0.6;
   }
   100% {
-    transform: translateX(100%);
+    transform: translateX(65%);
+    opacity: 0;
   }
 }
 

@@ -15,27 +15,17 @@
 <body>
 
   <!-- ======================================================================
-       목가적인 풍경 고정 배경 & 잔디/나무 바람 나부낌 연출 (Wind & Nature Motion)
-       전체 프레임은 고정되어 있고, 아래쪽 잔디와 나무만 산들바람에 살랑살랑 나부낍니다.
+       목가적인 풍경 고정 배경 & 잔디/나무 자연 산들바람 연출 (Natural Gentle Breeze)
+       화면 전체는 100% 견고하게 고정되고, 잔디와 나무만 산들바람에 소폭 살랑살랑거립니다.
        ====================================================================== -->
   <div class="scenic-background" aria-hidden="true">
-    <!-- 1. 고정된 전체 베이스 레이어 (하늘, 언덕, 풍경 전체) -->
+    <!-- 1. 100% 또렷하고 안정적으로 고정된 풍경 원본 베이스 레이어 -->
     <div class="scenic-static-layer"></div>
-    <!-- 2. 아래쪽 잔디와 나무에만 바람 물결 필터를 적용한 동적 레이어 -->
-    <div class="scenic-wind-layer"></div>
-    <!-- 3. 바람결이 스쳐 지나갈 때 은은하게 반짝이는 자연 햇살 레이어 -->
-    <div class="scenic-breeze-shimmer"></div>
+    <!-- 2. 잔디와 나무 영역에만 부드러운 산들바람 결이 스치는 미세 나부낌 레이어 -->
+    <div class="scenic-grass-rustle"></div>
+    <!-- 3. 바람이 불어올 때 풀밭 위를 은은하게 스쳐 지나가는 자연스러운 바람결 흐름 -->
+    <div class="scenic-wind-breeze"></div>
   </div>
-
-  <!-- 잔디와 나무가 유기적으로 살랑이도록 파동을 생성하는 SVG 터뷸런스 변위 필터 -->
-  <svg class="wind-svg-filter" width="0" height="0" aria-hidden="true" style="position: absolute; pointer-events: none; width: 0; height: 0; overflow: hidden;">
-    <filter id="gentleWind" x="0%" y="0%" width="100%" height="100%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.012 0.035" numOctaves="2" result="turbulence">
-        <animate attributeName="baseFrequency" dur="10s" values="0.012 0.035; 0.018 0.025; 0.014 0.038; 0.012 0.035" repeatCount="indefinite" />
-      </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="8" xChannelSelector="R" yChannelSelector="G" />
-    </filter>
-  </svg>
 
   <!-- ======================================================================
        3. 상단 헤더 및 내비게이션 바 (3개 탭 버튼)
