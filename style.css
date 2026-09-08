@@ -29,9 +29,9 @@ body {
   /* 5. 트렌디한 한글 웹폰트 Pretendard 우선 적용 */
   font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background-color: var(--bg-color);
-  /* 목가적인 풍경(토스카나 Val d'Orcia 푸른 언덕) 배경 및 가독성 확보용 소프트 딤 오버레이 */
+  /* 목가적인 풍경(토스카나 Val d'Orcia 푸른 언덕) 배경 - 사진이 화사하고 또렷하게 드러나도록 투명도 최적화 */
   background-image: 
-    linear-gradient(180deg, rgba(248, 250, 252, 0.72) 0%, rgba(248, 250, 252, 0.85) 100%),
+    linear-gradient(180deg, rgba(248, 250, 252, 0.15) 0%, rgba(248, 250, 252, 0.3) 100%),
     url('assets/pastoral_crete_dorcia.jpg');
   background-size: cover;
   background-position: center top;
@@ -186,6 +186,14 @@ h2.section-title {
   font-weight: bold;
   flex-shrink: 0;
   box-shadow: 0 8px 16px rgba(59, 130, 246, 0.25);
+  overflow: hidden;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .profile-header-row {
@@ -281,42 +289,50 @@ h2.section-title {
   50% { opacity: 0; }
 }
 
-/* 3. GitHub 실시간 통계 및 잔디 카드 스타일 */
+/* 3. GitHub 공식 배지 및 활동 프리뷰 카드 스타일 */
 .github-card {
   overflow: hidden;
 }
 
-.github-stats-grid {
+.github-badges-row {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   flex-wrap: wrap;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
-.github-stat-badge {
-  max-width: 100%;
-  height: auto;
-  border-radius: 10px;
-  transition: transform 0.25s ease;
-}
-
-.github-stat-badge:hover {
-  transform: translateY(-3px);
-}
-
-.github-grass-box {
-  width: 100%;
-  overflow-x: auto;
-  padding: 14px;
-  background-color: rgba(255, 255, 255, 0.65);
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-}
-
-.github-grass-img {
-  max-width: 100%;
-  height: auto;
+.badge-item {
+  height: 28px;
+  border-radius: 6px;
+  transition: transform 0.2s ease;
   display: block;
+}
+
+.badge-item:hover {
+  transform: translateY(-2px);
+}
+
+.github-profile-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  background-color: rgba(255, 255, 255, 0.75);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.preview-info h4 {
+  font-size: 1.15rem;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.preview-info p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
 }
 
 .skills-list {

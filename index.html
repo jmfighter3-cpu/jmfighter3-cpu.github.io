@@ -60,7 +60,10 @@
       <!-- 프로필 헤더 카드 -->
       <div class="card">
         <div class="profile-box">
-          <div class="profile-avatar">JM</div>
+          <div class="profile-avatar">
+            <img src="https://github.com/jmfighter3-cpu.png" alt="jmfighter3-cpu 프로필 사진" class="avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <span class="avatar-fallback" style="display: none;">JM</span>
+          </div>
           <div class="profile-info">
             <div class="profile-header-row">
               <h1>jmfighter3-cpu</h1>
@@ -99,20 +102,32 @@
         </div>
       </div>
 
-      <!-- 3. GitHub 실시간 활동 및 잔디 통계 카드 -->
+      <!-- 3. GitHub 실시간 활동 및 배지 카드 (안정적인 공식 CDN 연동) -->
       <div class="card github-card">
-        <h2 class="section-title">📊 GitHub 활동 및 통계</h2>
+        <h2 class="section-title">📊 GitHub 프로필 및 활동 요약</h2>
         <p style="margin-bottom: 16px; color: var(--text-muted); font-size: 0.95rem;">
-          GitHub 원격 저장소와 연동되어 실시간으로 집계되는 나의 개발 활동 현황입니다.
+          GitHub 원격 저장소와 연동된 공식 프로필 및 주요 활동 정보입니다.
         </p>
-        <!-- 실시간 통계 뱃지 및 언어 비율 -->
-        <div class="github-stats-grid">
-          <img src="https://github-readme-stats.vercel.app/api?username=jmfighter3-cpu&show_icons=true&theme=vue&locale=kr&hide_border=true&bg_color=ffffff80" alt="jmfighter3-cpu의 GitHub 통계" class="github-stat-badge" loading="lazy">
-          <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=jmfighter3-cpu&layout=compact&theme=vue&locale=kr&hide_border=true&bg_color=ffffff80" alt="jmfighter3-cpu의 사용 언어" class="github-stat-badge" loading="lazy">
+        <!-- 공식 고속 CDN 배지 모음 -->
+        <div class="github-badges-row">
+          <a href="https://github.com/jmfighter3-cpu" target="_blank" rel="noopener noreferrer">
+            <img src="https://img.shields.io/badge/GitHub-jmfighter3--cpu-181717?style=for-the-badge&logo=github" alt="GitHub jmfighter3-cpu" class="badge-item">
+          </a>
+          <a href="https://github.com/jmfighter3-cpu?tab=repositories" target="_blank" rel="noopener noreferrer">
+            <img src="https://img.shields.io/badge/Repositories-Public-2563eb?style=for-the-badge&logo=git" alt="Public Repositories" class="badge-item">
+          </a>
+          <img src="https://img.shields.io/badge/Primary_Language-Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Primary Language Python" class="badge-item">
+          <img src="https://img.shields.io/badge/Status-Learning_%26_Growing-10b981?style=for-the-badge&logo=sparkles" alt="Status Learning" class="badge-item">
         </div>
-        <!-- 실시간 GitHub 잔디(Contributions) 차트 -->
-        <div class="github-grass-box">
-          <img src="https://ghchart.rshah.org/3b82f6/jmfighter3-cpu" alt="jmfighter3-cpu의 GitHub 잔디 차트" class="github-grass-img" loading="lazy">
+        <!-- GitHub 프로필 바로가기 프리뷰 박스 -->
+        <div class="github-profile-preview">
+          <div class="preview-info">
+            <h4>@jmfighter3-cpu</h4>
+            <p>GitHub 저장소에서 실시간 소스 코드와 커밋 히스토리를 확인하실 수 있습니다.</p>
+          </div>
+          <a href="https://github.com/jmfighter3-cpu" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+            GitHub 프로필 방문 ↗
+          </a>
         </div>
       </div>
 
