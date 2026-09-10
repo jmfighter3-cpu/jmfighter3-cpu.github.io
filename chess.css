@@ -727,6 +727,25 @@
   cursor: not-allowed;
 }
 
+/* 트로이 목마 발동 시 체스판 진동 및 황금빛/진홍빛 기습 펄스 */
+.chessboard.trojan-horse-ambush {
+  animation: trojan-ambush-flash 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@keyframes trojan-ambush-flash {
+  0% {
+    transform: scale(0.97);
+    box-shadow: 0 0 40px rgba(245, 158, 11, 0.95), inset 0 0 30px rgba(239, 68, 68, 0.65);
+  }
+  35% {
+    transform: scale(1.025);
+    box-shadow: 0 0 65px rgba(239, 68, 68, 0.95), inset 0 0 45px rgba(245, 158, 11, 0.85);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 /* 10. 프로모션(승급) 모달 팝업 */
 .promotion-modal-overlay {
   position: fixed;
