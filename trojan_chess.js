@@ -386,11 +386,11 @@
   }
 
   // ==========================================================================
-  // 3. 체스 AI 평가 함수 및 미니맥스 엔진 (Minimax with PST)
+  // 3. 체스 AI 평가 함수 및 미니맥스 엔진 (Minimax with PST & Tactical Extension)
   // ==========================================================================
   const PIECE_VALUES = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 20000 };
 
-  // 기물 위치 가치 테이블 (Piece-Square Tables: 중앙 장악 및 영웅 진격 보상)
+  // 기물 위치 가치 테이블 (Piece-Square Tables: 중앙 장악, 전개 및 킹 안전 보상)
   const PAWN_PST = [
     [0,  0,  0,  0,  0,  0,  0,  0],
     [50, 50, 50, 50, 50, 50, 50, 50],
@@ -424,9 +424,50 @@
     [-20,-10,-10,-10,-10,-10,-10,-20]
   ];
 
-  function evaluateBoard(game) {
+  const ROOK_PST = [
+    [0,  0,  0,  0,  0,  0,  0,  0],
+    [15, 20, 20, 20, 20, 20, 20, 15], // 7랭크 침투 압박
+    [-5,  0,  0,  0,  0,  0,  0, -5],
+    [-5,  0,  0,  0,  0,  0,  0, -5],
+    [-5,  0,  0,  0,  0,  0,  0, -5],
+    [-5,  0,  0,  0,  0,  0,  0, -5],
+    [-5,  0,  0,  0,  0,  0,  0, -5],
+    [0,  0,  0,  5,  5,  0,  0,  0]
+  ];
+
+  const QUEEN_PST = [
+    [-20,-10,-10, -5, -5,-10,-10,-20],
+    [-10,  0,  0,  0,  0,  0,  0,-10],
+    [-10,  0,  5,  5,  5,  5,  0,-10],
+    [-5,   0,  5,  5,  5,  5,  0, -5],
+    [0,    0,  5,  5,  5,  5,  0, -5],
+    [-10,  5,  5,  5,  5,  5,  0,-10],
+    [-10,  0,  5,  0,  0,  0,  0,-10],
+    [-20,-10,-10, -5, -5,-10,-10,-20]
+  ];
+
+  const KING_MIDGAME_PST = [
+    [-30,-40,-40,-50,-50,-40,-40,-30],
+    [-30,-40,-40,-50,-50,-40,-40,-30],
+    [-30,-40,-40,-50,-50,-40,-40,-30],
+    [-30,-40,-40,-50,-50,-40,-40,-30],
+    [-20,-30,-30,-40,-40,-30,-30,-20],
+    [-10,-20,-20,-20,-20,-20,-20,-10],
+    [20, 20,  0,  0,  0,  0, 20, 20],
+    [20, 30, 10,  0,  0, 10, 30, 20]
+  ];
+
+  function evaluateBoard(game, isHades = false) {
+    if (game.in_checkmate()) {
+      return game.turn() === 'w' ? -99999 : 99999;
+    }
+    if (game.in_draw()) return 0;
+
     let totalScore = 0;
     const board = game.board();
+    let wBishops = 0, bBishops = 0;
+    const wPawnCols = new Array(8).fill(0);
+    const bPawnCols = new Array(8).fill(0);
 
     for (let r = 0; r < 8; r++) {
       for (let c = 0; c < 8; c++) {
@@ -438,9 +479,21 @@
         // 위치 가치 가산
         let pstVal = 0;
         const pstRow = piece.color === 'w' ? r : 7 - r;
-        if (piece.type === 'p') pstVal = PAWN_PST[pstRow][c];
-        else if (piece.type === 'n') pstVal = KNIGHT_PST[pstRow][c];
-        else if (piece.type === 'b') pstVal = BISHOP_PST[pstRow][c];
+        if (piece.type === 'p') {
+          pstVal = PAWN_PST[pstRow][c];
+          if (piece.color === 'w') wPawnCols[c]++; else bPawnCols[c]++;
+        } else if (piece.type === 'n') {
+          pstVal = KNIGHT_PST[pstRow][c];
+        } else if (piece.type === 'b') {
+          pstVal = BISHOP_PST[pstRow][c];
+          if (piece.color === 'w') wBishops++; else bBishops++;
+        } else if (piece.type === 'r') {
+          pstVal = ROOK_PST[pstRow][c];
+        } else if (piece.type === 'q') {
+          pstVal = QUEEN_PST[pstRow][c];
+        } else if (piece.type === 'k') {
+          pstVal = KING_MIDGAME_PST[pstRow][c];
+        }
 
         val += pstVal;
 
@@ -451,22 +504,57 @@
         }
       }
     }
+
+    // 비숍 쌍(Bishop Pair) 협공 보너스
+    if (wBishops >= 2) totalScore += 30;
+    if (bBishops >= 2) totalScore -= 30;
+
+    // 체크 위협 가산
+    if (game.in_check()) {
+      totalScore += (game.turn() === 'w' ? -35 : 35);
+    }
+
+    // 하데스 특화: 폰 구조(더블 폰 감점) 정밀 계산
+    if (isHades) {
+      for (let c = 0; c < 8; c++) {
+        if (wPawnCols[c] > 1) totalScore -= (wPawnCols[c] - 1) * 15;
+        if (bPawnCols[c] > 1) totalScore += (bPawnCols[c] - 1) * 15;
+      }
+    }
+
     return totalScore;
   }
 
-  function minimax(game, depth, alpha, beta, isMaximizing) {
-    if (depth === 0 || game.game_over()) {
-      return evaluateBoard(game);
+  function minimax(game, depth, alpha, beta, isMaximizing, isHades = false) {
+    if (depth <= 0 || game.game_over()) {
+      return evaluateBoard(game, isHades);
     }
 
     const moves = game.moves();
+    if (moves.length === 0) return evaluateBoard(game, isHades);
+
+    // 수 정렬: 체크메이트(#), 체크(+), 포획(x) 우선 정렬하여 Alpha-Beta 가지치기 극대화
+    moves.sort((a, b) => {
+      const sA = a.includes('#') ? 1000 : (a.includes('+') ? 300 : (a.includes('x') ? 150 : 0));
+      const sB = b.includes('#') ? 1000 : (b.includes('+') ? 300 : (b.includes('x') ? 150 : 0));
+      return sB - sA;
+    });
 
     if (isMaximizing) {
       let maxEval = -Infinity;
       for (let i = 0; i < moves.length; i++) {
-        game.move(moves[i]);
-        const ev = minimax(game, depth - 1, alpha, beta, false);
+        const moveStr = moves[i];
+        game.move(moveStr);
+
+        // 하데스 난이도: 포획 또는 체크인 치명적 수일 때 1-ply 전술 심화 연장(Tactical Extension)
+        let nextDepth = depth - 1;
+        if (isHades && depth === 1 && (moveStr.includes('x') || moveStr.includes('+'))) {
+          nextDepth = 1;
+        }
+
+        const ev = minimax(game, nextDepth, alpha, beta, false, false);
         game.undo();
+
         maxEval = Math.max(maxEval, ev);
         alpha = Math.max(alpha, ev);
         if (beta <= alpha) break;
@@ -475,9 +563,17 @@
     } else {
       let minEval = Infinity;
       for (let i = 0; i < moves.length; i++) {
-        game.move(moves[i]);
-        const ev = minimax(game, depth - 1, alpha, beta, true);
+        const moveStr = moves[i];
+        game.move(moveStr);
+
+        let nextDepth = depth - 1;
+        if (isHades && depth === 1 && (moveStr.includes('x') || moveStr.includes('+'))) {
+          nextDepth = 1;
+        }
+
+        const ev = minimax(game, nextDepth, alpha, beta, true, false);
         game.undo();
+
         minEval = Math.min(minEval, ev);
         beta = Math.min(beta, ev);
         if (beta <= alpha) break;
@@ -501,19 +597,30 @@
 
     // 난이도 2: 영웅 (Heroic - 깊이 2)
     // 난이도 3: 올림포스 신 (Olympian - 깊이 3)
-    const depth = difficulty === "olympian" ? 3 : 2;
+    // 난이도 4: 하데스 (Hades - 깊이 3 + 치명적 전술 1-ply 확장 & 심연 평가 모델)
+    const isHades = (difficulty === "hades");
+    const depth = (isHades || difficulty === "olympian") ? 3 : 2;
     const isMaximizing = game.turn() === 'w';
 
     let bestMove = null;
     let bestVal = isMaximizing ? -Infinity : Infinity;
 
-    // 수 탐색 시 포획 수부터 우선 정렬 (탐색 효율 향상)
-    moves.sort((a, b) => (b.captured ? 1 : 0) - (a.captured ? 1 : 0));
+    // 루트 수 탐색 시 MVV-LVA(Most Valuable Victim) 포획 수 및 체크 수 최우선 정렬
+    moves.sort((a, b) => {
+      let sA = 0, sB = 0;
+      if (a.captured) sA += (PIECE_VALUES[a.captured] || 100) * 10 - (PIECE_VALUES[a.piece] || 100);
+      if (b.captured) sB += (PIECE_VALUES[b.captured] || 100) * 10 - (PIECE_VALUES[b.piece] || 100);
+      if (a.san && a.san.includes('#')) sA += 5000;
+      if (b.san && b.san.includes('#')) sB += 5000;
+      if (a.san && a.san.includes('+')) sA += 300;
+      if (b.san && b.san.includes('+')) sB += 300;
+      return sB - sA;
+    });
 
     for (let i = 0; i < moves.length; i++) {
       const move = moves[i];
       game.move(move);
-      const ev = minimax(game, depth - 1, -Infinity, Infinity, !isMaximizing);
+      const ev = minimax(game, depth - 1, -Infinity, Infinity, !isMaximizing, isHades);
       game.undo();
 
       if (isMaximizing) {
@@ -1829,7 +1936,7 @@
       // 게임 설정 상태
       this.playerColor = 'w';       // 'w': 아카이아(그리스), 'b': 트로이
       this.gameMode = 'ai';         // 'ai': 1인 vs AI, 'pvp': 2인 로컬 대전
-      this.aiDifficulty = 'heroic'; // 'recruit', 'heroic', 'olympian'
+      this.aiDifficulty = 'heroic'; // 'recruit', 'heroic', 'olympian', 'hades'
       this.specialMode = true;      // 트로이 서사 특수 모드 활성화 여부
       this.trojanHorseUsed = false; // 트로이 목마 전술 사용 여부
 
@@ -1962,6 +2069,11 @@
       if (this.selectDifficulty) {
         this.selectDifficulty.addEventListener("change", (e) => {
           this.aiDifficulty = e.target.value;
+          if (this.aiDifficulty === "hades") {
+            this.setDialogue("💀 심연의 명왕 하데스가 지하세계의 옥좌에서 눈을 떴습니다. '필멸자여, 타르타로스의 시험을 견뎌보아라.'");
+          } else if (this.aiDifficulty === "olympian") {
+            this.setDialogue("⚡ 올림포스의 신들이 전장을 내려다봅니다. '신들의 섭리를 거스르는 자는 번개를 맞으리라.'");
+          }
         });
       }
 
@@ -2087,9 +2199,14 @@
             squareDiv.classList.add("selected");
           }
 
-          // 2. 마지막 착수 칸 하이라이트
+          // 2. 마지막 착수 칸 하이라이트 (출발 칸 및 도착 칸 분기)
           if (lastMove && (lastMove.from === squareName || lastMove.to === squareName)) {
             squareDiv.classList.add("last-move");
+            if (lastMove.to === squareName) {
+              squareDiv.classList.add("last-move-to");
+            } else {
+              squareDiv.classList.add("last-move-from");
+            }
           }
 
           // 3. 체크 상태인 킹 하이라이트
@@ -2120,6 +2237,11 @@
 
             pieceDiv.className = `piece statue-piece ${isWhite ? "white-piece" : "black-piece"} ${hero ? hero.role : ""}`;
             pieceDiv.title = hero ? `${hero.name} — ${hero.title}` : "";
+
+            // 직전 움직인 기물에 붉은 테두리(Red Border) 강조 클래스 부여
+            if (lastMove && lastMove.to === squareName) {
+              pieceDiv.classList.add("last-moved-piece");
+            }
 
             pieceDiv.innerHTML = generateAomHeroUnitSvg(hero);
 
@@ -2568,7 +2690,15 @@
         this.setDialogue(`${actorName}: "${captureLine}"`);
       } else {
         this.sound.playMove();
-        if (Math.random() < 0.4) {
+        if (this.gameMode === "ai" && this.game.turn() === this.playerColor && this.aiDifficulty === "hades" && Math.random() < 0.35) {
+          const hadesQuotes = [
+            "💀 하데스: '네 모든 행마는 이미 타르타로스의 명부에 적혀 있다.'",
+            "💀 하데스: '필멸자의 허세는 저승의 문 앞에서 부질없이 흩어질 뿐...'",
+            "💀 하데스: '스틱스 강변에 네 전사들의 영혼이 하나둘 쌓여가는구나.'",
+            "💀 하데스: '어둠 속에서 계산된 침묵의 일격이다.'"
+          ];
+          this.setDialogue(hadesQuotes[Math.floor(Math.random() * hadesQuotes.length)]);
+        } else if (Math.random() < 0.4) {
           this.setDialogue(BATTLE_DIALOGUES.moves[Math.floor(Math.random() * BATTLE_DIALOGUES.moves.length)]);
         }
       }
