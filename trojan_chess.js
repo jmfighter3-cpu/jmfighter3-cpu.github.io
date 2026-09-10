@@ -27,7 +27,7 @@
         q: { name: "아킬레우스 (Achilles)", title: "펠레우스의 아들, 최강의 전사", symbol: "♕" },
         b: { name: "오디세우스 (Odysseus)", title: "이타카의 왕, 지략의 영웅", symbol: "♗" },
         n: { name: "파트로클로스 (Patroclus)", title: "아킬레우스의 벗, 용맹한 전사", symbol: "♘" },
-        r: { name: "아카이아 흑선 함대 (Black Ships)", title: "트로이 해안을 포위한 천 척의 배", symbol: "♖" },
+        r: { name: "대·소 아이아스 (Ajax)", title: "거대한 방패의 대 아이아스 & 신속한 창의 소 아이아스", symbol: "♖" },
         p: { name: "미르미돈 정예병 (Myrmidon)", title: "아킬레우스 직속 최정예 개미 전사들", symbol: "♙" }
       }
     },
