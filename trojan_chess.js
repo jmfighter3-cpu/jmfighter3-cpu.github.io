@@ -20,27 +20,188 @@
   // 1. 에이지 오브 미쏠로지(AoM) 스타일 트로이 영웅 고유 카탈로그
   const HERO_CATALOG = {
     // === 아카이아 연합군 (White / 그리스) ===
-    'w_r1': { id: 'w_r1', type: 'r', color: 'w', name: '대(大) 아이아스 (Great Ajax)', title: '칠중 소가죽 방패의 난공불락 성벽', shortName: '대 아이아스', symbol: '♖', role: 'ajax_great' },
-    'w_n1': { id: 'w_n1', type: 'n', color: 'w', name: '파트로클로스 (Patroclus)', title: '아킬레우스의 가장 소중한 전우, 용맹한 전차병', shortName: '파트로클로스', symbol: '♘', role: 'patroclus' },
-    'w_b1': { id: 'w_b1', type: 'b', color: 'w', name: '오디세우스 (Odysseus)', title: '이타카의 왕, 지략과 지혜의 영웅', shortName: '오디세우스', symbol: '♗', role: 'odysseus' },
-    'w_q':  { id: 'w_q',  type: 'q', color: 'w', name: '아킬레우스 (Achilles)', title: '펠레우스의 아들, 일리아스 최강의 영웅', shortName: '아킬레우스', symbol: '♕', role: 'achilles' },
-    'w_k':  { id: 'w_k',  type: 'k', color: 'w', name: '아가멤논 (Agamemnon)', title: '미케네의 군주, 아카이아 연합군 총사령관', shortName: '아가멤논', symbol: '♔', role: 'agamemnon' },
-    'w_b2': { id: 'w_b2', type: 'b', color: 'w', name: '디오메데스 (Diomedes)', title: '아테나의 가호로 신들에게 상처를 입힌 아르고스 왕', shortName: '디오메데스', symbol: '♗', role: 'diomedes' },
-    'w_n2': { id: 'w_n2', type: 'n', color: 'w', name: '네스토르 (Nestor)', title: '필로스의 지혜로운 원로 전차병 군주', shortName: '네스토르', symbol: '♘', role: 'nestor' },
-    'w_r2': { id: 'w_r2', type: 'r', color: 'w', name: '소(小) 아이아스 (Lesser Ajax)', title: '로크리스의 명장, 바람처럼 날렵한 투창의 영웅', shortName: '소 아이아스', symbol: '♖', role: 'ajax_lesser' },
-    'w_p':  { id: 'w_p',  type: 'p', color: 'w', name: '미르미돈 정예병 (Myrmidons)', title: '아킬레우스 직속 최정예 개미 전사대', shortName: '미르미돈', symbol: '♙', role: 'myrmidon' },
+    'w_r1': {
+      id: 'w_r1', type: 'r', color: 'w',
+      name: '대(大) 아이아스 (Great Ajax)',
+      title: '칠중 소가죽 방패의 난공불락 성벽',
+      shortName: '대 아이아스', symbol: '♖', role: 'ajax_great',
+      factionName: '아카이아 연합군 (그리스)',
+      chessRole: '룩 (Rook / 퀸사이드)',
+      moveDesc: '상하좌우 직선 방향으로 원하는 칸만큼 이동 (캐슬링 가능)',
+      lore: '텔라몬의 아들이자 헤라클레스에 버금가는 거인 영웅. 청동을 덧댄 거대한 칠중 소가죽 타워 실드로 트로이군의 맹공을 홀로 저지한 그리스의 불멸의 성벽입니다.'
+    },
+    'w_n1': {
+      id: 'w_n1', type: 'n', color: 'w',
+      name: '파트로클로스 (Patroclus)',
+      title: '아킬레우스의 가장 소중한 전우, 용맹한 전차병',
+      shortName: '파트로클로스', symbol: '♘', role: 'patroclus',
+      factionName: '아카이아 연합군 (그리스)',
+      chessRole: '나이트 (Knight / 퀸사이드)',
+      moveDesc: 'L자형(2칸 직진 후 1칸 직각)으로 기물을 뛰어넘어 도약 이동',
+      lore: '아킬레우스의 가장 깊은 영혼의 동반자. 아킬레우스의 갑옷을 입고 출격하여 불타는 그리스 함선을 구원하고 트로이 전선을 뒤흔든 돌격 장수입니다.'
+    },
+    'w_b1': {
+      id: 'w_b1', type: 'b', color: 'w',
+      name: '오디세우스 (Odysseus)',
+      title: '이타카의 왕, 지략과 지혜의 영웅',
+      shortName: '오디세우스', symbol: '♗', role: 'odysseus',
+      factionName: '아카이아 연합군 (그리스)',
+      chessRole: '비숍 (Bishop / 퀸사이드)',
+      moveDesc: '대각선 방향으로 원하는 칸만큼 이동 (자신과 같은 색 칸만 이동)',
+      lore: '지혜의 여신 아테나의 총애를 받는 이타카의 군주. 수많은 난관을 뛰어난 지략으로 타개하며 불후의 걸작 \'트로이 목마\'를 고안해 전쟁을 승리로 이끈 지혜의 화신입니다.'
+    },
+    'w_q': {
+      id: 'w_q', type: 'q', color: 'w',
+      name: '아킬레우스 (Achilles)',
+      title: '펠레우스의 아들, 일리아스 최강의 영웅',
+      shortName: '아킬레우스', symbol: '♕', role: 'achilles',
+      factionName: '아카이아 연합군 (그리스)',
+      chessRole: '퀸 (Queen / 최강의 기물)',
+      moveDesc: '상하좌우 및 대각선 전 방향으로 거리 제한 없이 직선 이동',
+      lore: '바다의 여신 테티스와 펠레우스의 아들. 헤파이토스가 벼려낸 눈부신 황금 갑옷과 펠레우스의 청동 장창으로 전장을 지배하는 일리아스 최고의 무신(武神)입니다.'
+    },
+    'w_k': {
+      id: 'w_k', type: 'k', color: 'w',
+      name: '아가멤논 (Agamemnon)',
+      title: '미케네의 군주, 아카이아 연합군 총사령관',
+      shortName: '아가멤논', symbol: '♔', role: 'agamemnon',
+      factionName: '아카이아 연합군 (그리스)',
+      chessRole: '킹 (King / 총사령관)',
+      moveDesc: '상하좌우 및 대각선 모든 방향으로 1칸 이동 (체크메이트 시 패배)',
+      lore: '제우스의 가호를 받는 미케네의 황금빛 군주이자 10만 그리스 대군의 총사령관. 황금 홀(Scepter)과 왕관을 쥐고 연합군 전체를 통솔합니다.'
+    },
+    'w_b2': {
+      id: 'w_b2', type: 'b', color: 'w',
+      name: '디오메데스 (Diomedes)',
+      title: '아테나의 가호로 신들에게 상처를 입힌 아르고스 왕',
+      shortName: '디오메데스', symbol: '♗', role: 'diomedes',
+      factionName: '아카이아 연합군 (그리스)',
+      chessRole: '비숍 (Bishop / 킹사이드)',
+      moveDesc: '대각선 방향으로 원하는 칸만큼 이동 (자신과 같은 색 칸만 이동)',
+      lore: '아르고스의 젊은 패왕. 아테나의 불꽃 투구를 쓰고 인간의 몸으로 전쟁의 신 아레스와 미의 여신 아프로디테를 찔러 물리친 불패의 맹장입니다.'
+    },
+    'w_n2': {
+      id: 'w_n2', type: 'n', color: 'w',
+      name: '네스토르 (Nestor)',
+      title: '필로스의 지혜로운 원로 전차병 군주',
+      shortName: '네스토르', symbol: '♘', role: 'nestor',
+      factionName: '아카이아 연합군 (그리스)',
+      chessRole: '나이트 (Knight / 킹사이드)',
+      moveDesc: 'L자형(2칸 직진 후 1칸 직각)으로 기물을 뛰어넘어 도약 이동',
+      lore: '3대에 걸친 전란을 겪은 필로스의 노왕. 뛰어난 전차전의 대가이자 꿀처럼 달콤한 화술과 경륜으로 아카이아 영웅들의 갈등을 봉합하고 승리의 길을 인도합니다.'
+    },
+    'w_r2': {
+      id: 'w_r2', type: 'r', color: 'w',
+      name: '소(小) 아이아스 (Lesser Ajax)',
+      title: '로크리스의 명장, 바람처럼 날렵한 투창의 영웅',
+      shortName: '소 아이아스', symbol: '♖', role: 'ajax_lesser',
+      factionName: '아카이아 연합군 (그리스)',
+      chessRole: '룩 (Rook / 킹사이드)',
+      moveDesc: '상하좌우 직선 방향으로 원하는 칸만큼 이동 (캐슬링 가능)',
+      lore: '오일레우스의 아들. 그리스 진영에서 아킬레우스 다음으로 빠른 발을 가졌으며, 바람처럼 날카로운 쌍투창으로 적진을 휩쓰는 날렵한 돌격 명장입니다.'
+    },
+    'w_p': {
+      id: 'w_p', type: 'p', color: 'w',
+      name: '미르미돈 정예병 (Myrmidons)',
+      title: '아킬레우스 직속 최정예 개미 전사대',
+      shortName: '미르미돈', symbol: '♙', role: 'myrmidon',
+      factionName: '아카이아 연합군 (그리스)',
+      chessRole: '폰 (Pawn / 최전선 보병)',
+      moveDesc: '전방으로 1칸 전진 (최초 이동 시 2칸 가능), 대각선 1칸 포획, 끝 도달 시 승급',
+      lore: '제우스가 개미(Myrmex)를 강인한 인간으로 변모시켜 탄생한 아킬레우스의 직속 친위대. 한 치의 물러섬 없는 완벽한 군율과 용맹으로 진격합니다.'
+    },
 
     // === 트로이 수호군 (Black / 일리온) ===
-    'b_r1': { id: 'b_r1', type: 'r', color: 'b', name: '스카이아 관문 (Scaean Gate)', title: '아폴론이 축성한 서쪽의 난공불락 성벽 타워', shortName: '스카이아 문', symbol: '♜', role: 'scaean_gate' },
-    'b_n1': { id: 'b_n1', type: 'n', color: 'b', name: '아이네이아스 (Aeneas)', title: '아프로디테의 아들, 다르다니아의 용맹한 맹장', shortName: '아이네이아스', symbol: '♞', role: 'aeneas' },
-    'b_b1': { id: 'b_b1', type: 'b', color: 'b', name: '파리스 (Paris)', title: '트로이의 미남 왕자, 아폴론의 황금 활을 든 궁수', shortName: '파리스', symbol: '♝', role: 'paris' },
-    'b_q':  { id: 'b_q',  type: 'q', color: 'b', name: '헥토르 (Hector)', title: '눈부신 투구의 조국 수호자, 트로이의 불멸의 방패', shortName: '헥토르', symbol: '♛', role: 'hector' },
-    'b_k':  { id: 'b_k',  type: 'k', color: 'b', name: '프리아모스 (Priam)', title: '트로이의 성군, 일리오스의 위대한 노왕', shortName: '프리아모스', symbol: '♚', role: 'priam' },
-    'b_b2': { id: 'b_b2', type: 'b', color: 'b', name: '헬레노스 (Helenus)', title: '아폴론의 신탁을 전하는 트로이의 예언자 왕자', shortName: '헬레노스', symbol: '♝', role: 'helenus' },
-    'b_n2': { id: 'b_n2', type: 'n', color: 'b', name: '사르페돈 (Sarpedon)', title: '제우스의 아들, 리키아의 용맹한 영웅왕', shortName: '사르페돈', symbol: '♞', role: 'sarpedon' },
-    'b_r2': { id: 'b_r2', type: 'r', color: 'b', name: '다르다니아 성탑 (Dardanian Tower)', title: '포세이돈의 가호가 깃든 동쪽의 요새 타워', shortName: '다르다니아 탑', symbol: '♜', role: 'dardanian_tower' },
-    'b_p':  { id: 'b_p',  type: 'p', color: 'b', name: '트로이 팔랑크스 (Trojan Phalanx)', title: '조국의 대지를 사수하는 불굴의 트로이 보병대', shortName: '트로이 보병', symbol: '♟', role: 'trojan_phalanx' }
-  };
+    'b_r1': {
+      id: 'b_r1', type: 'r', color: 'b',
+      name: '스카이아 관문 (Scaean Gate)',
+      title: '아폴론이 축성한 서쪽의 난공불락 성벽 타워',
+      shortName: '스카이아 문', symbol: '♜', role: 'scaean_gate',
+      factionName: '트로이 수호군 (일리온)',
+      chessRole: '룩 (Rook / 퀸사이드)',
+      moveDesc: '상하좌우 직선 방향으로 원하는 칸만큼 이동 (캐슬링 가능)',
+      lore: '트로이 성의 서쪽 주 출입문. 태양신 아폴론이 친히 단단한 암석을 깎아 축성한 거대한 석조 관문 타워로, 수많은 그리스 장수들의 진격을 가로막은 요새입니다.'
+    },
+    'b_n1': {
+      id: 'b_n1', type: 'n', color: 'b',
+      name: '아이네이아스 (Aeneas)',
+      title: '아프로디테의 아들, 다르다니아의 용맹한 맹장',
+      shortName: '아이네이아스', symbol: '♞', role: 'aeneas',
+      factionName: '트로이 수호군 (일리온)',
+      chessRole: '나이트 (Knight / 퀸사이드)',
+      moveDesc: 'L자형(2칸 직진 후 1칸 직각)으로 기물을 뛰어넘어 도약 이동',
+      lore: '미의 여신 아프로디테와 안키세스의 아들이자 헥토르에 버금가는 트로이 2대 영웅. 훗날 불타는 조국을 탈출하여 로마 제국의 시조가 되는 불멸의 숙명을 지녔습니다.'
+    },
+    'b_b1': {
+      id: 'b_b1', type: 'b', color: 'b',
+      name: '파리스 (Paris)',
+      title: '트로이의 미남 왕자, 아폴론의 황금 활을 든 궁수',
+      shortName: '파리스', symbol: '♝', role: 'paris',
+      factionName: '트로이 수호군 (일리온)',
+      chessRole: '비숍 (Bishop / 퀸사이드)',
+      moveDesc: '대각선 방향으로 원하는 칸만큼 이동 (자신과 같은 색 칸만 이동)',
+      lore: '트로이의 둘째 왕자이자 황금 사과 신화의 주인공. 아폴론의 은총이 담긴 황금 복합궁을 메고 원거리에서 적장의 허점을 정확히 저격하는 명사수입니다.'
+    },
+    'b_q': {
+      id: 'b_q', type: 'q', color: 'b',
+      name: '헥토르 (Hector)',
+      title: '눈부신 투구의 조국 수호자, 트로이의 불멸의 방패',
+      shortName: '헥토르', symbol: '♛', role: 'hector',
+      factionName: '트로이 수호군 (일리온)',
+      chessRole: '퀸 (Queen / 최강의 기물)',
+      moveDesc: '상하좌우 및 대각선 전 방향으로 거리 제한 없이 직선 이동',
+      lore: '프리아모스의 맏아들이자 트로이군의 총사령관. 눈부시게 빛나는 말갈기 투구를 휘날리며 가족과 백성을 지키기 위해 홀로 아카이아 대군을 격퇴한 위대한 수호신입니다.'
+    },
+    'b_k': {
+      id: 'b_k', type: 'k', color: 'b',
+      name: '프리아모스 (Priam)',
+      title: '트로이의 성군, 일리오스의 위대한 노왕',
+      shortName: '프리아모스', symbol: '♚', role: 'priam',
+      factionName: '트로이 수호군 (일리온)',
+      chessRole: '킹 (King / 총사령관)',
+      moveDesc: '상하좌우 및 대각선 모든 방향으로 1칸 이동 (체크메이트 시 패배)',
+      lore: '신들이 축성한 황금 도시 트로이의 국부. 50명의 용맹한 자식들과 함께 거대한 아카이아 원정군에 맞서 조국의 영광과 백성의 안녕을 지키는 자애로운 군주입니다.'
+    },
+    'b_b2': {
+      id: 'b_b2', type: 'b', color: 'b',
+      name: '헬레노스 (Helenus)',
+      title: '아폴론의 신탁을 전하는 트로이의 예언자 왕자',
+      shortName: '헬레노스', symbol: '♝', role: 'helenus',
+      factionName: '트로이 수호군 (일리온)',
+      chessRole: '비숍 (Bishop / 킹사이드)',
+      moveDesc: '대각선 방향으로 원하는 칸만큼 이동 (자신과 같은 색 칸만 이동)',
+      lore: '아폴론 신에게 직접 예언 능력을 부여받은 트로이의 왕자. 카두세우스 성스러운 지팡이를 들고 전장의 흐름과 올림포스 신들의 숨은 뜻을 꿰뚫어 봅니다.'
+    },
+    'b_n2': {
+      id: 'b_n2', type: 'n', color: 'b',
+      name: '사르페돈 (Sarpedon)',
+      title: '제우스의 아들, 리키아의 용맹한 영웅왕',
+      shortName: '사르페돈', symbol: '♞', role: 'sarpedon',
+      factionName: '트로이 수호군 (일리온)',
+      chessRole: '나이트 (Knight / 킹사이드)',
+      moveDesc: 'L자형(2칸 직진 후 1칸 직각)으로 기물을 뛰어넘어 도약 이동',
+      lore: '최고신 제우스의 혈통을 이어받은 리키아의 군주. 양날 전투 도끼(Labrys)를 휘두르며 그리스군의 함선 방어벽을 가장 먼저 돌파한 최전선 돌격의 영웅입니다.'
+    },
+    'b_r2': {
+      id: 'b_r2', type: 'r', color: 'b',
+      name: '다르다니아 성탑 (Dardanian Tower)',
+      title: '포세이돈의 가호가 깃든 동쪽의 요새 타워',
+      shortName: '다르다니아 탑', symbol: '♜', role: 'dardanian_tower',
+      factionName: '트로이 수호군 (일리온)',
+      chessRole: '룩 (Rook / 킹사이드)',
+      moveDesc: '상하좌우 직선 방향으로 원하는 칸만큼 이동 (캐슬링 가능)',
+      lore: '바다와 지진의 신 포세이돈의 가호가 서린 트로이 동쪽의 난공불락 요새 성탑. 청동 삼지창 문양으로 도시의 동쪽 전선을 철통같이 수호합니다.'
+    },
+    'b_p': {
+      id: 'b_p', type: 'p', color: 'b',
+      name: '트로이 팔랑크스 (Trojan Phalanx)',
+      title: '조국의 대지를 사수하는 불굴의 트로이 보병대',
+      shortName: '트로이 보병', symbol: '♟', role: 'trojan_phalanx',
+      factionName: '트로이 수호군 (일리온)',
+      chessRole: '폰 (Pawn / 최전선 보병)',
+      moveDesc: '전방으로 1칸 전진 (최초 이동 시 2칸 가능), 대각선 1칸 포획, 끝 도달 시 승급',
+      lore: '가족과 성스러운 조국을 수호하기 위해 뭉친 트로이의 청동 중장보병대. 거대한 방패벽과 빽빽한 장창 밀집 대형으로 적의 돌파를 단호히 분쇄합니다.'
+    }  };
 
   // 기본 단일 키 매핑 (폴백 및 체스 타입 단독 조회용)
   HERO_CATALOG['w_r'] = HERO_CATALOG['w_r1'];
@@ -1104,6 +1265,15 @@
 
       // 프로모션 모달
       this.promoModal = document.getElementById("promotionModal");
+
+      // 전술 기물 상세 설명 툴팁 요소 초기화 및 캐싱
+      this.tooltipEl = document.getElementById("chessTacticalTooltip");
+      if (!this.tooltipEl) {
+        this.tooltipEl = document.createElement("div");
+        this.tooltipEl.id = "chessTacticalTooltip";
+        this.tooltipEl.className = "chess-tactical-tooltip";
+        document.body.appendChild(this.tooltipEl);
+      }
     }
 
     bindEvents() {
@@ -1293,6 +1463,11 @@
           squareDiv.addEventListener("dragleave", (e) => this.handleDragLeave(e, squareName));
           squareDiv.addEventListener("drop", (e) => this.handleDrop(e, squareName));
 
+          // 커서 호버 시 기물 상세 설명 툴팁 이벤트
+          squareDiv.addEventListener("mouseenter", (e) => this.handleSquareMouseEnter(e, squareName));
+          squareDiv.addEventListener("mousemove", (e) => this.handleSquareMouseMove(e));
+          squareDiv.addEventListener("mouseleave", () => this.handleSquareMouseLeave());
+
           // 칸 클릭 이벤트
           squareDiv.addEventListener("click", () => this.handleSquareClick(squareName));
 
@@ -1368,6 +1543,7 @@
 
     // 드래그 앤 드롭 시작 핸들러
     handleDragStart(e, squareName) {
+      this.hideTooltip();
       if (this.game.game_over() || this.pendingPromotion) {
         e.preventDefault();
         return;
@@ -1491,8 +1667,125 @@
       }
     }
 
+    // 마우스 진입 시 기물 설명 툴팁 표시
+    handleSquareMouseEnter(e, squareName) {
+      if (this.draggedSquare || this.pendingPromotion) return;
+
+      const piece = this.game.get(squareName);
+      if (!piece) {
+        this.hideTooltip();
+        return;
+      }
+
+      const heroId = this.piecePositions[squareName] || `${piece.color}_${piece.type}`;
+      const hero = HERO_CATALOG[heroId] || HERO_CATALOG[`${piece.color}_${piece.type}`];
+      if (!hero) {
+        this.hideTooltip();
+        return;
+      }
+
+      this.showTooltip(e, hero, squareName);
+    }
+
+    // 마우스 이동 시 툴팁 위치 갱신 (스마트 커서 추종)
+    handleSquareMouseMove(e) {
+      if (this.tooltipEl && this.tooltipEl.classList.contains("visible")) {
+        this.positionTooltip(e.clientX, e.clientY);
+      }
+    }
+
+    // 마우스 벗어날 때 툴팁 숨김
+    handleSquareMouseLeave() {
+      this.hideTooltip();
+    }
+
+    // 전술 기물 툴팁 렌더링 및 페이드인
+    showTooltip(e, hero, squareName) {
+      if (!this.tooltipEl) return;
+
+      const isWhite = hero.color === 'w';
+      const factionBadgeColor = isWhite ? '#f59e0b' : '#fb923c';
+      const factionIcon = isWhite ? '🏛️' : '🛡️';
+
+      this.tooltipEl.innerHTML = `
+        <div class="tooltip-header">
+          <div class="tooltip-avatar-ring">
+            <span class="tooltip-symbol">${hero.symbol}</span>
+          </div>
+          <div class="tooltip-title-box">
+            <div class="tooltip-faction-badge" style="color: ${factionBadgeColor};">
+              ${factionIcon} ${hero.factionName || (isWhite ? '아카이아 연합군' : '트로이 수호군')} · ${hero.chessRole || hero.shortName}
+            </div>
+            <h3 class="tooltip-hero-name">${hero.name}</h3>
+            <span class="tooltip-epithet">"${hero.title}"</span>
+          </div>
+        </div>
+        <div class="tooltip-divider"></div>
+        <div class="tooltip-section">
+          <div class="tooltip-label">⚔️ 전술 행마 규칙</div>
+          <div class="tooltip-move-desc">${hero.moveDesc || '체스 기본 규칙에 따라 이동'}</div>
+        </div>
+        <div class="tooltip-section">
+          <div class="tooltip-label">📜 호메로스 서사 & 신화 무구</div>
+          <div class="tooltip-lore">${hero.lore || hero.title}</div>
+        </div>
+      `;
+
+      this.tooltipEl.style.display = "block";
+      this.positionTooltip(e.clientX, e.clientY);
+
+      // 다음 브라우저 렌더링 프레임에 부드럽게 페이드인 클래스 추가
+      if (typeof requestAnimationFrame !== 'undefined') {
+        requestAnimationFrame(() => {
+          if (this.tooltipEl) this.tooltipEl.classList.add("visible");
+        });
+      } else {
+        this.tooltipEl.classList.add("visible");
+      }
+    }
+
+    // 툴팁 위치 계산 (화면 경계 클램핑으로 잘림 방지)
+    positionTooltip(clientX, clientY) {
+      if (!this.tooltipEl) return;
+      const offset = 18;
+      const tooltipWidth = this.tooltipEl.offsetWidth || 300;
+      const tooltipHeight = this.tooltipEl.offsetHeight || 190;
+      const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
+      const viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
+
+      let left = clientX + offset;
+      let top = clientY + offset;
+
+      // 화면 우측 클램핑
+      if (left + tooltipWidth > viewportWidth - 16) {
+        left = clientX - tooltipWidth - offset;
+      }
+      if (left < 16) left = 16;
+
+      // 화면 하단 클램핑
+      if (top + tooltipHeight > viewportHeight - 16) {
+        top = clientY - tooltipHeight - offset;
+      }
+      if (top < 16) top = 16;
+
+      this.tooltipEl.style.left = `${left}px`;
+      this.tooltipEl.style.top = `${top}px`;
+    }
+
+    // 툴팁 숨기기
+    hideTooltip() {
+      if (!this.tooltipEl) return;
+      this.tooltipEl.classList.remove("visible");
+      setTimeout(() => {
+        if (this.tooltipEl && !this.tooltipEl.classList.contains("visible")) {
+          this.tooltipEl.style.display = "none";
+        }
+      }, 180);
+    }
+
     // 착수 실행
     executeMove(from, to, promotionPiece = 'q') {
+      this.hideTooltip();
       // 1. 이동할 기물과 대상 칸의 기물 고유 ID 보존
       const movingHeroId = this.piecePositions[from];
       const targetHeroId = this.piecePositions[to];
