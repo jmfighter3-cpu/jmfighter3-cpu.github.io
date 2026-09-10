@@ -635,7 +635,7 @@
                 </tr>
                 <tr>
                   <td><strong>Rook (룩)</strong></td>
-                  <td>⛵ <strong>아카이아 함대 (흑선)</strong></td>
+                  <td>🛡️ <strong>대 아이아스</strong> & <strong>소 아이아스</strong> (아카이아의 거대한 성벽 방패와 신속한 창)</td>
                   <td>🏰 <strong>트로이 성벽 (스카이아 문)</strong></td>
                   <td>상하좌우 직선 무제한 이동</td>
                 </tr>
@@ -658,7 +658,7 @@
           <p class="promotion-desc">적진 깊숙이 도달한 전사가 새로운 영웅으로 거듭납니다!</p>
           <div class="promotion-pieces">
             <button type="button" class="btn-promo-piece" data-piece="q" title="퀸 (최강의 영웅)">♕</button>
-            <button type="button" class="btn-promo-piece" data-piece="r" title="룩 (함대/성벽)">♖</button>
+            <button type="button" class="btn-promo-piece" data-piece="r" title="룩 (대·소 아이아스 / 성벽)">♖</button>
             <button type="button" class="btn-promo-piece" data-piece="b" title="비숍 (지략가)">♗</button>
             <button type="button" class="btn-promo-piece" data-piece="n" title="나이트 (전차병)">♘</button>
           </div>
@@ -686,8 +686,9 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <!-- 커스텀 웹 서사시 인터랙션 스크립트 -->
   <script src="script.js"></script>
-  <!-- 체스: 트로이 엔진 및 서사 인터랙션 스크립트 -->
-  <script src="assets/chess.min.js"></script>
+  <!-- 체스: 트로이 공식 경량 체스 엔진 (chess.js CDN 및 로컬 폴백) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+  <script>window.Chess || document.write('<script src="assets/chess.min.js"><\/script>');</script>
   <script src="trojan_chess.js"></script>
 </body>
 </html>
