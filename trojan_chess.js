@@ -625,6 +625,51 @@
           <stop offset="50%" stop-color="#f59e0b" stop-opacity="0.45"/>
           <stop offset="100%" stop-color="#d97706" stop-opacity="0"/>
         </radialGradient>
+
+        <!-- 나이트: 말 코트(털) 쉐이더 (아카이아: 백마/은빛, 트로이: 흑마/적토마) -->
+        <linearGradient id="${prefix}-horse" x1="0%" y1="0%" x2="100%" y2="100%">
+          ${isWhite ? `
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="35%" stop-color="#f1f5f9"/>
+            <stop offset="70%" stop-color="#cbd5e1"/>
+            <stop offset="100%" stop-color="#94a3b8"/>
+          ` : `
+            <stop offset="0%" stop-color="#78350f"/>
+            <stop offset="35%" stop-color="#451a03"/>
+            <stop offset="75%" stop-color="#260e02"/>
+            <stop offset="100%" stop-color="#140601"/>
+          `}
+        </linearGradient>
+
+        <!-- 룩: 성벽 석재 쉐이더 (고대 미케네 거석 요새 대리석 및 석벽) -->
+        <linearGradient id="${prefix}-wall" x1="0%" y1="0%" x2="100%" y2="100%">
+          ${isWhite ? `
+            <stop offset="0%" stop-color="#f8fafc"/>
+            <stop offset="30%" stop-color="#e2e8f0"/>
+            <stop offset="70%" stop-color="#cbd5e1"/>
+            <stop offset="100%" stop-color="#64748b"/>
+          ` : `
+            <stop offset="0%" stop-color="#78350f"/>
+            <stop offset="35%" stop-color="#54260a"/>
+            <stop offset="75%" stop-color="#3b1704"/>
+            <stop offset="100%" stop-color="#1c0a02"/>
+          `}
+        </linearGradient>
+
+        <!-- 비숍: 길게 늘어뜨린 로브(히마티온) 음영 쉐이더 -->
+        <linearGradient id="${prefix}-robe" x1="0%" y1="0%" x2="100%" y2="100%">
+          ${isWhite ? `
+            <stop offset="0%" stop-color="#60a5fa"/>
+            <stop offset="25%" stop-color="#2563eb"/>
+            <stop offset="65%" stop-color="#1d4ed8"/>
+            <stop offset="100%" stop-color="#0f172a"/>
+          ` : `
+            <stop offset="0%" stop-color="#f87171"/>
+            <stop offset="25%" stop-color="#dc2626"/>
+            <stop offset="65%" stop-color="#991b1b"/>
+            <stop offset="100%" stop-color="#450a0a"/>
+          `}
+        </linearGradient>
       </defs>
     `;
   
@@ -653,15 +698,13 @@
       </g>
     `;
   
-    // 공통 인체 해부학적 기본 골격 템플릿 함수 (다리, 프테루게스 스커트, 벨트)
+    // 공통 인체 해부학적 기본 보병 골격 템플릿 함수 (다리, 프테루게스 스커트, 벨트)
     const renderHumanBody = (customTorso, customHead, customWeapons) => `
       <!-- 1. 양다리 & 황금 각갑(Greaves) & 가죽 샌들 -->
-      <!-- 왼다리 (보는 사람 기준 좌측) -->
       <path d="M38,92 L36,116 L43,118 L45,93 Z" fill="url(#${prefix}-skin)"/>
       <path d="M37,96 L35,115 L43,117 L44,97 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.8"/>
       <circle cx="40" cy="97" r="3.2" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.6"/>
       <line x1="36" y1="114" x2="43" y2="116" stroke="#451a03" stroke-width="1.2"/>
-      <!-- 오른다리 (보는 사람 기준 우측) -->
       <path d="M55,93 L57,118 L64,116 L62,92 Z" fill="url(#${prefix}-skin)"/>
       <path d="M56,97 L57,117 L64,115 L63,96 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.8"/>
       <circle cx="60" cy="97" r="3.2" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.6"/>
@@ -669,7 +712,6 @@
   
       <!-- 2. 진영 튜닉 & 프테루게스(Pteruges) 가죽 스커트 -->
       <path d="M32,74 L68,74 L70,92 L30,92 Z" fill="url(#${prefix}-tunic)" stroke="${strokeColor}" stroke-width="0.6"/>
-      <!-- 프테루게스 개별 가죽판 5개 -->
       <rect x="33" y="75" width="6" height="15" rx="1.5" fill="url(#${prefix}-tunic)" stroke="url(#${prefix}-gold)" stroke-width="0.7"/>
       <rect x="40" y="75" width="6" height="16.5" rx="1.5" fill="url(#${prefix}-tunic)" stroke="url(#${prefix}-gold)" stroke-width="0.7"/>
       <rect x="47" y="75" width="6" height="17" rx="1.5" fill="url(#${prefix}-tunic)" stroke="url(#${prefix}-gold)" stroke-width="0.7"/>
@@ -680,13 +722,157 @@
       <rect x="32" y="72" width="36" height="5" rx="1" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.8"/>
       <circle cx="50" cy="74.5" r="2.2" fill="url(#${prefix}-gold)"/>
   
-      <!-- 4. 토르소/흉갑 및 양팔 영역 (좌우 양팔 완전 구현) -->
+      <!-- 4. 토르소/흉갑 및 양팔 영역 -->
       ${customTorso}
-  
       <!-- 5. 두부 및 투구 -->
       ${customHead}
-  
       <!-- 6. 무기 및 특수 장비 -->
+      ${customWeapons}
+    `;
+
+    // [특수 모델 1] 나이트: 말을 탄 모습의 기마 영웅 템플릿 함수 (Mounted Knight)
+    const renderMountedHero = (customTorso, customHead, customWeapons) => `
+      <!-- 1. 말 꼬리 (Horse Tail) -->
+      <path d="M72,82 C82,86 86,96 84,110 C81,114 77,112 78,102 C79,94 74,90 70,88 Z" fill="url(#${prefix}-crest)" stroke="${strokeColor}" stroke-width="0.7"/>
+
+      <!-- 2. 말 뒷다리 (Hind Legs) -->
+      <path d="M68,88 L72,102 L70,116 L66,116 L67,100 L64,88 Z" fill="url(#${prefix}-horse)" opacity="0.85"/>
+      <rect x="66" y="114" width="5" height="3" rx="0.8" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.5"/>
+      <path d="M62,86 L66,100 L64,118 L59,118 L60,98 L56,86 Z" fill="url(#${prefix}-horse)" stroke="${strokeColor}" stroke-width="0.7"/>
+      <rect x="59" y="115.5" width="5.5" height="3" rx="0.8" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.5"/>
+
+      <!-- 3. 말 몸통 (Horse Body) -->
+      <ellipse cx="48" cy="85" rx="23" ry="13" fill="url(#${prefix}-horse)" stroke="${strokeColor}" stroke-width="0.9"/>
+      <path d="M58,76 C68,78 72,88 66,96" stroke="${strokeColor}" stroke-width="0.8" fill="none" opacity="0.6"/>
+
+      <!-- 4. 말 앞다리 (Forelegs) -->
+      <path d="M26,88 L23,102 L26,112 L22,112 L20,100 L23,88 Z" fill="url(#${prefix}-horse)" opacity="0.85"/>
+      <rect x="22" y="110" width="4.5" height="2.5" rx="0.8" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.5"/>
+      <path d="M32,86 L30,100 L32,118 L27,118 L26,98 L29,86 Z" fill="url(#${prefix}-horse)" stroke="${strokeColor}" stroke-width="0.7"/>
+      <rect x="27" y="115.5" width="5.5" height="3" rx="0.8" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.5"/>
+
+      <!-- 5. 마갑 & 안장보 (Peytral & Saddle Cloth) -->
+      <path d="M24,76 C20,84 28,94 36,92 C32,86 28,80 28,76 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.8"/>
+      <circle cx="27" cy="85" r="2.2" fill="url(#${prefix}-gold)"/>
+      <path d="M36,73 L60,73 L62,88 L34,88 Z" fill="url(#${prefix}-tunic)" stroke="url(#${prefix}-gold)" stroke-width="0.8"/>
+      <path d="M37,86 L59,86" stroke="url(#${prefix}-gold)" stroke-width="1.2" stroke-dasharray="2,1"/>
+      <line x1="47" y1="73" x2="47" y2="92" stroke="#451a03" stroke-width="1.2"/>
+
+      <!-- 6. 말 목 & 휘날리는 갈기 (Neck & Mane) -->
+      <path d="M38,82 C34,70 30,58 24,50 C28,52 36,62 42,74 Z" fill="url(#${prefix}-horse)" stroke="${strokeColor}" stroke-width="0.8"/>
+      <path d="M25,48 C29,56 34,64 36,72 C35,66 31,58 26,50 Z" fill="url(#${prefix}-crest)"/>
+      <path d="M22,52 Q26,60 30,68" stroke="${strokeColor}" stroke-width="0.8" fill="none"/>
+
+      <!-- 7. 말 머리, 귀, 눈, 청동 고삐 (Head, Ears, Bridle) -->
+      <path d="M26,48 L17,54 L13,58 L14,62 L18,61 L23,54 Z" fill="url(#${prefix}-horse)" stroke="${strokeColor}" stroke-width="0.8"/>
+      <polygon points="24,46 26,40 28,47" fill="url(#${prefix}-horse)" stroke="${strokeColor}" stroke-width="0.6"/>
+      <polygon points="27,47 29,42 31,48" fill="url(#${prefix}-horse)" stroke="${strokeColor}" stroke-width="0.6"/>
+      <circle cx="21" cy="51" r="1.1" fill="#1e293b"/>
+      <circle cx="15" cy="60" r="0.7" fill="#1e293b"/>
+      <path d="M22,48 L17,53 L19,56 L24,51 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.5"/>
+      <line x1="16" y1="59" x2="23" y2="52" stroke="url(#${prefix}-gold)" stroke-width="0.8"/>
+      <circle cx="16" cy="59" r="1.2" fill="url(#${prefix}-gold)"/>
+      <path d="M16,59 C24,62 30,66 38,65" stroke="url(#${prefix}-gold)" stroke-width="1" fill="none"/>
+
+      <!-- 8. 말을 탄 기수의 허벅지 & 황금 각갑 & 등자 (Rider's Leg & Stirrup) -->
+      <path d="M42,66 L49,66 L47,85 L41,85 Z" fill="url(#${prefix}-tunic)"/>
+      <path d="M41,74 L47,74 L46,92 L40,92 Z" fill="url(#${prefix}-skin)"/>
+      <path d="M41,78 L46,78 L45,92 L40,92 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.7"/>
+      <ellipse cx="43" cy="93" rx="3.5" ry="2" fill="none" stroke="url(#${prefix}-gold)" stroke-width="1"/>
+
+      <!-- 9. 기마 영웅 상체 토르소, 두부, 무기 -->
+      ${customTorso}
+      ${customHead}
+      ${customWeapons}
+    `;
+
+    // [특수 모델 2] 비숍: 바닥까지 로브를 길게 늘어뜨린 모습의 현자/사제 템플릿 함수 (Robed Bishop)
+    const renderRobedHero = (customTorso, customHead, customWeapons) => `
+      <!-- 1. 지면 살짝 보이는 황금 가죽 샌들 앞코 (Sandal Tips) -->
+      <ellipse cx="40" cy="118" rx="4.5" ry="2" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.6"/>
+      <ellipse cx="60" cy="118" rx="4.5" ry="2" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.6"/>
+
+      <!-- 2. 바닥까지 우아하게 늘어뜨린 긴 고대 로브 (Himation / Long Robe) -->
+      <path d="M30,70 C24,85 22,104 28,118 L72,118 C78,104 76,85 70,70 Z" fill="url(#${prefix}-robe)" stroke="${strokeColor}" stroke-width="1.1"/>
+
+      <!-- 3. 흘러내리는 로브의 우아한 세로 & 사선 주름선 (Deep Drapery Folds) -->
+      <path d="M46,70 C43,86 44,106 44,118 M54,70 C57,86 56,106 56,118" stroke="${strokeColor}" stroke-width="0.9" fill="none" opacity="0.75"/>
+      <path d="M49,72 C48,88 49,106 49,118" stroke="url(#${prefix}-gold)" stroke-width="1" fill="none"/>
+      <path d="M36,72 C32,88 34,106 33,117" stroke="${strokeColor}" stroke-width="0.8" fill="none" opacity="0.65"/>
+      <path d="M38,76 C35,92 38,108 37,117" stroke="url(#${prefix}-tunic)" stroke-width="0.8" fill="none"/>
+      <path d="M64,72 C68,88 66,106 67,117" stroke="${strokeColor}" stroke-width="0.8" fill="none" opacity="0.65"/>
+      <path d="M62,76 C65,92 62,108 63,117" stroke="url(#${prefix}-tunic)" stroke-width="0.8" fill="none"/>
+
+      <!-- 4. 로브 하단 황금 메안드로스 자수 밑단 (Embroidered Hem) -->
+      <path d="M28,116 Q50,120 72,116" stroke="url(#${prefix}-gold)" stroke-width="1.8" fill="none"/>
+      <path d="M29,113 Q50,117 71,113" stroke="url(#${prefix}-gold)" stroke-width="0.8" stroke-dasharray="2,1.5" fill="none"/>
+
+      <!-- 5. 허리 띠 (Girdle / Zoster) -->
+      <rect x="29" y="69" width="42" height="5" rx="1.5" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
+      <circle cx="50" cy="71.5" r="2.4" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.6"/>
+
+      <!-- 6. 어깨 및 양팔에서 늘어뜨려진 숄/의복 자락 (Draped Shawl) -->
+      <path d="M22,46 C16,60 18,78 22,86 L26,84 C22,76 21,60 26,48 Z" fill="url(#${prefix}-robe)" stroke="${strokeColor}" stroke-width="0.6"/>
+      <path d="M78,46 C84,60 82,78 78,86 L74,84 C78,76 79,60 74,48 Z" fill="url(#${prefix}-robe)" stroke="${strokeColor}" stroke-width="0.6"/>
+
+      <!-- 7. 상체 토르소, 두부, 무기 -->
+      ${customTorso}
+      ${customHead}
+      ${customWeapons}
+    `;
+
+    // [특수 모델 3] 룩: 견고한 요새 성벽을 밟고 선 모습의 아카이아 수호신 템플릿 함수 (Rampart Rook)
+    const renderRampartHero = (customTorso, customHead, customWeapons) => `
+      <!-- 1. 미케네식 견고한 거석 요새 성벽 (Cyclopean Fortress Rampart) -->
+      <path d="M12,94 L88,94 L90,122 L10,122 Z" fill="url(#${prefix}-wall)" stroke="${strokeColor}" stroke-width="1.3"/>
+
+      <!-- 거석 아슐라 석재 블록 라인 (Stone Seams & Texture) -->
+      <line x1="11" y1="102" x2="89" y2="102" stroke="${strokeColor}" stroke-width="0.9"/>
+      <line x1="10" y1="111" x2="90" y2="111" stroke="${strokeColor}" stroke-width="0.9"/>
+      <line x1="10" y1="119" x2="90" y2="119" stroke="${strokeColor}" stroke-width="0.8"/>
+      <line x1="32" y1="94" x2="32" y2="102" stroke="${strokeColor}" stroke-width="0.8"/>
+      <line x1="68" y1="94" x2="68" y2="102" stroke="${strokeColor}" stroke-width="0.8"/>
+      <line x1="20" y1="102" x2="20" y2="111" stroke="${strokeColor}" stroke-width="0.8"/>
+      <line x1="50" y1="102" x2="50" y2="111" stroke="${strokeColor}" stroke-width="0.8"/>
+      <line x1="80" y1="102" x2="80" y2="111" stroke="${strokeColor}" stroke-width="0.8"/>
+      <line x1="36" y1="111" x2="36" y2="119" stroke="${strokeColor}" stroke-width="0.8"/>
+      <line x1="64" y1="111" x2="64" y2="119" stroke="${strokeColor}" stroke-width="0.8"/>
+
+      <!-- 성벽 중앙 황금 메안드로스 성곽 장식 띠 -->
+      <rect x="18" y="104.5" width="64" height="4.5" rx="1" fill="rgba(0,0,0,0.25)" stroke="url(#${prefix}-gold)" stroke-width="0.8"/>
+      <line x1="22" y1="106.8" x2="78" y2="106.8" stroke="url(#${prefix}-gold)" stroke-width="1.2" stroke-dasharray="3,2"/>
+
+      <!-- 2. 성곽 흉벽 치성 (Battlements / Crenellated Merlons) -->
+      <rect x="12" y="85" width="16" height="10" rx="1.5" fill="url(#${prefix}-wall)" stroke="${strokeColor}" stroke-width="1"/>
+      <line x1="14" y1="88" x2="26" y2="88" stroke="#ffffff" stroke-width="0.6" opacity="0.6"/>
+      <rect x="42" y="87" width="16" height="8" rx="1.5" fill="url(#${prefix}-wall)" stroke="${strokeColor}" stroke-width="1"/>
+      <line x1="44" y1="90" x2="56" y2="90" stroke="#ffffff" stroke-width="0.6" opacity="0.6"/>
+      <rect x="72" y="85" width="16" height="10" rx="1.5" fill="url(#${prefix}-wall)" stroke="${strokeColor}" stroke-width="1"/>
+      <line x1="74" y1="88" x2="86" y2="88" stroke="#ffffff" stroke-width="0.6" opacity="0.6"/>
+
+      <!-- 3. 성벽 위를 밟고 선 영웅의 두 다리와 황금 각갑 -->
+      <path d="M34,74 L32,92 L39,94 L41,75 Z" fill="url(#${prefix}-skin)"/>
+      <path d="M33,76 L32,91 L39,93 L40,77 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.8"/>
+      <circle cx="36" cy="78" r="2.8" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.5"/>
+      <path d="M59,75 L61,94 L68,92 L66,74 Z" fill="url(#${prefix}-skin)"/>
+      <path d="M60,77 L61,93 L68,91 L67,76 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.8"/>
+      <circle cx="64" cy="78" r="2.8" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.5"/>
+
+      <!-- 4. 진영 튜닉 & 프테루게스(Pteruges) 가죽 스커트 -->
+      <path d="M28,68 L72,68 L74,78 L26,78 Z" fill="url(#${prefix}-tunic)" stroke="${strokeColor}" stroke-width="0.6"/>
+      <rect x="30" y="69" width="6" height="10" rx="1" fill="url(#${prefix}-tunic)" stroke="url(#${prefix}-gold)" stroke-width="0.6"/>
+      <rect x="38" y="69" width="6" height="11" rx="1" fill="url(#${prefix}-tunic)" stroke="url(#${prefix}-gold)" stroke-width="0.6"/>
+      <rect x="47" y="69" width="6" height="11.5" rx="1" fill="url(#${prefix}-tunic)" stroke="url(#${prefix}-gold)" stroke-width="0.6"/>
+      <rect x="56" y="69" width="6" height="11" rx="1" fill="url(#${prefix}-tunic)" stroke="url(#${prefix}-gold)" stroke-width="0.6"/>
+      <rect x="64" y="69" width="6" height="10" rx="1" fill="url(#${prefix}-tunic)" stroke="url(#${prefix}-gold)" stroke-width="0.6"/>
+
+      <!-- 5. 전사 허리띠 (Cingulum) -->
+      <rect x="28" y="66" width="44" height="4.5" rx="1" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.8"/>
+      <circle cx="50" cy="68.2" r="2" fill="url(#${prefix}-gold)"/>
+
+      <!-- 6. 상체 토르소, 두부, 무기 -->
+      ${customTorso}
+      ${customHead}
       ${customWeapons}
     `;
   
@@ -803,7 +989,7 @@
           <line x1="82" y1="12" x2="72" y2="108" stroke="url(#${prefix}-gold)" stroke-width="2.6"/>
           <polygon points="83,7 78,17 87,15" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
         `;
-        unitGraphic = renderHumanBody(torso, head, weapons);
+        unitGraphic = renderRampartHero(torso, head, weapons);
         break;
       }
   
@@ -833,7 +1019,7 @@
           <line x1="80" y1="20" x2="20" y2="108" stroke="url(#${prefix}-gold)" stroke-width="2"/>
           <polygon points="82,17 76,22 83,25" fill="url(#${prefix}-gold)"/>
         `;
-        unitGraphic = renderHumanBody(torso, head, weapons);
+        unitGraphic = renderRampartHero(torso, head, weapons);
         break;
       }
   
@@ -866,7 +1052,7 @@
           <polygon points="89,20 85,28 92,26" fill="url(#${prefix}-steel)" stroke="${strokeColor}" stroke-width="0.7"/>
           <line x1="74" y1="60" x2="82" y2="60" stroke="url(#${prefix}-gold)" stroke-width="1.8"/>
         `;
-        unitGraphic = renderHumanBody(torso, head, weapons);
+        unitGraphic = renderMountedHero(torso, head, weapons);
         break;
       }
   
@@ -896,7 +1082,7 @@
           <circle cx="80" cy="18" r="4.5" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
           <circle cx="80" cy="18" r="2" fill="#ffffff"/>
         `;
-        unitGraphic = renderHumanBody(torso, head, weapons);
+        unitGraphic = renderMountedHero(torso, head, weapons);
         break;
       }
   
@@ -930,7 +1116,7 @@
           <line x1="78" y1="62" x2="88" y2="40" stroke="url(#${prefix}-gold)" stroke-width="2.2"/>
           <polygon points="89,37 86,43 92,42" fill="url(#${prefix}-gold)"/>
         `;
-        unitGraphic = renderHumanBody(torso, head, weapons);
+        unitGraphic = renderRobedHero(torso, head, weapons);
         break;
       }
   
@@ -964,7 +1150,7 @@
           <polygon points="89,12 84,20 93,18" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
           <line x1="73" y1="58" x2="83" y2="58" stroke="url(#${prefix}-gold)" stroke-width="2"/>
         `;
-        unitGraphic = renderHumanBody(torso, head, weapons);
+        unitGraphic = renderRobedHero(torso, head, weapons);
         break;
       }
   
@@ -1100,7 +1286,7 @@
           <polygon points="89,16 85,24 92,22" fill="url(#${prefix}-gold)"/>
           <line x1="74" y1="58" x2="82" y2="58" stroke="url(#${prefix}-armor)" stroke-width="1.8"/>
         `;
-        unitGraphic = renderHumanBody(torso, head, weapons);
+        unitGraphic = renderMountedHero(torso, head, weapons);
         break;
       }
   
@@ -1131,7 +1317,7 @@
           <path d="M16,12 C10,20 10,32 18,38 L26,26 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
           <path d="M28,8 C36,16 36,28 28,34 L20,22 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
         `;
-        unitGraphic = renderHumanBody(torso, head, weapons);
+        unitGraphic = renderMountedHero(torso, head, weapons);
         break;
       }
   
@@ -1165,7 +1351,7 @@
           <line x1="72" y1="60" x2="16" y2="60" stroke="url(#${prefix}-gold)" stroke-width="1.8"/>
           <polygon points="14,60 18,57 18,63" fill="url(#${prefix}-gold)"/>
         `;
-        unitGraphic = renderHumanBody(torso, head, weapons);
+        unitGraphic = renderRobedHero(torso, head, weapons);
         break;
       }
   
@@ -1196,7 +1382,7 @@
           <path d="M76,26 Q84,32 76,38 Q84,44 76,50" stroke="url(#${prefix}-gold)" stroke-width="1.3" fill="none"/>
           <path d="M84,26 Q76,32 84,38 Q76,44 84,50" stroke="url(#${prefix}-gold)" stroke-width="1.3" fill="none"/>
         `;
-        unitGraphic = renderHumanBody(torso, head, weapons);
+        unitGraphic = renderRobedHero(torso, head, weapons);
         break;
       }
   
@@ -1284,6 +1470,349 @@
   const generateAomHeroSvg = generateAomHeroUnitSvg; // 하위 호환성 및 별칭 매핑
 
   // ==========================================================================
+  // 3.5. 내부 공유기(LAN) 및 온라인 P2P 대전 매니저 (LanMatchManager)
+  // ==========================================================================
+  class LanMatchManager {
+    constructor(game) {
+      this.game = game;
+      this.roomCode = null;
+      this.role = null; // 'host' (White) | 'guest' (Black)
+      this.connected = false;
+      this.peer = null;
+      this.conn = null;
+      this.broadcastChannel = null;
+      this.httpPollTimer = null;
+      this.lastPollMoveId = 0;
+      this.processedMsgIds = new Set();
+    }
+
+    isConnected() {
+      return this.connected;
+    }
+
+    setConnected(status, message = "") {
+      this.connected = status;
+      if (this.game.lanStatusBadge && this.game.lanStatusText) {
+        if (status) {
+          this.game.lanStatusBadge.classList.add("connected");
+          this.game.lanStatusBadge.classList.remove("waiting");
+          this.game.lanStatusText.textContent = message || "⚔️ 대국 연결됨 (실시간 동기화 중)";
+        } else {
+          this.game.lanStatusBadge.classList.remove("connected");
+          this.game.lanStatusBadge.classList.add("waiting");
+          this.game.lanStatusText.textContent = message || "대기 중...";
+        }
+      }
+      this.game.updateStatusAndPanels();
+    }
+
+    // 방 만들기 (Host - White)
+    createRoom(roomCode) {
+      this.cleanup();
+      this.roomCode = roomCode;
+      this.role = 'host';
+      this.setConnected(false, `방 [${roomCode}] 대기실 개설됨 (전우 접속 대기 중...)`);
+
+      // 1. 같은 브라우저 다중 탭 즉시 통신 (BroadcastChannel)
+      if (typeof BroadcastChannel !== 'undefined') {
+        try {
+          this.broadcastChannel = new BroadcastChannel(`troy_chess_room_${roomCode}`);
+          this.broadcastChannel.onmessage = (e) => this.handleIncomingMessage(e.data);
+        } catch (e) {
+          console.warn("BroadcastChannel 초기화 실패:", e);
+        }
+      }
+
+      // 2. PeerJS WebRTC P2P (공유기 및 인터넷 직결)
+      if (typeof Peer !== 'undefined') {
+        try {
+          const peerId = `troy-chess-${roomCode}`;
+          this.peer = new Peer(peerId, { debug: 1 });
+          this.peer.on('open', (id) => {
+            console.log(`[LAN P2P] 호스트 Peer 준비 완료: ${id}`);
+          });
+          this.peer.on('connection', (conn) => {
+            console.log(`[LAN P2P] 게스트가 접속했습니다!`);
+            this.conn = conn;
+            this.setupDataConnection(conn);
+          });
+          this.peer.on('error', (err) => {
+            console.warn(`[LAN P2P] 호스트 Peer 경고:`, err);
+          });
+        } catch (e) {
+          console.warn("PeerJS 호스트 생성 예외:", e);
+        }
+      }
+
+      // 3. 로컬 LAN 서버 중계 폴링 (lan_server.js 가동 환경)
+      if (typeof window !== 'undefined' && window.location.protocol.startsWith('http')) {
+        fetch('/api/room/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: roomCode })
+        }).then(r => r.json()).then(data => {
+          if (data && data.ok) {
+            this.startHttpPolling(roomCode);
+          }
+        }).catch(() => {});
+      }
+    }
+
+    // 방 참가하기 (Guest - Black)
+    joinRoom(roomCode) {
+      this.cleanup();
+      this.roomCode = roomCode;
+      this.role = 'guest';
+      this.setConnected(false, `방 [${roomCode}] 호스트에 연결 시도 중...`);
+
+      // 1. BroadcastChannel 초기화 및 접속 알림
+      if (typeof BroadcastChannel !== 'undefined') {
+        try {
+          this.broadcastChannel = new BroadcastChannel(`troy_chess_room_${roomCode}`);
+          this.broadcastChannel.onmessage = (e) => this.handleIncomingMessage(e.data);
+          // 호스트에게 게스트 입장 메시지 전송
+          setTimeout(() => {
+            this.sendMessage({ type: 'join_request', code: roomCode, sender: 'guest' });
+          }, 300);
+        } catch (e) {
+          console.warn("BroadcastChannel 초기화 실패:", e);
+        }
+      }
+
+      // 2. PeerJS WebRTC P2P 접속 시도
+      if (typeof Peer !== 'undefined') {
+        try {
+          this.peer = new Peer({ debug: 1 });
+          this.peer.on('open', (id) => {
+            console.log(`[LAN P2P] 게스트 Peer 생성됨: ${id}`);
+            const hostPeerId = `troy-chess-${roomCode}`;
+            const conn = this.peer.connect(hostPeerId, { reliable: true });
+            this.conn = conn;
+            this.setupDataConnection(conn);
+          });
+          this.peer.on('error', (err) => {
+            console.warn(`[LAN P2P] 게스트 Peer 경고:`, err);
+          });
+        } catch (e) {
+          console.warn("PeerJS 게스트 접속 예외:", e);
+        }
+      }
+
+      // 3. 로컬 LAN 서버 접속 (lan_server.js 가동 환경)
+      if (typeof window !== 'undefined' && window.location.protocol.startsWith('http')) {
+        fetch('/api/room/join', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: roomCode })
+        }).then(r => r.json()).then(data => {
+          if (data && data.ok) {
+            this.setConnected(true, `방 [${roomCode}] 입장 완료! (트로이 수호군/후공)`);
+            this.startHttpPolling(roomCode);
+          }
+        }).catch(() => {});
+      }
+    }
+
+    // WebRTC DataChannel 이벤트 리스너 바인딩
+    setupDataConnection(conn) {
+      conn.on('open', () => {
+        console.log("[LAN P2P] DataChannel 개방됨!");
+        this.setConnected(true, `전우와 연결되었습니다! 대국을 시작합니다.`);
+        if (this.role === 'guest') {
+          this.sendMessage({ type: 'join_request', code: this.roomCode, sender: 'guest' });
+        } else {
+          this.sendMessage({ type: 'ready_response', code: this.roomCode, sender: 'host' });
+        }
+      });
+
+      conn.on('data', (data) => {
+        this.handleIncomingMessage(data);
+      });
+
+      conn.on('close', () => {
+        console.log("[LAN P2P] DataChannel 종료됨");
+        this.setConnected(false, "전우와의 연결이 끊어졌습니다.");
+      });
+
+      conn.on('error', (err) => {
+        console.warn("[LAN P2P] DataChannel 에러:", err);
+      });
+    }
+
+    // 메시지 브로드캐스팅 전송 (DataChannel + BroadcastChannel + HTTP 중계)
+    sendMessage(payload) {
+      if (!payload.msgId) {
+        payload.msgId = `${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+      }
+      this.processedMsgIds.add(payload.msgId);
+
+      // (1) BroadcastChannel 전송
+      if (this.broadcastChannel) {
+        try {
+          this.broadcastChannel.postMessage(payload);
+        } catch (e) {}
+      }
+
+      // (2) PeerJS WebRTC DataChannel 전송
+      if (this.conn && this.conn.open) {
+        try {
+          this.conn.send(payload);
+        } catch (e) {}
+      }
+
+      // (3) 로컬 HTTP 서버 전송 (이동 착수의 경우)
+      if (payload.type === 'move' && typeof window !== 'undefined' && window.location.protocol.startsWith('http')) {
+        fetch('/api/room/move', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            code: this.roomCode,
+            from: payload.from,
+            to: payload.to,
+            promotion: payload.promotion,
+            player: this.role
+          })
+        }).catch(() => {});
+      } else if (payload.type && typeof window !== 'undefined' && window.location.protocol.startsWith('http')) {
+        fetch('/api/room/action', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            code: this.roomCode,
+            type: payload.type,
+            sender: this.role,
+            payload: payload
+          })
+        }).catch(() => {});
+      }
+    }
+
+    // 수신된 메시지 처리 및 중복 방지
+    handleIncomingMessage(data) {
+      if (!data || typeof data !== 'object') return;
+      if (data.msgId && this.processedMsgIds.has(data.msgId)) return;
+      if (data.msgId) this.processedMsgIds.add(data.msgId);
+
+      switch (data.type) {
+        case 'join_request':
+          console.log("[LAN Match] 상대방 입장 요청 수신");
+          this.setConnected(true, `전우가 참전했습니다! (아카이아 연합군 선공)`);
+          this.sendMessage({ type: 'ready_response', code: this.roomCode, sender: 'host' });
+          break;
+
+        case 'ready_response':
+          console.log("[LAN Match] 호스트 준비 응답 수신");
+          this.setConnected(true, `대국이 시작되었습니다! (트로이 수호군 후공)`);
+          break;
+
+        case 'move':
+          console.log("[LAN Match] 상대방 착수 수신:", data.from, "->", data.to);
+          this.game.executeRemoteMove(data.from, data.to, data.promotion || 'q');
+          break;
+
+        case 'resign':
+          this.game.handleRemoteResign(data.sender);
+          break;
+
+        case 'undo_request':
+          if (confirm("상대방 전우가 한 수 무르기를 요청했습니다. 수락하시겠습니까?")) {
+            this.sendMessage({ type: 'undo_accept', sender: this.role });
+            this.game.executeRemoteUndo();
+          } else {
+            this.sendMessage({ type: 'undo_reject', sender: this.role });
+          }
+          break;
+
+        case 'undo_accept':
+          alert("상대방이 무르기 요청을 수락했습니다.");
+          this.game.executeRemoteUndo();
+          break;
+
+        case 'undo_reject':
+          alert("상대방이 무르기 요청을 거절했습니다.");
+          break;
+
+        case 'rematch':
+          if (confirm("상대방이 재대결을 요청했습니다. 새로 시작하시겠습니까?")) {
+            this.sendMessage({ type: 'rematch_accept', sender: this.role });
+            this.game.resetGame(false);
+          }
+          break;
+
+        case 'rematch_accept':
+          alert("재대결이 성사되었습니다. 새로운 대국을 시작합니다!");
+          this.game.resetGame(false);
+          break;
+      }
+    }
+
+    // HTTP 폴링 루프 (lan_server.js 전용 백업)
+    startHttpPolling(roomCode) {
+      if (this.httpPollTimer) clearInterval(this.httpPollTimer);
+      this.httpPollTimer = setInterval(async () => {
+        try {
+          const res = await fetch(`/api/room/poll?code=${encodeURIComponent(roomCode)}&since=${this.lastPollMoveId}`);
+          if (!res.ok) return;
+          const data = await res.json();
+          if (!data || !data.ok) return;
+
+          // 호스트/게스트 연결 상태 갱신
+          if (!this.connected && data.hostConnected && data.guestConnected) {
+            this.setConnected(true, `대국 연결 완료 (LAN 중계 서버)`);
+          }
+
+          // 신규 착수 동기화
+          if (Array.isArray(data.moves)) {
+            for (const m of data.moves) {
+              if (m.id > this.lastPollMoveId) {
+                this.lastPollMoveId = m.id;
+                // 자신이 보낸 수가 아닐 때만 적용
+                if (m.player !== this.role) {
+                  this.game.executeRemoteMove(m.from, m.to, m.promotion || 'q');
+                }
+              }
+            }
+          }
+
+          // 신규 액션(항복, 무르기 등) 동기화
+          if (data.lastAction && data.lastAction.sender !== this.role) {
+            this.handleIncomingMessage({
+              type: data.lastAction.type,
+              sender: data.lastAction.sender,
+              msgId: `http_action_${data.lastAction.type}_${data.lastUpdate}`
+            });
+          }
+        } catch (e) {}
+      }, 750);
+    }
+
+    // 연결 종료 및 정리
+    cleanup() {
+      if (this.httpPollTimer) {
+        clearInterval(this.httpPollTimer);
+        this.httpPollTimer = null;
+      }
+      if (this.broadcastChannel) {
+        try { this.broadcastChannel.close(); } catch (e) {}
+        this.broadcastChannel = null;
+      }
+      if (this.conn) {
+        try { this.conn.close(); } catch (e) {}
+        this.conn = null;
+      }
+      if (this.peer) {
+        try { this.peer.destroy(); } catch (e) {}
+        this.peer = null;
+      }
+      this.connected = false;
+      this.roomCode = null;
+      this.role = null;
+      this.processedMsgIds.clear();
+      this.lastPollMoveId = 0;
+    }
+  }
+
+  // ==========================================================================
   // 4. 메인 트로이 체스 게임 관리자 클래스 (TrojanChessGame)
   // ==========================================================================
   class TrojanChessGame {
@@ -1316,6 +1845,12 @@
       // 기물 고유 식별자 위치 추적 맵 및 이력 스택 (쌍둥이 기물 고유 모델링 보존)
       this.piecePositions = { ...INITIAL_PIECE_MAP };
       this.positionHistory = [];
+
+      // 내부 공유기(LAN) 및 온라인 P2P 대전 상태
+      this.lanManager = new LanMatchManager(this);
+      this.lanMyColor = 'w';        // LAN 모드에서 내 진영 ('w': 백, 'b': 흑)
+      this.lanRole = null;          // 'host' | 'guest'
+      this.lanRoomCodeVal = '';
 
       // DOM 요소 캐싱
       this.initDomElements();
@@ -1351,6 +1886,20 @@
       this.btnSoundToggle = document.getElementById("btnSoundToggle");
       this.btnTrojanHorse = document.getElementById("btnTrojanHorse");
 
+      // 내부 공유기(LAN) 대기실 및 대국 UI 요소 캐싱
+      this.lanMatchPanel = document.getElementById("lanMatchPanel");
+      this.lanStatusBadge = document.getElementById("lanStatusBadge");
+      this.lanStatusText = document.getElementById("lanStatusText");
+      this.btnLanCreateRoom = document.getElementById("btnLanCreateRoom");
+      this.lanRoomDisplay = document.getElementById("lanRoomDisplay");
+      this.lanRoomCodeEl = document.getElementById("lanRoomCode");
+      this.btnCopyRoomCode = document.getElementById("btnCopyRoomCode");
+      this.inputRoomCode = document.getElementById("inputRoomCode");
+      this.btnLanJoinRoom = document.getElementById("btnLanJoinRoom");
+      this.lanTurnBanner = document.getElementById("lanTurnBanner");
+      this.lanTurnIcon = document.getElementById("lanTurnIcon");
+      this.lanTurnText = document.getElementById("lanTurnText");
+
       // 프로모션 모달
       this.promoModal = document.getElementById("promotionModal");
 
@@ -1369,11 +1918,45 @@
       if (this.selectGameMode) {
         this.selectGameMode.addEventListener("change", (e) => {
           this.gameMode = e.target.value;
+          const isAi = this.gameMode === "ai";
+          const isLan = this.gameMode === "lan";
+
           if (this.selectDifficulty) {
-            this.selectDifficulty.parentElement.style.display = this.gameMode === "ai" ? "flex" : "none";
+            this.selectDifficulty.parentElement.style.display = isAi ? "flex" : "none";
+          }
+          if (this.selectSide) {
+            this.selectSide.parentElement.style.display = isLan ? "none" : "flex";
+          }
+          if (this.lanMatchPanel) {
+            this.lanMatchPanel.style.display = isLan ? "block" : "none";
+          }
+
+          if (isLan) {
+            this.detectLanInfo();
+          } else {
+            if (this.lanManager) this.lanManager.cleanup();
+            if (this.lanTurnBanner) this.lanTurnBanner.style.display = "none";
+            if (this.lanRoomDisplay) this.lanRoomDisplay.style.display = "none";
+            if (this.lanStatusText) this.lanStatusText.textContent = "대국 대기실 미입장";
           }
           this.resetGame();
         });
+      }
+
+      // LAN 대국 버튼 이벤트
+      if (this.btnLanCreateRoom) {
+        this.btnLanCreateRoom.addEventListener("click", () => this.handleLanCreateRoom());
+      }
+      if (this.btnLanJoinRoom) {
+        this.btnLanJoinRoom.addEventListener("click", () => this.handleLanJoinRoom());
+      }
+      if (this.inputRoomCode) {
+        this.inputRoomCode.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") this.handleLanJoinRoom();
+        });
+      }
+      if (this.btnCopyRoomCode) {
+        this.btnCopyRoomCode.addEventListener("click", () => this.handleCopyRoomCode());
       }
 
       if (this.selectDifficulty) {
@@ -1391,7 +1974,12 @@
 
       // 버튼 이벤트
       if (this.btnNewGame) {
-        this.btnNewGame.addEventListener("click", () => this.resetGame());
+        this.btnNewGame.addEventListener("click", () => {
+          if (this.gameMode === "lan" && this.lanManager && this.lanManager.isConnected()) {
+            this.lanManager.sendMessage({ type: 'rematch', sender: this.lanRole });
+          }
+          this.resetGame();
+        });
       }
 
       if (this.btnUndo) {
@@ -1478,8 +2066,8 @@
       const isCheck = this.game.in_check();
       const currentTurn = this.game.turn();
 
-      // 뷰 방향: 플레이어가 흑(b)이면 보드를 뒤집어서 표시
-      const isFlipped = this.playerColor === 'b';
+      // 뷰 방향: 플레이어가 흑(b)이면 보드를 뒤집어서 표시 (LAN 모드에서는 내 진영 lanMyColor 반영)
+      const isFlipped = (this.gameMode === "lan") ? (this.lanMyColor === 'b') : (this.playerColor === 'b');
 
       for (let r = 0; r < 8; r++) {
         for (let c = 0; c < 8; c++) {
@@ -1538,7 +2126,10 @@
             squareDiv.appendChild(pieceDiv);
 
             // 드래그 앤 드롭: 플레이어 조작 가능한 턴 기물인 경우 draggable 활성화
-            const isMyTurnPiece = (this.gameMode !== "ai" || piece.color === this.playerColor) && piece.color === currentTurn;
+            const isMyTurnPiece = (this.gameMode === "lan")
+              ? (piece.color === this.lanMyColor && currentTurn === this.lanMyColor && this.lanManager && this.lanManager.isConnected())
+              : ((this.gameMode !== "ai" || piece.color === this.playerColor) && piece.color === currentTurn);
+
             if (isMyTurnPiece && !this.game.game_over() && !this.pendingPromotion) {
               squareDiv.setAttribute("draggable", "true");
               squareDiv.addEventListener("dragstart", (e) => this.handleDragStart(e, squareName));
@@ -1576,6 +2167,18 @@
       // AI 턴일 때 플레이어의 조작 방지
       if (this.gameMode === "ai" && currentTurn !== this.playerColor) {
         return;
+      }
+
+      // LAN 모드일 때: 상대방 턴이거나 아직 연결되지 않았으면 클릭 조작 차단
+      if (this.gameMode === "lan") {
+        if (!this.lanManager || !this.lanManager.isConnected()) {
+          this.setDialogue("⚠️ 아직 전우(상대방)가 대국실에 입장하지 않았습니다. 대기해주세요.");
+          return;
+        }
+        if (currentTurn !== this.lanMyColor) {
+          this.setDialogue("🛡️ 지금은 상대방(전우)의 착수 차례입니다.");
+          return;
+        }
       }
 
       // 1. 이미 선택된 기물이 있는 경우
@@ -1640,6 +2243,16 @@
       if (this.gameMode === "ai" && currentTurn !== this.playerColor) {
         e.preventDefault();
         return;
+      }
+      if (this.gameMode === "lan") {
+        if (!this.lanManager || !this.lanManager.isConnected()) {
+          e.preventDefault();
+          return;
+        }
+        if (currentTurn !== this.lanMyColor) {
+          e.preventDefault();
+          return;
+        }
       }
       const piece = this.game.get(squareName);
       if (!piece || piece.color !== currentTurn) {
@@ -1872,7 +2485,7 @@
     }
 
     // 착수 실행
-    executeMove(from, to, promotionPiece = 'q') {
+    executeMove(from, to, promotionPiece = 'q', isRemote = false) {
       this.hideTooltip();
       // 1. 이동할 기물과 대상 칸의 기물 고유 ID 보존
       const movingHeroId = this.piecePositions[from];
@@ -1886,6 +2499,17 @@
       });
 
       if (!move) return;
+
+      // LAN 모드에서 로컬 사용자의 착수일 때: 원격 상대방에게 실시간 브로드캐스트
+      if (!isRemote && this.gameMode === "lan" && this.lanManager) {
+        this.lanManager.sendMessage({
+          type: 'move',
+          from: from,
+          to: to,
+          promotion: promotionPiece,
+          player: this.lanRole
+        });
+      }
 
       // 3. 무르기(Undo) 지원을 위해 착수 전 위치 스냅샷 보관
       this.positionHistory.push({ ...this.piecePositions });
@@ -1982,7 +2606,17 @@
     }
 
     // 한 수 무르기 (Undo)
-    undoMove() {
+    undoMove(isRemote = false) {
+      if (!isRemote && this.gameMode === "lan") {
+        if (this.lanManager && this.lanManager.isConnected()) {
+          this.lanManager.sendMessage({ type: 'undo_request', sender: this.lanRole });
+          this.setDialogue("상대방에게 한 수 무르기 요청을 보냈습니다. 승인을 기다립니다...");
+        } else {
+          alert("LAN 대국 중에는 연결된 전우가 있을 때만 무르기를 요청할 수 있습니다.");
+        }
+        return;
+      }
+
       if (this.gameMode === "ai") {
         // AI 모드에서는 플레이어의 직전 수와 AI의 수 둘 다 취소 (총 2수)
         this.game.undo();
@@ -2011,8 +2645,13 @@
     // 기권 (Resign)
     resignGame() {
       if (this.game.game_over()) return;
-      const resignedColor = this.game.turn();
+      const resignedColor = (this.gameMode === "lan") ? this.lanMyColor : this.game.turn();
       const winner = resignedColor === 'w' ? 'b' : 'w';
+
+      if (this.gameMode === "lan" && this.lanManager) {
+        this.lanManager.sendMessage({ type: 'resign', sender: this.lanRole });
+      }
+
       this.setDialogue(`${HERO_DATA[resignedColor].leader}이(가) 백기를 들고 항복을 선언했습니다. ${HERO_DATA[winner].name}의 대승!`);
       this.sound.playVictory();
     }
@@ -2103,6 +2742,31 @@
         this.historyListEl.innerHTML = rowsHtml;
         this.historyListEl.scrollTop = this.historyListEl.scrollHeight;
       }
+
+      // 5. 내부 공유기(LAN) 모드 턴 배너 및 상태 실시간 갱신
+      if (this.gameMode === "lan" && this.lanTurnBanner) {
+        this.lanTurnBanner.style.display = "flex";
+        if (!this.lanManager || !this.lanManager.isConnected()) {
+          if (this.lanTurnIcon) this.lanTurnIcon.textContent = "⏳";
+          if (this.lanTurnText) {
+            this.lanTurnText.textContent = this.lanRole === 'host'
+              ? `방 [${this.lanRoomCodeVal || '----'}] 대기실 생성됨: 상대방이 방 번호로 접속하기를 기다리는 중...`
+              : "호스트 전장에 연결을 시도하는 중...";
+          }
+        } else {
+          const isMyTurn = (turn === this.lanMyColor);
+          if (this.lanTurnIcon) this.lanTurnIcon.textContent = isMyTurn ? "⚔️" : "🛡️";
+          if (this.lanTurnText) {
+            const mySideName = this.lanMyColor === 'w' ? '아카이아 연합군 (백)' : '트로이 수호군 (흑)';
+            const oppSideName = this.lanMyColor === 'w' ? '트로이 수호군 (흑)' : '아카이아 연합군 (백)';
+            this.lanTurnText.textContent = isMyTurn
+              ? `【나의 턴】 당신(${mySideName})의 차례입니다. 전장의 기물을 착수하세요!`
+              : `【상대방 턴】 상대방(${oppSideName})이 착수를 고심하고 있습니다...`;
+          }
+        }
+      } else if (this.lanTurnBanner) {
+        this.lanTurnBanner.style.display = "none";
+      }
     }
 
     // 승급 모달 팝업 열기
@@ -2122,6 +2786,98 @@
       if (this.promoModal) {
         this.promoModal.classList.remove("active");
       }
+    }
+
+    // ========================================================================
+    // 내부 공유기(LAN) / 온라인 P2P 대전 헬퍼 메서드
+    // ========================================================================
+
+    // 방 생성 (Host)
+    handleLanCreateRoom() {
+      const code = String(Math.floor(1000 + Math.random() * 9000));
+      this.lanRoomCodeVal = code;
+      this.lanMyColor = 'w';
+      this.playerColor = 'w';
+      this.lanRole = 'host';
+
+      if (this.lanRoomDisplay) this.lanRoomDisplay.style.display = "flex";
+      if (this.lanRoomCodeEl) this.lanRoomCodeEl.textContent = code;
+
+      this.lanManager.createRoom(code);
+      this.resetGame(false);
+      this.setDialogue(`🏛️ 대국 대기실 [${code}]이 생성되었습니다! 같은 공유기나 브라우저의 전우에게 방 번호를 알려주세요.`);
+    }
+
+    // 방 참여 (Guest)
+    handleLanJoinRoom() {
+      const code = (this.inputRoomCode ? this.inputRoomCode.value.trim() : "");
+      if (!code || code.length < 4) {
+        alert("4자리 방 번호를 올바르게 입력해주세요. (예: 1234)");
+        return;
+      }
+      this.lanRoomCodeVal = code;
+      this.lanMyColor = 'b';
+      this.playerColor = 'b';
+      this.lanRole = 'guest';
+
+      this.lanManager.joinRoom(code);
+      this.resetGame(false);
+      this.setDialogue(`🛡️ 방 [${code}] 접속을 시도합니다. 트로이 수호군(흑/후공)으로 참전합니다.`);
+    }
+
+    // 방 번호 복사
+    handleCopyRoomCode() {
+      if (!this.lanRoomCodeVal) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(this.lanRoomCodeVal).then(() => {
+          if (this.btnCopyRoomCode) {
+            const original = this.btnCopyRoomCode.textContent;
+            this.btnCopyRoomCode.textContent = "✅ 복사됨!";
+            setTimeout(() => { if (this.btnCopyRoomCode) this.btnCopyRoomCode.textContent = original; }, 1500);
+          }
+        }).catch(() => {
+          prompt("방 번호를 수동으로 복사하세요:", this.lanRoomCodeVal);
+        });
+      } else {
+        prompt("방 번호를 수동으로 복사하세요:", this.lanRoomCodeVal);
+      }
+    }
+
+    // LAN 서버 주소 감지 및 접속 안내 표시
+    detectLanInfo() {
+      if (typeof window === 'undefined' || !window.location.protocol.startsWith('http')) return;
+      fetch('/api/lan-info')
+        .then(r => r.json())
+        .then(data => {
+          if (data && data.ok && Array.isArray(data.ips) && data.ips.length > 0) {
+            const ip = data.ips[0];
+            const port = data.port || 3000;
+            const lanUrl = `http://${ip}:${port}`;
+            const descEl = this.lanMatchPanel ? this.lanMatchPanel.querySelector('.lan-desc') : null;
+            if (descEl) {
+              descEl.innerHTML = `같은 Wi-Fi 내의 스마트폰/PC에서 <strong>${lanUrl}</strong> 로 접속하여 함께 대국할 수 있습니다.`;
+            }
+          }
+        })
+        .catch(() => {});
+    }
+
+    // 원격 상대방의 착수 실행
+    executeRemoteMove(from, to, promotion = 'q') {
+      this.executeMove(from, to, promotion, true);
+    }
+
+    // 원격 무르기 실행
+    executeRemoteUndo() {
+      this.undoMove(true);
+    }
+
+    // 상대방 기권 수신 처리
+    handleRemoteResign(sender) {
+      if (this.game.game_over()) return;
+      const winner = this.lanMyColor === 'w' ? '아카이아 연합군 (백)' : '트로이 수호군 (흑)';
+      this.sound.playVictory();
+      this.setDialogue(`🏳️ 상대방이 기권을 선언했습니다! ${winner}의 명예로운 승리!`);
     }
   }
 

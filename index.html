@@ -456,6 +456,7 @@
             <select id="selectGameMode" class="chess-select">
               <option value="ai">🤖 vs AI 대전</option>
               <option value="pvp">👥 2인 로컬 대전 (Pass & Play)</option>
+              <option value="lan">🌐 내부 공유기 / 온라인 P2P 대전 (LAN)</option>
             </select>
           </div>
 
@@ -489,6 +490,57 @@
             <button type="button" class="btn-chess" id="btnSoundToggle">
               <span>🔊 소리 켬</span>
             </button>
+          </div>
+        </div>
+
+        <!-- 내부 공유기(LAN) & 온라인 P2P 대국 대기실 패널 -->
+        <div class="lan-match-panel" id="lanMatchPanel" style="display: none;">
+          <div class="lan-panel-inner">
+            <div class="lan-header-row">
+              <div class="lan-title-group">
+                <span class="lan-icon">🌐</span>
+                <div>
+                  <h4 class="lan-title">내부 공유기(LAN) & 온라인 전우 대전</h4>
+                  <p class="lan-desc">같은 Wi-Fi/공유기 내의 PC나 스마트폰, 또는 인터넷의 전우와 실시간으로 체스를 둘 수 있습니다.</p>
+                </div>
+              </div>
+              <div class="lan-status-badge" id="lanStatusBadge">
+                <span class="lan-dot"></span>
+                <span class="lan-status-text" id="lanStatusText">대국 대기실 미입장</span>
+              </div>
+            </div>
+
+            <div class="lan-action-row">
+              <!-- 호스트: 방 생성 -->
+              <div class="lan-host-box">
+                <button type="button" class="btn-lan btn-lan-host" id="btnLanCreateRoom">
+                  <span>🏛️ 방 만들기 (아카이아 연합군/백)</span>
+                </button>
+                <div class="lan-room-display" id="lanRoomDisplay" style="display: none;">
+                  <span class="lan-room-label">방 번호:</span>
+                  <span class="lan-room-code" id="lanRoomCode">----</span>
+                  <button type="button" class="btn-copy-code" id="btnCopyRoomCode" title="방 번호 복사">📋 복사</button>
+                </div>
+              </div>
+
+              <div class="lan-divider">또는</div>
+
+              <!-- 게스트: 방 참여 -->
+              <div class="lan-join-box">
+                <div class="lan-input-group">
+                  <input type="text" id="inputRoomCode" class="lan-input" placeholder="4자리 방 번호 입력" maxlength="8" autocomplete="off">
+                  <button type="button" class="btn-lan btn-lan-join" id="btnLanJoinRoom">
+                    <span>🛡️ 방 참가 (트로이 수호군/흑)</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 대국 진행 중 턴 상태 안내 바 -->
+            <div class="lan-turn-banner" id="lanTurnBanner" style="display: none;">
+              <span class="lan-turn-icon" id="lanTurnIcon">⚔️</span>
+              <span class="lan-turn-text" id="lanTurnText">전우를 기다리는 중입니다...</span>
+            </div>
           </div>
         </div>
       </div>
@@ -707,6 +759,9 @@
   <!-- 체스: 트로이 공식 경량 체스 엔진 (chess.js CDN 및 로컬 폴백) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
   <script>window.Chess || document.write('<script src="assets/chess.min.js"><\/script>');</script>
+  <!-- P2P 내부 공유기 / 온라인 실시간 통신 라이브러리 (PeerJS 로컬 및 CDN 폴백) -->
+  <script src="assets/peerjs.min.js"></script>
+  <script>window.Peer || document.write('<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"><\/script>');</script>
   <script src="trojan_chess.js"></script>
 </body>
 </html>
