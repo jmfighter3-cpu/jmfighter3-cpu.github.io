@@ -58,14 +58,7 @@
   - 발동 시 체스판에 배치된 **아카이아 연합군(백)과 트로이 수호군(흑)의 모든 기물 위치를 상대 진영의 대응 기물(Counterpart)로 1:1 맞교환**.
   - 양측의 잡힌 기물 트레이(Captured Trays)와 16명 호메로스 영웅 고유 식별자(Hero ID)까지 상호 동기화 전환.
   - 전격 교체 직후 상대 킹의 체크 여부를 감지하여 방어권 우선 부여 및 합법적 수순 유지, Web Audio 실시간 전쟁 나팔/기습 음향 및 체스판 펄스 애니메이션 출력.
-  - 로컬 2인용, AI 대전(하데스 포함), 내부 공유기(LAN) P2P 멀티플레이어 환경에서 완벽한 실시간 패킷 동기화 지원.
-- **🌐 내부 공유기(LAN) & 온라인 P2P 실시간 2인 대전**:
-  - **무설치 P2P 직결**: WebRTC DataChannel (PeerJS) 및 BroadcastChannel 기반으로 클라우드 서버 없이도 실시간 1:1 대국 지원.
-  - **오프라인 로컬 서버 지원 (`lan_server.js`)**:
-    - 인터넷 연결이 없는 독립 공유기 환경에서도 Node.js 내장 모듈만으로 동작하는 초경량 로컬 웹 서버 제공 (`run_lan_server.bat` 원클릭 실행).
-    - 로컬 IP(`192.168.0.X:3000`) 자동 감지 및 스마트폰/태블릿 원격 접속 지원.
-  - **4자리 방 번호 매칭 시스템**: 방 생성(호스트/백) 및 4자리 번호 입력(게스트/흑)으로 간편한 원터치 매칭.
-  - **실시간 기보/착수/무르기/기권 동기화**: 완벽한 턴 잠금 및 실시간 대화창 서사 출력.
+  - 로컬 2인 대전(Pass & Play) 및 4단계 AI 대전(하데스 포함) 환경에서 완벽한 전술 지원.
 
 ---
 
@@ -75,8 +68,7 @@
 | :--- | :--- | :--- |
 | **Markup** | **HTML5** | 시맨틱 태그 기반 레이아웃, 웹 접근성, Open Graph 메타데이터 |
 | **Styling** | **CSS3** | CSS 커스텀 변수, 글래스모피즘 블러, 반응형 Flexbox/Grid, 메안드로스 문양 |
-| **Logic** | **Vanilla JavaScript (ES6+)** | 무프레임워크 SPA 탭 라우팅, 체스 룰 엔진(chess.js), Web Audio API 음향 |
-| **Networking** | **WebRTC (PeerJS) & Node.js** | 내부 공유기(LAN) 및 온라인 실시간 1:1 P2P 대전, 무의존성 로컬 HTTP 중계 서버 |
+| **Logic** | **Vanilla JavaScript (ES6+)** | 무프레임워크 SPA 탭 라우팅, 체스 룰 엔진(chess.js), Web Audio API 음향, Minimax AI |
 | **Database** | **Google Firebase Firestore (v10)** | 클라우드 NoSQL 실시간 DB 스트리밍 연동 및 보안 규칙 설정 |
 | **Hosting** | **GitHub Pages** | Git 기반 무중단 정적 웹 호스팅 |
 | **Typography** | **Pretendard & Cinzel** | 현대적 한글 가독성(Pretendard)과 고전 그리스 비문 세리프(Cinzel)의 조화 |
@@ -89,14 +81,10 @@
 jmfighter3-cpu.github.io/
 ├── index.html            # 전체 5개 탭 마크업 및 통합 UI
 ├── style.css             # 메인 포트폴리오 스타일시트
-├── chess.css             # 체스: 트로이 전용 대리석 전장 및 LAN 대기실 스타일시트
+├── chess.css             # 체스: 트로이 전용 대리석 전장 스타일시트
 ├── script.js             # 탭 전환, 델포이 신탁, 아고라 방명록 연동 로직
-├── trojan_chess.js       # 호메로스 체스 엔진, AoM SVG 영웅 유닛, LAN P2P 매니저
-├── lan_server.js         # 내부 공유기(LAN) 로컬 대전 웹 서버 (Node.js 기본 모듈)
-├── run_lan_server.bat    # 내부 공유기 서버 원클릭 실행 배치 스크립트
+├── trojan_chess.js       # 호메로스 체스 엔진, AoM SVG 영웅 유닛, 4단계 AI(하데스)
 ├── firestore.rules       # Google Cloud Firestore 보안 규칙 정의 파일
-├── assets/
-│   └── peerjs.min.js     # 클라이언트 WebRTC P2P DataChannel 라이브러리
 └── README.md             # 프로젝트 공식 소개 및 기술 명세서
 ```
 
