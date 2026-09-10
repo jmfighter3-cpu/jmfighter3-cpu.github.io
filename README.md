@@ -39,6 +39,22 @@
 - **영구 보존 및 훼손 방지 보안 규칙(`firestore.rules`)**:
   - 읽기 및 유효성 검증된 새 도편 작성만 허용하며, 웹 상에서의 임의 수정/삭제를 전면 차단하여 영구 보존. (관리자는 Firebase 콘솔에서 직접 관리 가능)
 
+### 5. ⚔️ 체스: 트로이 (Chess: Troy)
+- **호메로스 대서사시 『일리아스』 테마 체스**:
+  - 아카이아 연합군(그리스/백) vs 트로이 수호군(일리온/흑)의 서사적 대결.
+  - 16명의 고대 영웅·성벽 고유 모델링 및 서사 대사(아킬레우스, 헥토르, 아가멤논, 프리아모스 등).
+- **특화 SVG 3D 유닛 비주얼**:
+  - 🐎 **나이트 (Knight)**: 투구와 마갑을 갖춘 군마를 탄 당당한 기마 영웅의 모습 (파트로클로스, 네스토르, 아이네이아스, 사르페돈).
+  - 📜 **비숍 (Bishop)**: 바닥까지 우아하게 늘어뜨린 고대 히마티온(Himation) 로브를 입은 현자 및 사제의 모습 (오디세우스, 디오메데스, 파리스, 헬레노스).
+  - 🏰 **아카이아 룩 (Rook)**: 견고한 미케네 거석 성벽(Rampart)과 흉벽 치성을 밟고 선 맹장의 모습 (대 아이아스, 소 아이아스).
+- **🌐 내부 공유기(LAN) & 온라인 P2P 실시간 2인 대전**:
+  - **무설치 P2P 직결**: WebRTC DataChannel (PeerJS) 및 BroadcastChannel 기반으로 클라우드 서버 없이도 실시간 1:1 대국 지원.
+  - **오프라인 로컬 서버 지원 (`lan_server.js`)**:
+    - 인터넷 연결이 없는 독립 공유기 환경에서도 Node.js 내장 모듈만으로 동작하는 초경량 로컬 웹 서버 제공 (`run_lan_server.bat` 원클릭 실행).
+    - 로컬 IP(`192.168.0.X:3000`) 자동 감지 및 스마트폰/태블릿 원격 접속 지원.
+  - **4자리 방 번호 매칭 시스템**: 방 생성(호스트/백) 및 4자리 번호 입력(게스트/흑)으로 간편한 원터치 매칭.
+  - **실시간 기보/착수/무르기/기권 동기화**: 완벽한 턴 잠금 및 실시간 대화창 서사 출력.
+
 ---
 
 ## 🛠️ 기술 스택 (Tech Stack)
@@ -47,7 +63,8 @@
 | :--- | :--- | :--- |
 | **Markup** | **HTML5** | 시맨틱 태그 기반 레이아웃, 웹 접근성, Open Graph 메타데이터 |
 | **Styling** | **CSS3** | CSS 커스텀 변수, 글래스모피즘 블러, 반응형 Flexbox/Grid, 메안드로스 문양 |
-| **Logic** | **Vanilla JavaScript (ES6+)** | 무프레임워크 SPA 탭 라우팅, 난수 신탁 추첨, 실시간 이벤트 처리 |
+| **Logic** | **Vanilla JavaScript (ES6+)** | 무프레임워크 SPA 탭 라우팅, 체스 룰 엔진(chess.js), Web Audio API 음향 |
+| **Networking** | **WebRTC (PeerJS) & Node.js** | 내부 공유기(LAN) 및 온라인 실시간 1:1 P2P 대전, 무의존성 로컬 HTTP 중계 서버 |
 | **Database** | **Google Firebase Firestore (v10)** | 클라우드 NoSQL 실시간 DB 스트리밍 연동 및 보안 규칙 설정 |
 | **Hosting** | **GitHub Pages** | Git 기반 무중단 정적 웹 호스팅 |
 | **Typography** | **Pretendard & Cinzel** | 현대적 한글 가독성(Pretendard)과 고전 그리스 비문 세리프(Cinzel)의 조화 |
@@ -58,11 +75,17 @@
 
 ```text
 jmfighter3-cpu.github.io/
-├── index.html         # 전체 4개 탭 마크업 및 Firebase SDK 연결 메인 문서
-├── style.css          # 고대 그리스 신전 팔레트, 글래스모피즘, 반응형 스타일시트
-├── script.js          # 탭 전환, 델포이 신탁, 아고라 방명록 Firestore 연동 로직
-├── firestore.rules    # Google Cloud Firestore 보안 규칙 정의 파일
-└── README.md          # 프로젝트 공식 소개 및 기술 명세서
+├── index.html            # 전체 5개 탭 마크업 및 통합 UI
+├── style.css             # 메인 포트폴리오 스타일시트
+├── chess.css             # 체스: 트로이 전용 대리석 전장 및 LAN 대기실 스타일시트
+├── script.js             # 탭 전환, 델포이 신탁, 아고라 방명록 연동 로직
+├── trojan_chess.js       # 호메로스 체스 엔진, AoM SVG 영웅 유닛, LAN P2P 매니저
+├── lan_server.js         # 내부 공유기(LAN) 로컬 대전 웹 서버 (Node.js 기본 모듈)
+├── run_lan_server.bat    # 내부 공유기 서버 원클릭 실행 배치 스크립트
+├── firestore.rules       # Google Cloud Firestore 보안 규칙 정의 파일
+├── assets/
+│   └── peerjs.min.js     # 클라이언트 WebRTC P2P DataChannel 라이브러리
+└── README.md             # 프로젝트 공식 소개 및 기술 명세서
 ```
 
 ---
