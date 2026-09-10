@@ -996,3 +996,254 @@
   line-height: 1.45;
 }
 
+/* ==========================================================================
+   8. 내부 공유기(LAN) & P2P 온라인 대전 패널 스타일
+   ========================================================================== */
+.lan-match-panel {
+  margin-top: 18px;
+  padding: 16px 20px;
+  background: rgba(254, 243, 199, 0.55);
+  border: 1px solid rgba(217, 119, 6, 0.45);
+  border-radius: 12px;
+  box-shadow: inset 0 1px 3px rgba(217, 119, 6, 0.1);
+  animation: lanFadeIn 0.3s ease-out;
+}
+
+@keyframes lanFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.lan-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed rgba(217, 119, 6, 0.35);
+}
+
+.lan-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lan-icon {
+  font-size: 1.6rem;
+}
+
+.lan-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #92400e;
+  font-family: 'Cinzel', serif;
+}
+
+.lan-desc {
+  margin: 2px 0 0 0;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.lan-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(217, 119, 6, 0.35);
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #78350f;
+}
+
+.lan-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #94a3b8;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.lan-status-badge.connected .lan-dot {
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulseGreen 1.5s infinite;
+}
+
+.lan-status-badge.waiting .lan-dot {
+  background: #f59e0b;
+  box-shadow: 0 0 8px #f59e0b;
+  animation: pulseYellow 1.2s infinite;
+}
+
+.lan-status-badge.error .lan-dot {
+  background: #ef4444;
+}
+
+@keyframes pulseGreen {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.25); }
+}
+
+@keyframes pulseYellow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.2); }
+}
+
+.lan-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.lan-host-box,
+.lan-join-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-lan {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(217, 119, 6, 0.5);
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-lan-host {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #78350f;
+  box-shadow: 0 2px 6px rgba(217, 119, 6, 0.2);
+}
+
+.btn-lan-host:hover {
+  background: linear-gradient(135deg, #fde68a 0%, #fcd34d 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(217, 119, 6, 0.3);
+}
+
+.btn-lan-join {
+  background: linear-gradient(135deg, #fee2e2 0%, #fca5a5 100%);
+  color: #7f1d1d;
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.2);
+}
+
+.btn-lan-join:hover {
+  background: linear-gradient(135deg, #fca5a5 0%, #f87171 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(220, 38, 38, 0.3);
+}
+
+.lan-divider {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #b45309;
+  padding: 0 4px;
+}
+
+.lan-room-display {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: #ffffff;
+  border: 1px solid #d97706;
+  border-radius: 8px;
+}
+
+.lan-room-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.lan-room-code {
+  font-family: 'Cinzel', monospace, sans-serif;
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  color: #b45309;
+}
+
+.btn-copy-code {
+  padding: 3px 8px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  font-size: 0.74rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-copy-code:hover {
+  background: #e2e8f0;
+}
+
+.lan-input-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lan-input {
+  width: 145px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(217, 119, 6, 0.5);
+  background: #ffffff;
+  font-family: 'Cinzel', monospace, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: center;
+  outline: none;
+}
+
+.lan-input:focus {
+  border-color: #b45309;
+  box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.25);
+}
+
+.lan-turn-banner {
+  margin-top: 12px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(217, 119, 6, 0.15) 0%, rgba(217, 119, 6, 0.05) 100%);
+  border-left: 4px solid #d97706;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #78350f;
+  animation: lanFadeIn 0.3s ease;
+}
+
+.lan-turn-banner.my-turn {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.05) 100%);
+  border-left-color: #10b981;
+  color: #065f46;
+}
+
+.lan-turn-banner.opponent-turn {
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.2) 0%, rgba(245, 158, 11, 0.05) 100%);
+  border-left-color: #f59e0b;
+  color: #92400e;
+}
+
