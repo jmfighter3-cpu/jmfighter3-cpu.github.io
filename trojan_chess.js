@@ -23,12 +23,12 @@
       leader: "총사령관 아가멤논",
       crest: "🏛️",
       pieces: {
-        k: { name: "아가멤논 (Agamemnon)", title: "미케네의 군주, 아카이아 총사령관", symbol: "♔" },
-        q: { name: "아킬레우스 (Achilles)", title: "펠레우스의 아들, 최강의 전사", symbol: "♕" },
-        b: { name: "오디세우스 (Odysseus)", title: "이타카의 왕, 지략의 영웅", symbol: "♗" },
-        n: { name: "파트로클로스 (Patroclus)", title: "아킬레우스의 벗, 용맹한 전사", symbol: "♘" },
-        r: { name: "대·소 아이아스 (Ajax)", title: "거대한 방패의 대 아이아스 & 신속한 창의 소 아이아스", symbol: "♖" },
-        p: { name: "미르미돈 정예병 (Myrmidon)", title: "아킬레우스 직속 최정예 개미 전사들", symbol: "♙" }
+        k: { name: "아가멤논 (Agamemnon)", title: "미케네의 군주, 아카이아 총사령관", symbol: "♔", heroCrest: "👑", shortName: "아가멤논", roleClass: "hero-agamemnon" },
+        q: { name: "아킬레우스 (Achilles)", title: "펠레우스의 아들, 최강의 전사", symbol: "♕", heroCrest: "⚔️", shortName: "아킬레우스", roleClass: "hero-achilles" },
+        b: { name: "오디세우스 (Odysseus)", title: "이타카의 왕, 지략의 영웅", symbol: "♗", heroCrest: "📜", shortName: "오디세우스", roleClass: "hero-odysseus" },
+        n: { name: "파트로클로스 (Patroclus)", title: "아킬레우스의 벗, 용맹한 전사", symbol: "♘", heroCrest: "🐎", shortName: "파트로클로스", roleClass: "hero-patroclus" },
+        r: { name: "대·소 아이아스 (Ajax)", title: "거대한 방패의 대 아이아스 & 신속한 창의 소 아이아스", symbol: "♖", heroCrest: "🛡️", shortName: "아이아스", roleClass: "hero-ajax" },
+        p: { name: "미르미돈 정예병 (Myrmidon)", title: "아킬레우스 직속 최정예 개미 전사들", symbol: "♙", heroCrest: "🐜", shortName: "미르미돈", roleClass: "hero-myrmidon" }
       }
     },
     b: {
@@ -36,12 +36,12 @@
       leader: "위대한 노왕 프리아모스",
       crest: "🛡️",
       pieces: {
-        k: { name: "프리아모스 (Priam)", title: "트로이의 성군, 일리오스의 왕", symbol: "♚" },
-        q: { name: "헥토르 (Hector)", title: "투구 빛나는 트로이의 불멸의 방패", symbol: "♛" },
-        b: { name: "파리스 & 헬레노스", title: "트로이의 궁수 왕자 & 아폴론의 예언자", symbol: "♝" },
-        n: { name: "아이네이아스 (Aeneas)", title: "아프로디테의 아들, 다르다니아의 영웅", symbol: "♞" },
-        r: { name: "트로이의 성벽 (Walls of Troy)", title: "포세이돈과 아폴론이 쌓은 난공불락의 문", symbol: "♜" },
-        p: { name: "트로이 팔랑크스 (Trojan Phalanx)", title: "조국의 땅을 수호하는 용맹한 보병들", symbol: "♟" }
+        k: { name: "프리아모스 (Priam)", title: "트로이의 성군, 일리오스의 왕", symbol: "♚", heroCrest: "👑", shortName: "프리아모스", roleClass: "hero-priam" },
+        q: { name: "헥토르 (Hector)", title: "투구 빛나는 트로이의 불멸의 방패", symbol: "♛", heroCrest: "🛡️", shortName: "헥토르", roleClass: "hero-hector" },
+        b: { name: "파리스 & 헬레노스", title: "트로이의 궁수 왕자 & 아폴론의 예언자", symbol: "♝", heroCrest: "🏹", shortName: "파리스", roleClass: "hero-paris" },
+        n: { name: "아이네이아스 (Aeneas)", title: "아프로디테의 아들, 다르다니아의 영웅", symbol: "♞", heroCrest: "🐎", shortName: "아이네이아스", roleClass: "hero-aeneas" },
+        r: { name: "트로이의 성벽 (Walls of Troy)", title: "포세이돈과 아폴론이 쌓은 난공불락의 문", symbol: "♜", heroCrest: "🏰", shortName: "트로이 성벽", roleClass: "hero-trojanwall" },
+        p: { name: "트로이 팔랑크스 (Trojan Phalanx)", title: "조국의 땅을 수호하는 용맹한 보병들", symbol: "♟", heroCrest: "⚔️", shortName: "트로이 보병", roleClass: "hero-phalanx" }
       }
     }
   };
@@ -571,15 +571,24 @@
             }
           }
 
-          // 5. 기물 렌더링
+          // 5. 기물 렌더링 (3D 입체 모델링 메달리온)
           if (piece) {
             const pieceDiv = document.createElement("div");
             const isWhite = piece.color === 'w';
-            pieceDiv.className = `piece ${isWhite ? "white-piece" : "black-piece"}`;
-
             const heroInfo = HERO_DATA[piece.color].pieces[piece.type];
-            pieceDiv.textContent = heroInfo ? heroInfo.symbol : "";
+
+            pieceDiv.className = `piece 3d-piece ${isWhite ? "white-piece" : "black-piece"} ${heroInfo ? heroInfo.roleClass : ""}`;
             pieceDiv.title = `${heroInfo.name} — ${heroInfo.title}`;
+
+            pieceDiv.innerHTML = `
+              <div class="piece-disc">
+                <div class="piece-inner-ring">
+                  <span class="piece-hero-crest">${heroInfo ? heroInfo.heroCrest : ""}</span>
+                  <span class="piece-type-badge">${heroInfo ? heroInfo.symbol : ""}</span>
+                </div>
+                <span class="piece-nameplate">${heroInfo ? heroInfo.shortName : ""}</span>
+              </div>
+            `;
 
             squareDiv.appendChild(pieceDiv);
           }
