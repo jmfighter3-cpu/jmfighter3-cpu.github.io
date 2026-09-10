@@ -383,6 +383,28 @@
         osc.stop(now + idx * 0.12 + 0.45);
       });
     }
+
+    // 트로이 목마 전술 발동음 (웅장한 전쟁 나팔 및 기습 북소리)
+    playTrojanHorse() {
+      if (!this.enabled) return;
+      this.init();
+      if (!this.ctx) return;
+
+      const now = this.ctx.currentTime;
+      const hornNotes = [220, 277.18, 329.63, 440];
+      hornNotes.forEach((freq, idx) => {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(freq, now + idx * 0.09);
+        gain.gain.setValueAtTime(0.25, now + idx * 0.09);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.42);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now + idx * 0.09);
+        osc.stop(now + idx * 0.09 + 0.45);
+      });
+    }
   }
 
   // ==========================================================================
@@ -1850,6 +1872,11 @@
           alert("재대결이 성사되었습니다. 새로운 대국을 시작합니다!");
           this.game.resetGame(false);
           break;
+
+        case 'trojan_horse':
+          console.log("[LAN Match] 상대방의 트로이 목마 전술 발동 수신");
+          this.game.activateTrojanHorse(true);
+          break;
       }
     }
 
@@ -2786,23 +2813,145 @@
       this.sound.playVictory();
     }
 
-    // 트로이 목마 특수 기믹 (Trojan Horse Tactic)
-    activateTrojanHorse() {
+    // 트로이 목마 특수 기믹 (Trojan Horse Tactic):
+    // 트로이 측과 아카이아 측의 기물들 위치를 전부 각각 대응 기물로 전격 교체
+    activateTrojanHorse(isRemote = false) {
       if (this.trojanHorseUsed || this.game.game_over()) return;
-      if (this.game.turn() !== 'w') {
-        alert("트로이 목마 전술은 아카이아 연합군(백) 차례에만 발동할 수 있습니다!");
-        return;
+
+      const currentTurn = this.game.turn();
+
+      // 발동 권한 검증 (자신의 턴에만 발동 가능)
+      if (!isRemote) {
+        if (this.gameMode === "lan") {
+          if (!this.lanManager || !this.lanManager.isConnected()) {
+            alert("전우가 대국실에 입장한 후 트로이 목마 전술을 발동할 수 있습니다.");
+            return;
+          }
+          if (currentTurn !== this.lanMyColor) {
+            alert("자신의 착수 차례에만 트로이 목마 전술을 발동할 수 있습니다.");
+            return;
+          }
+        } else if (this.gameMode === "ai") {
+          if (currentTurn !== this.playerColor) {
+            alert("자신의 착수 차례에만 트로이 목마 전술을 발동할 수 있습니다.");
+            return;
+          }
+        }
       }
 
-      // 호메로스 서사 컷인 및 대사
+      // 무르기(Undo) 지원을 위한 현재 상태 스냅샷 저장
+      this.positionHistory.push({ ...this.piecePositions });
+
+      // 1. 체스판의 모든 아카이아(백) 기물과 트로이(흑) 기물 FEN 및 영웅 ID 1:1 반전 생성
+      const board = this.game.board();
+      const rows = [];
+      const newPiecePositions = {};
+
+      for (let r = 0; r < 8; r++) {
+        let emptyCount = 0;
+        let rowStr = '';
+        for (let c = 0; c < 8; c++) {
+          const squareName = String.fromCharCode(97 + c) + (8 - r);
+          const piece = board[r][c];
+          if (!piece) {
+            emptyCount++;
+          } else {
+            if (emptyCount > 0) {
+              rowStr += emptyCount;
+              emptyCount = 0;
+            }
+            // 백(w) 기물 -> 흑(소문자) 기물로, 흑(b) 기물 -> 백(대문자) 기물로 전환
+            const invertedType = piece.color === 'w' 
+              ? piece.type.toLowerCase() 
+              : piece.type.toUpperCase();
+            rowStr += invertedType;
+
+            // 영웅 식별자(HERO ID) 1:1 대응 영웅으로 교체
+            const heroId = this.piecePositions[squareName] || `${piece.color}_${piece.type}`;
+            if (heroId.startsWith('w_')) {
+              newPiecePositions[squareName] = heroId.replace('w_', 'b_');
+            } else if (heroId.startsWith('b_')) {
+              newPiecePositions[squareName] = heroId.replace('b_', 'w_');
+            } else {
+              newPiecePositions[squareName] = piece.color === 'w' ? `b_${piece.type}` : `w_${piece.type}`;
+            }
+          }
+        }
+        if (emptyCount > 0) rowStr += emptyCount;
+        rows.push(rowStr);
+      }
+
+      const piecePlacement = rows.join('/');
+      const opponentColor = currentTurn === 'w' ? 'b' : 'w';
+
+      // 2. 체크 상태 안전 검증을 통한 유효 턴 결정
+      const testOpp = new Chess();
+      testOpp.load(`${piecePlacement} ${opponentColor} - - 0 1`);
+      const testAct = new Chess();
+      testAct.load(`${piecePlacement} ${currentTurn} - - 0 1`);
+
+      let nextTurn = currentTurn;
+      if (testOpp.in_check()) {
+        nextTurn = opponentColor; // 상대방 킹이 체크 상태 -> 상대방이 방어
+      } else if (testAct.in_check()) {
+        nextTurn = currentTurn;   // 내 킹이 체크 상태 -> 내가 방어
+      } else {
+        nextTurn = currentTurn;   // 기습 주도권 유지 (시전자 즉시 행마 가능)
+      }
+
+      const newFen = `${piecePlacement} ${nextTurn} - - 0 1`;
+      this.game.load(newFen);
+      this.piecePositions = newPiecePositions;
+
+      // 3. 잡힌 기물 트레이 반전 (심볼 교체)
+      const counterpartSymbolMap = {
+        '♔': '♚', '♚': '♔',
+        '♕': '♛', '♛': '♕',
+        '♖': '♜', '♜': '♖',
+        '♗': '♝', '♝': '♗',
+        '♘': '♞', '♞': '♘',
+        '♙': '♟', '♟': '♙'
+      };
+      const oldCapturedW = [...this.capturedPieces.w];
+      const oldCapturedB = [...this.capturedPieces.b];
+      this.capturedPieces.w = oldCapturedB.map(s => counterpartSymbolMap[s] || s);
+      this.capturedPieces.b = oldCapturedW.map(s => counterpartSymbolMap[s] || s);
+
+      // 4. 상태 및 버튼 UI 갱신
       this.trojanHorseUsed = true;
       if (this.btnTrojanHorse) {
         this.btnTrojanHorse.disabled = true;
         this.btnTrojanHorse.textContent = "목마 작전 완료";
       }
 
-      this.sound.playCheck();
-      this.setDialogue("오디세우스의 지략! 거대한 목마가 트로이 성벽 안으로 진입하였습니다! '트로이인들이여, 이것은 아테나 여신께 바치는 봉헌물이다!'");
+      // LAN 모드 상대방 브로드캐스트
+      if (!isRemote && this.gameMode === "lan" && this.lanManager) {
+        this.lanManager.sendMessage({
+          type: 'trojan_horse',
+          sender: this.lanRole
+        });
+      }
+
+      // 체스판 기습 진동 효과
+      if (this.boardEl) {
+        this.boardEl.classList.add("trojan-horse-ambush");
+        setTimeout(() => {
+          if (this.boardEl) this.boardEl.classList.remove("trojan-horse-ambush");
+        }, 1200);
+      }
+
+      this.sound.playTrojanHorse();
+      this.selectedSquare = null;
+      this.legalMovesForSelected = [];
+      this.render();
+
+      const activatorName = currentTurn === 'w' ? '아카이아 연합군' : '트로이 수호군';
+      this.setDialogue(`🐴 ${activatorName}의 트로이 목마 전술 발동! 양 진영의 모든 기물 위치가 상대 대응 기물로 전격 뒤바뀌었습니다! '목마의 문이 열리고 전장의 형세가 뒤집혔다!'`);
+
+      // 상대방 턴으로 넘어갔고 AI 모드라면 AI 착수 지연 발동
+      if (this.gameMode === "ai" && this.game.turn() !== this.playerColor) {
+        this.triggerAiMove();
+      }
     }
 
     // 기보 이력으로부터 잡힌 기물 재계산 (무르기 시 복원)
