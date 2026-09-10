@@ -1,0 +1,815 @@
+/* ==========================================================================
+   체스: 트로이 (Chess: Troy) 스타일시트 (chess.css)
+   호메로스 『일리아스』 테마의 대리석 체스보드, 트로이 영웅 카드, 운명의 저울,
+   그리고 반응형 레이아웃을 위한 스타일 모음입니다.
+   ========================================================================== */
+
+/* 1. 체스 메인 컨테이너 및 섹션 */
+.chess-section {
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+/* 2. 체스 타이틀 헤더 카드 */
+.chess-header-card {
+  background: var(--card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.chess-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(217, 119, 6, 0.15);
+  border: 1px solid rgba(217, 119, 6, 0.4);
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #b45309;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+  font-family: 'Cinzel', serif;
+}
+
+.chess-main-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #92400e;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chess-subtitle {
+  color: var(--text-muted);
+  font-size: 0.96rem;
+  line-height: 1.65;
+}
+
+/* 3. 대국 컨트롤 바 (모드, 난이도, 버튼) */
+.chess-control-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px dashed rgba(217, 119, 6, 0.3);
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.control-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.chess-select {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(217, 119, 6, 0.4);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--text-main);
+  font-size: 0.88rem;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.chess-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-glow);
+}
+
+.chess-btn-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-chess {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid rgba(217, 119, 6, 0.35);
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  font-family: inherit;
+}
+
+.btn-chess:hover {
+  background: #fef3c7;
+  border-color: var(--primary-color);
+  color: #92400e;
+  transform: translateY(-1px);
+}
+
+.btn-chess-primary {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+}
+
+.btn-chess-primary:hover {
+  background: linear-gradient(135deg, #b45309, #92400e);
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(217, 119, 6, 0.45);
+}
+
+/* 4. 체스 전장 레이아웃 (좌우 2열 그리드) */
+.chess-battlefield {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .chess-battlefield {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 5. 좌측: 체스판 보드 랩퍼 및 진영 정보 카드 */
+.board-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 진영 상태 카드 (상대방 / 플레이어) */
+.faction-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: rgba(255, 253, 247, 0.7);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.faction-card.active-turn {
+  border-color: #d97706;
+  background: rgba(254, 243, 199, 0.85);
+  box-shadow: 0 0 16px rgba(217, 119, 6, 0.35);
+  transform: scale(1.01);
+}
+
+.faction-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.faction-crest {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  background: #ffffff;
+  border: 2px solid rgba(217, 119, 6, 0.3);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.faction-card.active-turn .faction-crest {
+  border-color: #d97706;
+  animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+  0% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.5); }
+  70% { box-shadow: 0 0 0 8px rgba(217, 119, 6, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0); }
+}
+
+.faction-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.faction-name {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #78350f;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.faction-role {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* 잡힌 기물(Graveyard) 트레이 */
+.captured-pieces {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 1.25rem;
+  min-height: 28px;
+  max-width: 220px;
+  overflow-x: auto;
+  padding: 2px 4px;
+}
+
+.captured-piece {
+  display: inline-block;
+  transition: transform 0.2s;
+  user-select: none;
+}
+
+.captured-piece:hover {
+  transform: scale(1.3);
+}
+
+/* 6. 메인 체스보드 컨테이너 */
+.board-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+  margin: 0 auto;
+  aspect-ratio: 1 / 1;
+  background: #3b2210;
+  padding: 12px;
+  border-radius: 14px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+  border: 3px solid #b45309;
+}
+
+/* 고대 그리스 메안드로스(Greek Meander) 외곽 장식 테두리 효과 */
+.board-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  border: 1px dashed rgba(245, 158, 11, 0.4);
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+/* 8x8 체스판 그리드 */
+.chess-board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  user-select: none;
+}
+
+/* 체스 칸 (Square) */
+.square {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* 밝은 칸: 파로스 백색 대리석 느낌 */
+.square.light {
+  background-color: #f7f1e5;
+  background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.6) 0%, rgba(240, 230, 215, 0.9) 100%);
+}
+
+/* 어두운 칸: 앤틱 청동 & 목재 테라코타 느낌 */
+.square.dark {
+  background-color: #935a38;
+  background-image: radial-gradient(circle at 50% 50%, rgba(160, 100, 65, 0.95) 0%, rgba(135, 80, 48, 1) 100%);
+}
+
+/* 호버 효과 */
+.square:hover {
+  filter: brightness(1.06);
+}
+
+/* 선택된 기물 칸 */
+.square.selected {
+  background-color: #fde047 !important;
+  box-shadow: inset 0 0 0 3px #b45309;
+}
+
+/* 마지막 착수 칸 */
+.square.last-move {
+  background-color: rgba(251, 191, 36, 0.45) !important;
+}
+
+/* 체크 상태인 킹 칸 경고 효과 */
+.square.in-check {
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.9) 0%, rgba(185, 28, 28, 0.7) 100%) !important;
+  animation: check-flame 1s infinite alternate;
+}
+
+@keyframes check-flame {
+  0% { box-shadow: inset 0 0 8px rgba(255, 0, 0, 0.7); }
+  100% { box-shadow: inset 0 0 20px rgba(255, 230, 0, 0.9); }
+}
+
+/* 착수 가능 힌트 (빈 칸) */
+.move-dot {
+  position: absolute;
+  width: 28%;
+  height: 28%;
+  background: rgba(217, 119, 6, 0.45);
+  border-radius: 50%;
+  pointer-events: none;
+  transition: transform 0.2s ease;
+}
+
+.square:hover .move-dot {
+  transform: scale(1.3);
+  background: rgba(217, 119, 6, 0.75);
+}
+
+/* 착수 가능 힌트 (적 기물 포획 가능 칸) */
+.capture-ring {
+  position: absolute;
+  width: 82%;
+  height: 82%;
+  border-radius: 50%;
+  border: 4px solid rgba(220, 38, 38, 0.65);
+  box-sizing: border-box;
+  pointer-events: none;
+  animation: ring-pulse 1.5s infinite;
+}
+
+@keyframes ring-pulse {
+  0%, 100% { transform: scale(0.95); opacity: 0.7; }
+  50% { transform: scale(1.05); opacity: 1; }
+}
+
+/* 7. 체스 기물 (Piece) 스타일링 */
+.piece {
+  font-size: clamp(1.8rem, 6vw, 3.4rem);
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  transition: transform 0.12s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.piece:active {
+  cursor: grabbing;
+  transform: scale(1.15);
+}
+
+/* 아카이아 (White) 기물 - 백색 대리석과 황금빛 후광 */
+.piece.white-piece {
+  color: #fffefb;
+  text-shadow: 
+    0 1px 0 #b45309,
+    0 -1px 0 #d97706,
+    1px 0 0 #b45309,
+    -1px 0 0 #b45309,
+    0 2px 6px rgba(0, 0, 0, 0.45);
+  filter: drop-shadow(0 2px 4px rgba(217, 119, 6, 0.3));
+}
+
+/* 트로이 (Black) 기물 - 칠흑의 흑요석과 청동 테두리 */
+.piece.black-piece {
+  color: #1a1513;
+  text-shadow: 
+    0 1px 0 #78350f,
+    0 -1px 0 #451a03,
+    1px 0 0 #451a03,
+    -1px 0 0 #451a03,
+    0 2px 4px rgba(245, 158, 11, 0.25);
+}
+
+/* 8. 우측 패널: 서사 대사, 운명의 저울, 기보 로그 */
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 호메로스 영웅 대사 박스 */
+.epic-dialogue-card {
+  background: var(--card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+.dialogue-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.dialogue-badge {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #b45309;
+  letter-spacing: 0.05em;
+  font-family: 'Cinzel', serif;
+}
+
+.dialogue-content {
+  background: rgba(255, 255, 255, 0.6);
+  border-left: 3px solid #d97706;
+  border-radius: 4px;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #334155;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  font-style: italic;
+}
+
+/* 제우스의 운명의 저울 (Scale of Fate) */
+.scale-of-fate-card {
+  background: var(--card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+.scale-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #78350f;
+  font-family: 'Cinzel', serif;
+}
+
+.scale-bar-track {
+  height: 12px;
+  background: #292524;
+  border-radius: 9999px;
+  overflow: hidden;
+  display: flex;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(217, 119, 6, 0.3);
+}
+
+.scale-bar-white {
+  height: 100%;
+  width: 50%;
+  background: linear-gradient(90deg, #fef3c7, #f59e0b);
+  transition: width 0.4s ease;
+}
+
+.scale-bar-black {
+  height: 100%;
+  flex: 1;
+  background: linear-gradient(90deg, #44403c, #1c1917);
+}
+
+.scale-legend {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* 기보 (Move History) 로그 */
+.history-card {
+  background: var(--card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+}
+
+.history-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #78350f;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Cinzel', serif;
+}
+
+.history-list {
+  max-height: 160px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-right: 4px;
+  font-family: 'Cinzel', "Pretendard Variable", monospace;
+  font-size: 0.85rem;
+}
+
+.history-row {
+  display: grid;
+  grid-template-columns: 32px 1fr 1fr;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.history-row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.history-turn-num {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.history-move {
+  color: #0f172a;
+}
+
+/* 9. 트로이 목마 특수 전술 배너 */
+.trojan-horse-card {
+  background: linear-gradient(135deg, rgba(254, 243, 199, 0.9), rgba(253, 230, 138, 0.75));
+  border: 1px solid #d97706;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.horse-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.horse-icon {
+  font-size: 1.6rem;
+}
+
+.horse-text h4 {
+  font-size: 0.88rem;
+  color: #92400e;
+  margin-bottom: 2px;
+}
+
+.horse-text p {
+  font-size: 0.78rem;
+  color: #78350f;
+}
+
+.btn-horse-activate {
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border-radius: 6px;
+  border: none;
+  background: #d97706;
+  color: #ffffff;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.btn-horse-activate:hover:not(:disabled) {
+  background: #b45309;
+  transform: translateY(-1px);
+}
+
+.btn-horse-activate:disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* 10. 프로모션(승급) 모달 팝업 */
+.promotion-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.promotion-modal-overlay.active {
+  display: flex;
+}
+
+.promotion-modal {
+  background: #ffffff;
+  border: 2px solid #d97706;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  max-width: 360px;
+  width: 90%;
+  animation: modal-pop 0.25s ease-out;
+}
+
+@keyframes modal-pop {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.promotion-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.3rem;
+  color: #92400e;
+  margin-bottom: 6px;
+}
+
+.promotion-desc {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+}
+
+.promotion-pieces {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.btn-promo-piece {
+  width: 60px;
+  height: 60px;
+  font-size: 2.2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(217, 119, 6, 0.3);
+  background: #fffbeb;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-promo-piece:hover {
+  background: #fde68a;
+  border-color: #d97706;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(217, 119, 6, 0.3);
+}
+
+/* 11. 트로이 전쟁 영웅 도감 및 룰 가이드 아코디언 */
+.chess-guide-card {
+  margin-top: 20px;
+  background: var(--card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  box-shadow: var(--shadow);
+}
+
+.guide-accordion-header {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+
+.guide-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #78350f;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.guide-arrow {
+  transition: transform 0.3s;
+  font-size: 0.85rem;
+  color: #b45309;
+}
+
+.guide-accordion-header.open .guide-arrow {
+  transform: rotate(180deg);
+}
+
+.guide-accordion-body {
+  display: none;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(217, 119, 6, 0.2);
+}
+
+.guide-accordion-body.open {
+  display: block;
+}
+
+.hero-table-wrapper {
+  overflow-x: auto;
+}
+
+.hero-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.hero-table th, .hero-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(217, 119, 6, 0.15);
+}
+
+.hero-table th {
+  background: rgba(217, 119, 6, 0.1);
+  color: #78350f;
+  font-weight: 700;
+}
+
+/* 모바일 화면 최적화 */
+@media (max-width: 600px) {
+  .chess-header-card {
+    padding: 16px;
+  }
+  
+  .chess-main-title {
+    font-size: 1.45rem;
+  }
+  
+  .board-wrapper {
+    padding: 6px;
+  }
+  
+  .piece {
+    font-size: 2.2rem;
+  }
+  
+  .faction-crest {
+    width: 34px;
+    height: 34px;
+    font-size: 1.2rem;
+  }
+  
+  .captured-pieces {
+    font-size: 1.05rem;
+  }
+}
