@@ -8,6 +8,7 @@
 
   <!-- 2. 외부 스타일시트(CSS) 파일 연결 -->
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="chess.css">
 
   <!-- 2-1. 고전 그리스/로마 대리석 비문 서체 Cinzel 및 현대 한글 서체 Pretendard 연결 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -61,6 +62,11 @@
           <li>
             <button type="button" class="tab-button" data-tab="agora">
               아고라 방명록
+            </button>
+          </li>
+          <li>
+            <button type="button" class="tab-button" data-tab="trojan-chess">
+              체스: 트로이
             </button>
           </li>
         </ul>
@@ -427,6 +433,240 @@
       </div>
     </section>
 
+    <!-- --------------------------------------------------------------------
+         [탭 5] 체스: 트로이 (Chess: Troy) - 호메로스 일리아스 서사 체스 게임
+         -------------------------------------------------------------------- -->
+    <section id="trojan-chess" class="tab-pane chess-section">
+      <!-- 1. 체스 메인 타이틀 및 소개 카드 -->
+      <div class="chess-header-card">
+        <span class="chess-badge">⚔️ HOMERIC STRATEGY · ILIAD CHESS</span>
+        <h2 class="chess-main-title">
+          <span>체스: 트로이 (Chess: Troy)</span>
+        </h2>
+        <p class="chess-subtitle">
+          호메로스의 대서사시 『일리아스』의 영웅들이 64칸의 대리석 전장 위에서 다시 격돌합니다.
+          미케네의 총사령관 아가멤논과 불멸의 영웅 아킬레우스가 이끄는 <strong>아카이아 연합군</strong>과, 
+          난공불락의 성벽과 방패 헥토르가 지키는 <strong>트로이 수호군</strong>의 운명적 지략 대결에 동참하세요.
+        </p>
+
+        <!-- 대국 설정 및 조작 컨트롤 바 -->
+        <div class="chess-control-bar">
+          <div class="control-group">
+            <label for="selectGameMode" class="control-label">대국 모드:</label>
+            <select id="selectGameMode" class="chess-select">
+              <option value="ai">🤖 vs AI 대전</option>
+              <option value="pvp">👥 2인 로컬 대전 (Pass & Play)</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label for="selectDifficulty" class="control-label">AI 난이도:</label>
+            <select id="selectDifficulty" class="chess-select">
+              <option value="recruit">🛡️ 신병 (Recruit)</option>
+              <option value="heroic" selected>⚔️ 영웅 (Heroic)</option>
+              <option value="olympian">⚡ 올림포스 신 (Olympian)</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label for="selectSide" class="control-label">진영 선택:</label>
+            <select id="selectSide" class="chess-select">
+              <option value="w" selected>🏛️ 아카이아 연합군 (선공/White)</option>
+              <option value="b">🛡️ 트로이 수호군 (후공/Black)</option>
+            </select>
+          </div>
+
+          <div class="chess-btn-group">
+            <button type="button" class="btn-chess btn-chess-primary" id="btnNewGame">
+              <span>🔄 새 대국 시작</span>
+            </button>
+            <button type="button" class="btn-chess" id="btnUndo">
+              <span>↩️ 한 수 무르기</span>
+            </button>
+            <button type="button" class="btn-chess" id="btnResign">
+              <span>🏳️ 항복</span>
+            </button>
+            <button type="button" class="btn-chess" id="btnSoundToggle">
+              <span>🔊 소리 켬</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. 메인 체스 전장 (좌측: 보드 / 우측: 서사 대사 & 운명의 저울) -->
+      <div class="chess-battlefield">
+        
+        <!-- 좌측 열: 트로이 진영 카드 + 8x8 대리석 체스판 + 아카이아 진영 카드 -->
+        <div class="board-column">
+          
+          <!-- 상단: 트로이 수호군 (Black) 상태 카드 -->
+          <div class="faction-card" id="blackFactionCard">
+            <div class="faction-info">
+              <div class="faction-crest">🛡️</div>
+              <div class="faction-titles">
+                <span class="faction-name">트로이 수호군 (Iliad)</span>
+                <span class="faction-role">총사령관: 노왕 프리아모스 & 헥토르</span>
+              </div>
+            </div>
+            <div class="captured-pieces" id="blackCaptured" title="트로이가 포획한 아카이아 기물들"></div>
+          </div>
+
+          <!-- 중앙: 8x8 체스판 보드 랩퍼 -->
+          <div class="board-wrapper">
+            <div class="chess-board" id="chessBoard">
+              <!-- 자바스크립트로 64개 대리석/청동 칸이 렌더링됩니다 -->
+            </div>
+          </div>
+
+          <!-- 하단: 아카이아 연합군 (White) 상태 카드 -->
+          <div class="faction-card" id="whiteFactionCard">
+            <div class="faction-info">
+              <div class="faction-crest">🏛️</div>
+              <div class="faction-titles">
+                <span class="faction-name">아카이아 연합군 (Achaean)</span>
+                <span class="faction-role">총사령관: 아가멤논 & 아킬레우스</span>
+              </div>
+            </div>
+            <div class="captured-pieces" id="whiteCaptured" title="아카이아가 포획한 트로이 기물들"></div>
+          </div>
+
+        </div>
+
+        <!-- 우측 열: 호메로스 서사 대사창 + 제우스 운명의 저울 + 기보 기록창 + 트로이 목마 배너 -->
+        <div class="side-panel">
+          
+          <!-- 호메로스 서사 대사 카드 -->
+          <div class="epic-dialogue-card">
+            <div class="dialogue-header">
+              <span class="dialogue-badge">📜 HOMERIC BATTLE CRY</span>
+            </div>
+            <div class="dialogue-content" id="trojanDialogue">
+              스카이아 문 너머로 트로이 전사들과 아카이아 연합군이 마주 섰습니다.
+            </div>
+          </div>
+
+          <!-- 제우스의 운명의 저울 (Scale of Fate) 형세 바 -->
+          <div class="scale-of-fate-card">
+            <div class="scale-header">
+              <span>⚖️ 올림포스 운명의 저울</span>
+              <span id="scaleRatio">50% : 50%</span>
+            </div>
+            <div class="scale-bar-track">
+              <div class="scale-bar-white" id="scaleWhite"></div>
+              <div class="scale-bar-black" id="scaleBlack"></div>
+            </div>
+            <div class="scale-legend">
+              <span>🏛️ 아카이아 연합군</span>
+              <span>🛡️ 트로이 수호군</span>
+            </div>
+          </div>
+
+          <!-- 트로이 목마 특수 전술 배너 -->
+          <div class="trojan-horse-card">
+            <div class="horse-info">
+              <span class="horse-icon">🎠</span>
+              <div class="horse-text">
+                <h4>트로이 목마 (Trojan Horse)</h4>
+                <p>오디세우스의 지략이 깃든 기습 전술</p>
+              </div>
+            </div>
+            <button type="button" class="btn-horse-activate" id="btnTrojanHorse">
+              목마 잠입 개시
+            </button>
+          </div>
+
+          <!-- 기보(Move History) 기록 카드 -->
+          <div class="history-card">
+            <div class="history-title">
+              <span>📜 전황 기록 (Move History)</span>
+            </div>
+            <div class="history-list" id="chessHistoryList">
+              <!-- 착수 이력이 순차적으로 추가됩니다 -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- 3. 트로이 전쟁 영웅 도감 및 체스 룰북 아코디언 -->
+      <div class="chess-guide-card">
+        <div class="guide-accordion-header" id="chessGuideHeader">
+          <h3 class="guide-title">
+            <span>📖 호메로스 『일리아스』 영웅 족보 및 체스 매핑 가이드</span>
+          </h3>
+          <span class="guide-arrow">▼</span>
+        </div>
+        <div class="guide-accordion-body" id="chessGuideBody">
+          <div class="hero-table-wrapper">
+            <table class="hero-table">
+              <thead>
+                <tr>
+                  <th>체스 기물</th>
+                  <th>아카이아 연합군 (그리스 / White)</th>
+                  <th>트로이 수호군 (트로이 / Black)</th>
+                  <th>이동 원리</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>King (킹)</strong></td>
+                  <td>👑 <strong>아가멤논</strong> (미케네의 군주이자 총사령관)</td>
+                  <td>👑 <strong>프리아모스</strong> (트로이의 위대한 노왕)</td>
+                  <td>상하좌우 대각선 1칸 (군주를 보호해야 승리)</td>
+                </tr>
+                <tr>
+                  <td><strong>Queen (퀸)</strong></td>
+                  <td>⚔️ <strong>아킬레우스</strong> (파멸적인 분노, 최강의 영웅)</td>
+                  <td>🛡️ <strong>헥토르</strong> (트로이의 불멸의 방패)</td>
+                  <td>모든 방향 직선 및 대각선 무제한 이동</td>
+                </tr>
+                <tr>
+                  <td><strong>Bishop (비숍)</strong></td>
+                  <td>📜 <strong>오디세우스</strong> (이타카의 왕, 지략의 영웅)</td>
+                  <td>🏹 <strong>파리스</strong> / <strong>헬레노스</strong> (궁수 & 예언자)</td>
+                  <td>대각선 무제한 이동</td>
+                </tr>
+                <tr>
+                  <td><strong>Knight (나이트)</strong></td>
+                  <td>🐎 <strong>파트로클로스</strong> (용맹한 전차병)</td>
+                  <td>🐎 <strong>아이네이아스</strong> (아프로디테의 아들)</td>
+                  <td>기물을 뛰어넘는 L자형 기동</td>
+                </tr>
+                <tr>
+                  <td><strong>Rook (룩)</strong></td>
+                  <td>⛵ <strong>아카이아 함대 (흑선)</strong></td>
+                  <td>🏰 <strong>트로이 성벽 (스카이아 문)</strong></td>
+                  <td>상하좌우 직선 무제한 이동</td>
+                </tr>
+                <tr>
+                  <td><strong>Pawn (폰)</strong></td>
+                  <td>🛡️ <strong>미르미돈 정예병</strong></td>
+                  <td>🛡️ <strong>트로이 팔랑크스 보병</strong></td>
+                  <td>앞으로 1칸 전진(첫 수 2칸), 대각선 앞 적 포획</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. 폰 승급(Promotion) 선택 모달 다이얼로그 -->
+      <div class="promotion-modal-overlay" id="promotionModal">
+        <div class="promotion-modal">
+          <h3 class="promotion-title">⚡ 영웅의 승급 (Promotion)</h3>
+          <p class="promotion-desc">적진 깊숙이 도달한 전사가 새로운 영웅으로 거듭납니다!</p>
+          <div class="promotion-pieces">
+            <button type="button" class="btn-promo-piece" data-piece="q" title="퀸 (최강의 영웅)">♕</button>
+            <button type="button" class="btn-promo-piece" data-piece="r" title="룩 (함대/성벽)">♖</button>
+            <button type="button" class="btn-promo-piece" data-piece="b" title="비숍 (지략가)">♗</button>
+            <button type="button" class="btn-promo-piece" data-piece="n" title="나이트 (전차병)">♘</button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
   </main>
 
   <!-- ======================================================================
@@ -446,5 +686,8 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <!-- 커스텀 웹 서사시 인터랙션 스크립트 -->
   <script src="script.js"></script>
+  <!-- 체스: 트로이 엔진 및 서사 인터랙션 스크립트 -->
+  <script src="assets/chess.min.js"></script>
+  <script src="trojan_chess.js"></script>
 </body>
 </html>
