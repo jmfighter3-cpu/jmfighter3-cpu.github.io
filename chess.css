@@ -284,27 +284,48 @@
   pointer-events: none;
 }
 
-/* 8x8 체스판 그리드 */
+/* 8x8 체스판 그리드 (내용물에 의한 크기 왜곡 100% 방지) */
 .chess-board {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  grid-template-rows: repeat(8, 1fr);
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-rows: repeat(8, minmax(0, 1fr));
   width: 100%;
   height: 100%;
+  aspect-ratio: 1 / 1;
   border-radius: 6px;
   overflow: hidden;
   position: relative;
   user-select: none;
+  touch-action: manipulation;
 }
 
-/* 체스 칸 (Square) */
+/* 체스 칸 (Square - 고정 1:1 종횡비 및 내용물 무관 엄격한 크기 유지) */
 .square {
   position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  aspect-ratio: 1 / 1;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  overflow: visible;
+  user-select: none;
   transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* 드래그 앤 드롭 착수 오버 하이라이트 */
+.square.drag-over {
+  background-color: rgba(251, 191, 36, 0.65) !important;
+  box-shadow: inset 0 0 0 3px #d97706, 0 0 14px rgba(217, 119, 6, 0.6) !important;
+}
+
+/* 드래그 중인 기물 칸 반투명 표시 */
+.square.dragging {
+  opacity: 0.35;
 }
 
 /* 밝은 칸: 파로스 백색 대리석 느낌 */
@@ -379,103 +400,77 @@
   50% { transform: scale(1.05); opacity: 1; }
 }
 
-/* 7. 체스 기물 (고대 그리스 & 트로이 조각상 흉상) 스타일링 */
+/* 7. 체스 기물 (에이지 오브 미쏠로지 전신 3D 유닛 모델링) 스타일링 */
 .piece {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  cursor: grab;
-  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none; /* 클릭 및 드래그 이벤트가 .square에 정확히 전달되도록 차단 */
   z-index: 2;
   user-select: none;
-  padding-bottom: 2px;
 }
 
-.piece:active {
+/* 드래그 가능한 플레이어 턴 기물 칸 커서 */
+.square[draggable="true"] {
+  cursor: grab;
+}
+
+.square[draggable="true"]:active {
   cursor: grabbing;
 }
 
-/* 조각상 흉상 SVG 래퍼 */
+/* 에이지 오브 미쏠로지(AoM) 전신 3D 영웅 유닛 SVG 모델 */
+.statue-piece .aom-unit-svg,
+.statue-piece .aom-hero-svg,
 .statue-piece .statue-svg {
-  width: 88%;
-  height: 94%;
-  max-width: 64px;
-  max-height: 72px;
+  width: 96%;
+  height: 100%;
+  max-width: 76px;
+  max-height: 84px;
   overflow: visible;
   transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.22s ease;
   transform-origin: bottom center;
 }
 
-/* 아카이아 연합군 (White): 파로스 백색 대리석 조각상 */
-.statue-piece.white-piece .statue-svg {
-  filter: drop-shadow(0 4px 6px rgba(15, 23, 42, 0.35)) drop-shadow(0 1px 2px rgba(217, 119, 6, 0.25));
+/* 아카이아 연합군 (White): 파로스 백색 & 로열 블루 & 찬란한 황금 청동 유닛 */
+.statue-piece.white-piece .aom-unit-svg,
+.statue-piece.white-piece .aom-hero-svg {
+  filter: drop-shadow(0 6px 10px rgba(15, 23, 42, 0.4)) drop-shadow(0 1px 3px rgba(245, 158, 11, 0.35));
 }
 
-/* 트로이 수호군 (Black): 칠흑의 흑요석 & 앤틱 청동 조각상 */
-.statue-piece.black-piece .statue-svg {
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6)) drop-shadow(0 1px 2px rgba(245, 158, 11, 0.2));
+/* 트로이 수호군 (Black): 칠흑의 흑요석 & 딥 크림슨 & 중후한 앤틱 청동 유닛 */
+.statue-piece.black-piece .aom-unit-svg,
+.statue-piece.black-piece .aom-hero-svg {
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.75)) drop-shadow(0 1px 3px rgba(217, 119, 6, 0.3));
 }
 
-/* 마우스 호버 시 조각상 들어올리기 (Hover Lift) */
-.square:hover .statue-piece .statue-svg {
-  transform: translateY(-8px) scale(1.1);
+/* 마우스 호버 시 3D 유닛 자연스러운 들어올림 (Hero Ready Stance) */
+.square:hover .statue-piece .aom-unit-svg,
+.square:hover .statue-piece .aom-hero-svg {
+  transform: translateY(-8px) scale(1.12);
+  filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 10px rgba(245, 158, 11, 0.55));
 }
 
-.square:hover .statue-piece.white-piece .statue-svg {
-  filter: drop-shadow(0 14px 16px rgba(15, 23, 42, 0.45)) drop-shadow(0 2px 6px rgba(245, 158, 11, 0.5));
-}
-
-.square:hover .statue-piece.black-piece .statue-svg {
-  filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.75)) drop-shadow(0 2px 6px rgba(217, 119, 6, 0.4));
-}
-
-/* 선택된 칸의 기물: 올림포스 신들의 황금빛 오라 펄스 */
-.square.selected .statue-piece .statue-svg {
-  transform: translateY(-10px) scale(1.14);
-  filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.95)) drop-shadow(0 12px 16px rgba(0, 0, 0, 0.6)) !important;
+/* 선택된 칸의 기물: 올림포스 신들의 황금빛 영웅 오라 펄스 */
+.square.selected .statue-piece .aom-unit-svg,
+.square.selected .statue-piece .aom-hero-svg {
+  transform: translateY(-10px) scale(1.16);
+  filter: drop-shadow(0 0 18px rgba(245, 158, 11, 1)) drop-shadow(0 16px 22px rgba(0, 0, 0, 0.75)) !important;
   animation: statue-float 2s infinite ease-in-out alternate;
 }
 
 @keyframes statue-float {
-  0% { transform: translateY(-10px) scale(1.14); }
-  100% { transform: translateY(-14px) scale(1.16); }
+  0% { transform: translateY(-10px) scale(1.16); }
+  100% { transform: translateY(-14px) scale(1.18); }
 }
 
-/* 조각상 그룹 디테일 */
+/* 유닛 3D 그룹 디테일 */
 .statue-group {
   transition: transform 0.2s ease;
-}
-
-/* AoM(Age of Mythology) 영웅 유닛 모델링 전용 스타일 */
-.statue-piece .aom-hero-svg {
-  width: 90%;
-  height: 96%;
-  max-width: 68px;
-  max-height: 76px;
-  overflow: visible;
-  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.22s ease;
-  transform-origin: bottom center;
-}
-
-.statue-piece .aom-hero-svg .statue-group {
-  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.25));
-}
-
-.square:hover .statue-piece .aom-hero-svg {
-  transform: translateY(-8px) scale(1.12);
-}
-
-.square.selected .statue-piece .aom-hero-svg {
-  transform: translateY(-10px) scale(1.16);
-  filter: drop-shadow(0 0 16px rgba(245, 158, 11, 1)) drop-shadow(0 14px 18px rgba(0, 0, 0, 0.65)) !important;
-  animation: statue-float 2s infinite ease-in-out alternate;
-}
-
-/* 클릭 시 살짝 눌리는 입체 반응 */
-.piece:active .statue-svg {
-  transform: translateY(-2px) scale(1.02);
 }
 
 /* 8. 우측 패널: 서사 대사, 운명의 저울, 기보 로그 */
