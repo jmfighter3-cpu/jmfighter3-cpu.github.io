@@ -372,396 +372,669 @@
   }
 
   // ==========================================================================
-  // 3-1. 에이지 오브 미쏠로지(AoM) 스타일 트로이 영웅 조각상 SVG 렌더러
+  // 3-1. 에이지 오브 미쏠로지(AoM) 스타일 전신 3D 영웅 유닛 SVG 렌더러
   // ==========================================================================
-  function generateAomHeroSvg(hero) {
-    if (!hero) return "";
-    const isWhite = hero.color === 'w';
-    const prefix = isWhite ? 'aom-wh' : 'aom-bl';
-    const strokeColor = isWhite ? '#b45309' : '#d97706';
-    const baseStroke = isWhite ? '#92400e' : '#f59e0b';
-    const nameColor = isWhite ? '#78350f' : '#fde68a';
-    const badgeBg = isWhite ? 'rgba(255, 255, 255, 0.94)' : 'rgba(28, 25, 23, 0.96)';
-    const badgeColor = isWhite ? '#b45309' : '#fbbf24';
+  function generateAomHeroUnitSvg(hero) {
+  if (!hero) return "";
+  const isWhite = hero.color === 'w';
+  const prefix = isWhite ? 'aom-wh' : 'aom-bl';
+  const strokeColor = isWhite ? '#b45309' : '#d97706';
+  const baseStroke = isWhite ? '#92400e' : '#f59e0b';
+  const nameColor = isWhite ? '#78350f' : '#fde68a';
+  const badgeBg = isWhite ? 'rgba(255, 255, 255, 0.95)' : 'rgba(28, 25, 23, 0.96)';
+  const badgeColor = isWhite ? '#b45309' : '#fbbf24';
+  const nameplateBg = isWhite ? 'rgba(255, 255, 255, 0.92)' : 'rgba(28, 25, 23, 0.94)';
 
-    // AoM 특유의 빛나는 영웅 오라 그라디언트 및 필터
-    const defs = isWhite ? `
-      <defs>
-        <linearGradient id="${prefix}-body" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#ffffff"/>
-          <stop offset="30%" stop-color="#faf6ee"/>
-          <stop offset="70%" stop-color="#ebe0cd"/>
-          <stop offset="100%" stop-color="#cbbbaa"/>
-        </linearGradient>
-        <linearGradient id="${prefix}-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+  const defs = `
+    <defs>
+      <!-- 피부 톤 -->
+      <linearGradient id="${prefix}-skin" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#fed7aa"/>
+        <stop offset="45%" stop-color="#fba471"/>
+        <stop offset="100%" stop-color="#c26338"/>
+      </linearGradient>
+
+      <!-- 견갑 강철 메탈릭 -->
+      <linearGradient id="${prefix}-steel" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ffffff"/>
+        <stop offset="30%" stop-color="#e2e8f0"/>
+        <stop offset="70%" stop-color="#94a3b8"/>
+        <stop offset="100%" stop-color="#475569"/>
+      </linearGradient>
+
+      <!-- 진영 의복 (아카이아: 로열 블루, 트로이: 크림슨 레드) -->
+      <linearGradient id="${prefix}-tunic" x1="0%" y1="0%" x2="100%" y2="100%">
+        ${isWhite ? `
+          <stop offset="0%" stop-color="#3b82f6"/>
+          <stop offset="45%" stop-color="#1d4ed8"/>
+          <stop offset="100%" stop-color="#172554"/>
+        ` : `
+          <stop offset="0%" stop-color="#ef4444"/>
+          <stop offset="45%" stop-color="#b91c1c"/>
+          <stop offset="100%" stop-color="#450a0a"/>
+        `}
+      </linearGradient>
+
+      <!-- 투구 볏 말갈기 (아카이아: 코발트 블루, 트로이: 플레임 레드) -->
+      <linearGradient id="${prefix}-crest" x1="0%" y1="0%" x2="0%" y2="100%">
+        ${isWhite ? `
+          <stop offset="0%" stop-color="#60a5fa"/>
+          <stop offset="40%" stop-color="#2563eb"/>
+          <stop offset="100%" stop-color="#1e3a8a"/>
+        ` : `
+          <stop offset="0%" stop-color="#f87171"/>
+          <stop offset="40%" stop-color="#dc2626"/>
+          <stop offset="100%" stop-color="#450a0a"/>
+        `}
+      </linearGradient>
+
+      <!-- 갑옷 청동/황금빛 쉐이더 -->
+      <linearGradient id="${prefix}-armor" x1="0%" y1="0%" x2="100%" y2="100%">
+        ${isWhite ? `
           <stop offset="0%" stop-color="#fef08a"/>
-          <stop offset="35%" stop-color="#f59e0b"/>
-          <stop offset="85%" stop-color="#b45309"/>
+          <stop offset="25%" stop-color="#f59e0b"/>
+          <stop offset="65%" stop-color="#d97706"/>
           <stop offset="100%" stop-color="#78350f"/>
-        </linearGradient>
-        <radialGradient id="${prefix}-aura" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#fef08a" stop-opacity="0.85"/>
-          <stop offset="60%" stop-color="#f59e0b" stop-opacity="0.5"/>
-          <stop offset="100%" stop-color="#d97706" stop-opacity="0"/>
-        </radialGradient>
-        <linearGradient id="${prefix}-plinth" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#ffffff"/>
-          <stop offset="25%" stop-color="#f5efe6"/>
-          <stop offset="100%" stop-color="#d8c7b0"/>
-        </linearGradient>
-      </defs>
-    ` : `
-      <defs>
-        <linearGradient id="${prefix}-body" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#7c6553"/>
-          <stop offset="35%" stop-color="#4a3526"/>
-          <stop offset="75%" stop-color="#241810"/>
-          <stop offset="100%" stop-color="#0f0905"/>
-        </linearGradient>
-        <linearGradient id="${prefix}-gold" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#fbbf24"/>
-          <stop offset="45%" stop-color="#d97706"/>
-          <stop offset="85%" stop-color="#92400e"/>
-          <stop offset="100%" stop-color="#451a03"/>
-        </linearGradient>
-        <radialGradient id="${prefix}-aura" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.85"/>
-          <stop offset="60%" stop-color="#b45309" stop-opacity="0.45"/>
-          <stop offset="100%" stop-color="#78350f" stop-opacity="0"/>
-        </radialGradient>
-        <linearGradient id="${prefix}-plinth" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#4d3b2f"/>
-          <stop offset="25%" stop-color="#2e2016"/>
-          <stop offset="100%" stop-color="#140c07"/>
-        </linearGradient>
-      </defs>
-    `;
+        ` : `
+          <stop offset="0%" stop-color="#b45309"/>
+          <stop offset="30%" stop-color="#643e26"/>
+          <stop offset="70%" stop-color="#321c10"/>
+          <stop offset="100%" stop-color="#120703"/>
+        `}
+      </linearGradient>
 
-    // 에이지 오브 미쏠로지 영웅 발밑의 황금빛 영웅 오라 (AoM Radiant Hero Aura Ring)
-    const aomAura = `
-      <ellipse cx="50" cy="114" rx="46" ry="9" fill="url(#${prefix}-aura)"/>
-      <ellipse cx="50" cy="114" rx="44" ry="7.5" fill="none" stroke="${strokeColor}" stroke-width="1.1" stroke-dasharray="4,2"/>
-    `;
+      <!-- 황금 포인트 및 무기 광택 -->
+      <linearGradient id="${prefix}-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#fffbeb"/>
+        <stop offset="35%" stop-color="#fbbf24"/>
+        <stop offset="80%" stop-color="#d97706"/>
+        <stop offset="100%" stop-color="#78350f"/>
+      </linearGradient>
 
-    // 고대 그리스 주춧돌 받침대 (Classical Plinth)
-    const plinth = `
-      <rect x="16" y="88" width="68" height="5" rx="1.5" fill="url(#${prefix}-plinth)" stroke="${baseStroke}" stroke-width="0.8"/>
-      <rect x="20" y="93" width="60" height="15" fill="url(#${prefix}-plinth)" stroke="${baseStroke}" stroke-width="0.8"/>
-      <rect x="12" y="108" width="76" height="7" rx="2" fill="url(#${prefix}-plinth)" stroke="${baseStroke}" stroke-width="1"/>
-      <text x="50" y="104" font-family="'Cinzel', 'Pretendard Variable', serif" font-size="6.5" font-weight="900" fill="${nameColor}" text-anchor="middle" letter-spacing="0.01em">${hero.shortName}</text>
-    `;
+      <!-- 발밑 지면 3D 드롭 섀도우 -->
+      <radialGradient id="aom-ground-shadow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#000000" stop-opacity="0.65"/>
+        <stop offset="60%" stop-color="#000000" stop-opacity="0.3"/>
+        <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+      </radialGradient>
 
-    // 우측 상단 체스 룰 인장 뱃지
-    const badge = `
-      <g transform="translate(74, 5)">
-        <circle cx="9" cy="9" r="9" fill="${badgeBg}" stroke="${baseStroke}" stroke-width="1"/>
-        <text x="9" y="13" font-size="11" font-weight="900" fill="${badgeColor}" text-anchor="middle">${hero.symbol}</text>
-      </g>
-    `;
+      <!-- 에이지 오브 미쏠로지 영웅 황금 오라 펄스 링 -->
+      <radialGradient id="${prefix}-aura" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#fef08a" stop-opacity="0.85"/>
+        <stop offset="50%" stop-color="#f59e0b" stop-opacity="0.45"/>
+        <stop offset="100%" stop-color="#d97706" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+  `;
 
-    let heroFigure = "";
+  // 1. 발밑 3D 지면 그림자 및 AoM 영웅 오라 링
+  const baseGround = `
+    <!-- 지면 부드러운 드롭 섀도우 -->
+    <ellipse cx="50" cy="120" rx="34" ry="7" fill="url(#aom-ground-shadow)"/>
+    <!-- AoM 영웅 오라 링 -->
+    <ellipse cx="50" cy="120" rx="32" ry="5.5" fill="url(#${prefix}-aura)"/>
+    <ellipse cx="50" cy="120" rx="30" ry="5" fill="none" stroke="${strokeColor}" stroke-width="1.2" stroke-dasharray="4,2"/>
+  `;
 
-    // 18종 고유 영웅 모델링 분기 (role 기반)
-    switch (hero.role) {
-      // 1. 대 아이아스 (칠중 청동 타워 실드 + 거대한 장창)
-      case 'ajax_great':
-        heroFigure = `
-          <!-- 거대한 칠중 청동 타워 실드 (좌측 전면 성벽) -->
-          <path d="M12,20 C12,12 56,12 56,20 L58,88 L10,88 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1.3"/>
-          <ellipse cx="34" cy="48" rx="18" ry="24" fill="none" stroke="${strokeColor}" stroke-width="0.9" stroke-dasharray="3,2"/>
-          <circle cx="34" cy="48" r="6" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1"/>
-          <!-- 우측 어깨 뒤로 솟은 거대한 장창 -->
-          <line x1="68" y1="8" x2="68" y2="88" stroke="url(#${prefix}-gold)" stroke-width="2.2"/>
-          <polygon points="68,4 64,12 72,12" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
-          <!-- 육중한 전사 흉상 -->
-          <path d="M38,88 C40,66 48,58 64,58 C76,58 82,66 84,88 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
-          <path d="M50,28 C48,46 52,58 64,60 C76,58 78,46 76,28 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
-          <path d="M55,38 L60,38 L60,46 L68,46 L68,38 L73,38" stroke="${strokeColor}" stroke-width="1" fill="none"/>
-        `;
-        break;
+  // 2. 우측 상단 체스 룰 인장 뱃지
+  const badge = `
+    <g transform="translate(74, 4)">
+      <circle cx="9" cy="9" r="9" fill="${badgeBg}" stroke="${baseStroke}" stroke-width="1.1"/>
+      <text x="9" y="13" font-size="11" font-weight="900" fill="${badgeColor}" text-anchor="middle">${hero.symbol}</text>
+    </g>
+  `;
 
-      // 2. 소 아이아스 (바람의 2자루 투창 + 날개 장식 투구)
-      case 'ajax_lesser':
-        heroFigure = `
-          <!-- 등 뒤로 교차된 2자루의 날렵한 투창 -->
-          <line x1="26" y1="8" x2="74" y2="88" stroke="url(#${prefix}-gold)" stroke-width="1.5"/>
-          <polygon points="24,6 22,13 29,10" fill="url(#${prefix}-gold)"/>
-          <line x1="74" y1="8" x2="26" y2="88" stroke="url(#${prefix}-gold)" stroke-width="1.5"/>
-          <polygon points="76,6 78,13 71,10" fill="url(#${prefix}-gold)"/>
-          <!-- 어깨 경갑 -->
-          <path d="M25,88 C27,70 36,65 50,65 C64,65 73,70 75,88 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
-          <!-- 바람의 날개 장식 투구 -->
-          <path d="M50,12 C40,12 36,22 42,28 C46,28 54,28 58,28 C64,22 60,12 50,12 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
-          <path d="M30,22 Q40,26 36,32 M70,22 Q60,26 64,32" stroke="url(#${prefix}-gold)" stroke-width="1.2" fill="none"/>
-          <path d="M38,28 C36,44 42,58 50,60 C58,58 64,44 62,28 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
-          <path d="M50,38 L50,45 L47,47 L53,47" stroke="${strokeColor}" stroke-width="0.8" fill="none"/>
-        `;
-        break;
+  // 3. 하단 영웅 이름 네임플레이트
+  const nameplate = `
+    <g transform="translate(0, 123)">
+      <rect x="14" y="0" width="72" height="10" rx="3" fill="${nameplateBg}" stroke="${baseStroke}" stroke-width="0.9"/>
+      <text x="50" y="7.5" font-family="'Cinzel', sans-serif" font-size="6.5" font-weight="900" fill="${nameColor}" text-anchor="middle" letter-spacing="0.02em">${hero.shortName}</text>
+    </g>
+  `;
 
-      // 3. 파트로클로스 (전차마 볏 투구 + 돌격 청년 전사)
-      case 'patroclus':
-        heroFigure = `
-          <!-- 어깨 흉갑 -->
-          <path d="M22,88 C24,68 34,63 50,63 C66,63 76,68 78,88 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
-          <path d="M36,74 C44,79 56,79 64,74" stroke="${strokeColor}" stroke-width="0.8" fill="none"/>
-          <!-- 전차마의 볏을 형상화한 전차병 투구 -->
-          <path d="M50,8 C38,8 32,18 40,26 C46,26 54,26 60,26 C68,18 62,8 50,8 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.9"/>
-          <path d="M46,12 C48,8 52,8 54,12" stroke="#ffffff" stroke-width="0.8" fill="none"/>
-          <path d="M36,26 C34,44 40,58 50,60 C60,58 66,44 64,26 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
-          <path d="M42,36 C42,48 58,48 58,36 Z" fill="${isWhite ? '#f8f4ec' : '#2c1e14'}" stroke="${strokeColor}" stroke-width="0.7"/>
-          <path d="M50,38 L50,44 L48,46 L52,46" stroke="${strokeColor}" stroke-width="0.8" fill="none"/>
-        `;
-        break;
+  // 공통 전신 인체 해부학적 기본 템플릿 함수 (다리, 프테루게스 스커트, 근육 흉갑, 견갑)
+  const renderHumanBody = (customTorso, customHead, customWeapons) => `
+    <!-- 1. 양다리 & 황금 각갑(Greaves) & 가죽 샌들 -->
+    <!-- 왼다리 (보는 사람 기준 좌측) -->
+    <path d="M38,92 L36,116 L43,118 L45,93 Z" fill="url(#${prefix}-skin)"/>
+    <path d="M37,96 L35,115 L43,117 L44,97 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.8"/>
+    <circle cx="40" cy="97" r="3.2" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.6"/>
+    <line x1="36" y1="114" x2="43" y2="116" stroke="#451a03" stroke-width="1.2"/>
+    <!-- 오른다리 (보는 사람 기준 우측) -->
+    <path d="M55,93 L57,118 L64,116 L62,92 Z" fill="url(#${prefix}-skin)"/>
+    <path d="M56,97 L57,117 L64,115 L63,96 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.8"/>
+    <circle cx="60" cy="97" r="3.2" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.6"/>
+    <line x1="57" y1="116" x2="64" y2="114" stroke="#451a03" stroke-width="1.2"/>
 
-      // 4. 네스토르 (황금 전차 투구 + 원로의 지혜 지팡이 + 풍성한 수염)
-      case 'nestor':
-        heroFigure = `
-          <!-- 오른손에 쥔 지혜의 황금 지팡이 -->
-          <line x1="20" y1="18" x2="24" y2="88" stroke="url(#${prefix}-gold)" stroke-width="2"/>
-          <circle cx="20" cy="16" r="3.5" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
-          <!-- 어깨 및 원로의 토가 -->
-          <path d="M24,88 C26,68 36,63 52,63 C66,63 76,68 78,88 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
-          <!-- 풍성한 원로의 턱수염 -->
-          <path d="M37,48 C36,70 66,70 65,48 C65,42 37,42 37,48 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
-          <path d="M43,54 C46,64 50,70 52,70 C54,70 58,64 61,54" stroke="${strokeColor}" stroke-width="0.8" fill="none"/>
-          <path d="M40,36 C40,48 62,48 62,36 C62,28 40,28 40,36 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
-          <!-- 필로스 원로의 황금 투구 -->
-          <path d="M36,28 C38,14 64,14 66,28 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1"/>
-          <circle cx="51" cy="20" r="2.5" fill="#ffffff"/>
-        `;
-        break;
+    <!-- 2. 진영 튜닉 & 프테루게스(Pteruges) 가죽 스커트 -->
+    <path d="M32,74 L68,74 L70,92 L30,92 Z" fill="url(#${prefix}-tunic)" stroke="${strokeColor}" stroke-width="0.6"/>
+    <!-- 프테루게스 개별 가죽판 5개 -->
+    <rect x="33" y="75" width="6" height="15" rx="1.5" fill="url(#${prefix}-tunic)" stroke="url(#${prefix}-gold)" stroke-width="0.7"/>
+    <rect x="40" y="75" width="6" height="16.5" rx="1.5" fill="url(#${prefix}-tunic)" stroke="url(#${prefix}-gold)" stroke-width="0.7"/>
+    <rect x="47" y="75" width="6" height="17" rx="1.5" fill="url(#${prefix}-tunic)" stroke="url(#${prefix}-gold)" stroke-width="0.7"/>
+    <rect x="54" y="75" width="6" height="16.5" rx="1.5" fill="url(#${prefix}-tunic)" stroke="url(#${prefix}-gold)" stroke-width="0.7"/>
+    <rect x="61" y="75" width="6" height="15" rx="1.5" fill="url(#${prefix}-tunic)" stroke="url(#${prefix}-gold)" stroke-width="0.7"/>
 
-      // 5. 오디세우스 (필레우스 모자 + 지략의 두루마리 + 올빼미 흉갑)
-      case 'odysseus':
-        heroFigure = `
-          <!-- 어깨 키톤과 아테나의 올빼미 흉갑 브로치 -->
-          <path d="M22,88 C25,70 35,66 50,66 C65,66 75,70 78,88 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
-          <circle cx="50" cy="76" r="4.5" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
-          <!-- 지략의 파피루스 두루마리 (좌측) -->
-          <rect x="18" y="56" width="7" height="18" rx="1.5" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.7"/>
-          <!-- 지혜로운 수염과 얼굴 -->
-          <path d="M37,48 C36,65 64,65 63,48 C63,42 37,42 37,48 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
-          <path d="M38,36 C38,48 62,48 62,36 C62,28 38,28 38,36 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
-          <path d="M49,34 L49,42 L46,44 L54,44" stroke="${strokeColor}" stroke-width="0.9" fill="none"/>
-          <!-- 필레우스 (Pilos) 지략 모자 -->
-          <path d="M34,36 C36,16 64,16 66,36 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1.1"/>
-          <path d="M33,36 Q38,40 37,44 M67,36 Q62,40 63,44" stroke="${strokeColor}" stroke-width="1.2" fill="none"/>
-        `;
-        break;
+    <!-- 3. 전사 허리띠 (Cingulum) -->
+    <rect x="32" y="72" width="36" height="5" rx="1" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.8"/>
+    <circle cx="50" cy="74.5" r="2.2" fill="url(#${prefix}-gold)"/>
 
-      // 6. 디오메데스 (아테나의 맹검 + 사자 엠블럼 투구)
-      case 'diomedes':
-        heroFigure = `
-          <!-- 오른손의 번뜩이는 영웅의 청동 장검 -->
-          <line x1="22" y1="12" x2="22" y2="88" stroke="url(#${prefix}-gold)" stroke-width="2.5"/>
-          <polygon points="22,6 18,16 26,16" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.7"/>
-          <line x1="16" y1="28" x2="28" y2="28" stroke="${strokeColor}" stroke-width="1.5"/>
-          <!-- 어깨 사자 흉갑 -->
-          <path d="M26,88 C28,68 36,62 52,62 C66,62 76,68 78,88 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
-          <!-- 아테나의 사자 문양 투구 볏 -->
-          <path d="M52,8 C40,8 36,18 42,26 C48,26 56,26 62,26 C68,18 64,8 52,8 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1"/>
-          <path d="M38,26 C36,44 42,58 52,60 C62,58 68,44 66,26 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
-          <path d="M44,38 L48,38 L48,46 L56,46 L56,38 L60,38" stroke="${strokeColor}" stroke-width="1" fill="none"/>
-        `;
-        break;
+    <!-- 4. 토르소/흉갑 영역 (커스텀 흉갑 및 팔) -->
+    ${customTorso}
 
-      // 7. 아킬레우스 (펠레우스의 청동 창 + 솟구친 황금 말갈기 투구)
-      case 'achilles':
-        heroFigure = `
-          <!-- 전설의 펠레우스 물푸레나무 청동 창 -->
-          <line x1="78" y1="4" x2="78" y2="88" stroke="url(#${prefix}-gold)" stroke-width="2.4"/>
-          <polygon points="78,0 73,12 83,12" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
-          <!-- 어깨 근육 흉갑 -->
-          <path d="M20,88 C22,66 32,62 50,62 C68,62 74,66 76,88 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
-          <path d="M34,70 C42,75 48,75 50,78 C52,75 58,75 66,70" stroke="${strokeColor}" stroke-width="0.8" fill="none"/>
-          <!-- 솟구쳐오른 장대한 황금 말갈기 투구 볏 -->
-          <path d="M50,4 C36,4 28,14 36,28 C42,28 58,28 64,28 C72,14 64,4 50,4 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1.1"/>
-          <path d="M42,8 Q50,16 58,8 M44,14 Q50,21 56,14" stroke="#ffffff" stroke-width="0.9" fill="none"/>
-          <!-- 코린토스 투구 안면 -->
-          <path d="M34,28 C32,46 36,60 50,63 C64,60 68,46 66,28 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
-          <path d="M40,38 L48,38 L48,48 L44,53 L56,53 L52,48 L52,38 L60,38" fill="#451a03" stroke="${strokeColor}" stroke-width="0.8"/>
-        `;
-        break;
+    <!-- 5. 두부 및 투구 (커스텀) -->
+    ${customHead}
 
-      // 8. 아가멤논 (미케네 황금 마스크 성관 + 총사령관의 황금 홀 + 진홍 망토)
-      case 'agamemnon':
-        heroFigure = `
-          <!-- 총사령관의 황금 홀 (Scepter) -->
-          <line x1="20" y1="12" x2="20" y2="88" stroke="url(#${prefix}-gold)" stroke-width="2.2"/>
-          <circle cx="20" cy="10" r="4.5" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
-          <!-- 어깨 및 진홍빛 군주 망토 -->
-          <path d="M22,88 C24,68 34,64 50,64 C66,64 76,68 78,88 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
-          <path d="M34,65 C38,76 44,88 44,88 M66,65 C62,76 56,88 56,88" stroke="${strokeColor}" stroke-width="0.8" fill="none"/>
-          <!-- 풍성한 곱슬 턱수염 -->
-          <path d="M36,46 C35,66 65,66 64,46 C64,42 36,42 36,46 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
-          <path d="M38,36 C38,48 62,48 62,36 C62,28 38,28 38,36 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
-          <!-- 미케네 황금 마스크 성관 (Royal Diadem) -->
-          <path d="M34,26 L42,32 L50,20 L58,32 L66,26 L64,36 L36,36 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1.1"/>
-          <circle cx="50" cy="27" r="2.5" fill="#ffffff" stroke="${strokeColor}" stroke-width="0.6"/>
-        `;
-        break;
+    <!-- 6. 무기 및 특수 장비 -->
+    ${customWeapons}
+  `;
 
-      // 9. 스카이아 관문 (아폴론의 태양 엠블럼 + 서쪽 난공불락 성벽 타워)
-      case 'scaean_gate':
-        heroFigure = `
-          <!-- 트로이 성탑 타워 흉벽 (Battlement) -->
-          <path d="M24,88 L28,38 L20,38 L20,20 L32,20 L32,28 L42,28 L42,20 L54,20 L54,28 L64,28 L64,20 L76,20 L76,38 L68,38 L72,88 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1.2"/>
-          <!-- 아폴론의 태양 엠블럼 -->
-          <circle cx="48" cy="46" r="6" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
-          <line x1="48" y1="36" x2="48" y2="40" stroke="url(#${prefix}-gold)" stroke-width="1.2"/>
-          <line x1="48" y1="52" x2="48" y2="56" stroke="url(#${prefix}-gold)" stroke-width="1.2"/>
-          <line x1="38" y1="46" x2="42" y2="46" stroke="url(#${prefix}-gold)" stroke-width="1.2"/>
-          <line x1="54" y1="46" x2="58" y2="46" stroke="url(#${prefix}-gold)" stroke-width="1.2"/>
-          <!-- 아치형 스카이아 성문 -->
-          <path d="M40,88 L40,65 C40,58 56,58 56,65 L56,88 Z" fill="#000000" stroke="${strokeColor}" stroke-width="1.2"/>
-        `;
-        break;
+  let unitGraphic = "";
 
-      // 10. 다르다니아 성탑 (포세이돈의 삼지창 엠블럼 + 동쪽 요새 타워)
-      case 'dardanian_tower':
-        heroFigure = `
-          <!-- 동쪽 요새 타워 흉벽 -->
-          <path d="M24,88 L28,38 L20,38 L20,20 L32,20 L32,28 L42,28 L42,20 L54,20 L54,28 L64,28 L64,20 L76,20 L76,38 L68,38 L72,88 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1.2"/>
-          <!-- 포세이돈의 삼지창 엠블럼 -->
-          <line x1="48" y1="36" x2="48" y2="56" stroke="url(#${prefix}-gold)" stroke-width="1.5"/>
-          <path d="M42,40 L42,48 L54,48 L54,40" stroke="url(#${prefix}-gold)" stroke-width="1.2" fill="none"/>
-          <line x1="42" y1="40" x2="42" y2="36" stroke="url(#${prefix}-gold)" stroke-width="1.2"/>
-          <line x1="54" y1="40" x2="54" y2="36" stroke="url(#${prefix}-gold)" stroke-width="1.2"/>
-          <!-- 청동 빗장 관문 -->
-          <path d="M40,88 L40,65 C40,58 56,58 56,65 L56,88 Z" fill="#140c07" stroke="${strokeColor}" stroke-width="1.2"/>
-          <line x1="38" y1="76" x2="58" y2="76" stroke="url(#${prefix}-gold)" stroke-width="1.5"/>
-        `;
-        break;
-
-      // 11. 아이네이아스 (다르다니아 용장 투구 + 사자 어깨 갑옷)
-      case 'aeneas':
-        heroFigure = `
-          <!-- 어깨 갑옷 -->
-          <path d="M22,88 C24,68 34,63 50,63 C66,63 76,68 78,88 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
-          <path d="M50,8 C40,8 34,18 42,26 C46,26 54,26 58,26 C66,18 60,8 50,8 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1"/>
-          <!-- 다르다니아 맹장의 투구 안면 -->
-          <path d="M36,26 C34,44 40,58 50,60 C60,58 66,44 64,26 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
-          <path d="M42,36 C42,48 58,48 58,36 Z" fill="#2c1e14" stroke="${strokeColor}" stroke-width="0.7"/>
-          <path d="M50,38 L50,44 L48,46 L52,46" stroke="${strokeColor}" stroke-width="0.8" fill="none"/>
-        `;
-        break;
-
-      // 12. 사르페돈 (제우스의 날개 투구 + 양날 전투 도끼 Labrys)
-      case 'sarpedon':
-        heroFigure = `
-          <!-- 등에 멘 양날 전투 도끼 (Labrys) -->
-          <line x1="20" y1="12" x2="80" y2="84" stroke="url(#${prefix}-gold)" stroke-width="2"/>
-          <path d="M16,8 C12,14 12,24 18,30 L26,20 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
-          <path d="M28,6 C34,12 34,22 28,28 L20,18 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
-          <!-- 어깨 흉갑 -->
-          <path d="M26,88 C28,68 36,63 50,63 C64,63 72,68 74,88 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
-          <!-- 제우스 아들의 날개 장식 투구 -->
-          <path d="M50,10 C40,10 36,20 42,26 C46,26 54,26 58,26 C64,20 60,10 50,10 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.9"/>
-          <path d="M34,26 C32,44 38,58 50,60 C62,58 68,44 66,26 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
-          <path d="M44,38 L48,38 L48,46 L52,46 L52,38 L56,38" stroke="${strokeColor}" stroke-width="1" fill="none"/>
-        `;
-        break;
-
-      // 13. 파리스 (아폴론의 황금 복합궁 + 프리기안 캡)
-      case 'paris':
-        heroFigure = `
-          <!-- 어깨에 멘 아폴론의 황금 활 (Composite Bow) -->
-          <path d="M18,12 Q28,48 20,84" stroke="url(#${prefix}-gold)" stroke-width="2.4" fill="none"/>
-          <line x1="18" y1="12" x2="20" y2="84" stroke="#ffffff" stroke-width="0.6"/>
-          <!-- 어깨 튜닉 -->
-          <path d="M24,88 C26,70 36,66 50,66 C64,66 74,70 76,88 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
-          <!-- 미남 왕자의 부드러운 얼굴선 -->
-          <path d="M38,36 C38,52 62,52 62,36 C62,26 38,26 38,36 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
-          <path d="M50,34 L50,42 L47,44 L53,44" stroke="${strokeColor}" stroke-width="0.9" fill="none"/>
-          <!-- 트로이 프리기안 캡 (Phrygian Cap) -->
-          <path d="M34,34 C34,16 48,8 58,10 C68,12 66,24 54,20 C48,22 42,26 34,34 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1.1"/>
-        `;
-        break;
-
-      // 14. 헬레노스 (아폴론의 신탁 뱀 지팡이 Caduceus + 예언자 후드)
-      case 'helenus':
-        heroFigure = `
-          <!-- 아폴론 신탁의 뱀 지팡이 (Caduceus) -->
-          <line x1="22" y1="14" x2="22" y2="88" stroke="url(#${prefix}-gold)" stroke-width="2"/>
-          <circle cx="22" cy="12" r="3" fill="url(#${prefix}-gold)"/>
-          <path d="M18,20 Q26,26 18,32 Q26,38 18,44" stroke="url(#${prefix}-gold)" stroke-width="1.2" fill="none"/>
-          <!-- 예언자의 제단 가운 -->
-          <path d="M26,88 C28,68 36,64 52,64 C66,64 74,68 76,88 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
-          <!-- 예언자의 후드와 긴 수염 -->
-          <path d="M38,48 C37,66 65,66 64,48 C64,42 38,42 38,48 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
-          <path d="M36,28 C36,14 66,14 66,28 L68,44 C68,52 34,52 34,44 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1"/>
-        `;
-        break;
-
-      // 15. 헥토르 (눈부신 말갈기 투구 + 원형 청동 방패 + 장창)
-      case 'hector':
-        heroFigure = `
-          <!-- 트로이 청동 장창 -->
-          <line x1="80" y1="4" x2="80" y2="88" stroke="url(#${prefix}-gold)" stroke-width="2.4"/>
-          <polygon points="80,0 75,12 85,12" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
-          <!-- 어깨와 트로이 원형 방패 -->
-          <path d="M22,88 C24,66 32,62 50,62 C68,62 76,66 78,88 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1.1"/>
-          <circle cx="28" cy="72" r="14" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1"/>
-          <circle cx="28" cy="72" r="5" fill="#1c1917" stroke="${strokeColor}" stroke-width="0.8"/>
-          <!-- 장엄한 눈부신 트로이 말갈기 투구 -->
-          <path d="M50,4 C36,4 28,14 35,28 C42,28 58,28 65,28 C72,14 64,4 50,4 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1.1"/>
-          <path d="M34,28 C32,46 36,60 50,63 C64,60 68,46 66,28 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1.1"/>
-          <path d="M40,38 L48,38 L48,48 L44,53 L56,53 L52,48 L52,38 L60,38" fill="#d97706" stroke="${strokeColor}" stroke-width="0.8"/>
-        `;
-        break;
-
-      // 16. 프리아모스 (트로이 티아라 성관 + 긴 은빛 수염 + 보석 홀)
-      case 'priam':
-        heroFigure = `
-          <!-- 노왕의 보석 홀 (Scepter) -->
-          <line x1="20" y1="12" x2="20" y2="88" stroke="url(#${prefix}-gold)" stroke-width="2.2"/>
-          <polygon points="20,6 15,14 25,14" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
-          <!-- 어깨와 왕의 숄 -->
-          <path d="M22,88 C24,68 34,64 50,64 C66,64 76,68 78,88 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
-          <!-- 가슴까지 내려오는 긴 수염 -->
-          <path d="M35,46 C34,70 66,70 65,46 C65,42 35,42 35,46 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
-          <path d="M42,52 C45,62 48,72 50,75 C52,72 55,62 58,52" stroke="${strokeColor}" stroke-width="0.9" fill="none"/>
-          <path d="M38,36 C38,48 62,48 62,36 C62,28 38,28 38,36 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
-          <!-- 트로이 프리기아 티아라 성관 -->
-          <path d="M34,30 C36,14 48,10 56,12 C62,14 66,22 66,32 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1.1"/>
-          <circle cx="50" cy="22" r="2.5" fill="#fde68a" stroke="${strokeColor}" stroke-width="0.6"/>
-        `;
-        break;
-
-      // 17. 미르미돈 (아킬레우스 직속 개미 전사대)
-      case 'myrmidon':
-        heroFigure = `
-          <path d="M24,88 C26,70 34,66 50,66 C66,66 74,70 76,88 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
-          <path d="M36,24 C34,44 38,60 50,63 C62,60 66,44 64,24 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
-          <path d="M40,38 L48,38 L48,50 L45,54 L55,54 L52,50 L52,38 L60,38" fill="#3b2210" stroke="${strokeColor}" stroke-width="0.8"/>
-          <path d="M36,24 C42,18 58,18 64,24" stroke="${strokeColor}" stroke-width="1.2" fill="none"/>
-        `;
-        break;
-
-      // 18. 트로이 팔랑크스 (트로이 수호 보병대)
-      case 'trojan_phalanx':
-      default:
-        heroFigure = `
-          <path d="M24,88 C26,70 34,66 50,66 C66,66 74,70 76,88 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
-          <path d="M36,32 C38,16 62,16 64,32 C66,48 62,60 50,63 C38,60 34,48 36,32 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
-          <path d="M48,16 L50,8 L52,16 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
-          <path d="M40,38 L48,38 L48,48 L52,48 L52,38 L60,38" stroke="${strokeColor}" stroke-width="1" fill="none"/>
-        `;
-        break;
+  switch (hero.role) {
+    // 1. 아킬레우스 (Achilles) - 예시 이미지와 100% 동일한 형태의 최강 영웅!
+    case 'achilles': {
+      const torso = `
+        <!-- 황금 근육 흉갑 (Muscle Cuirass) -->
+        <path d="M33,48 C32,60 34,73 50,73 C66,73 68,60 67,48 C67,44 60,40 50,40 C40,40 33,44 33,48 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.2"/>
+        <path d="M38,53 Q44,58 48,53 M52,53 Q56,58 62,53" stroke="${strokeColor}" stroke-width="1" fill="none"/>
+        <line x1="50" y1="54" x2="50" y2="72" stroke="${strokeColor}" stroke-width="1"/>
+        <path d="M43,62 Q50,65 57,62 M44,67 Q50,70 56,67" stroke="${strokeColor}" stroke-width="0.8" fill="none"/>
+        <!-- 은빛 다중 견갑 (Steel Layered Pauldrons with Rivets) -->
+        <path d="M26,45 C23,40 35,36 38,47 C36,54 28,52 26,45 Z" fill="url(#${prefix}-steel)" stroke="${strokeColor}" stroke-width="0.9"/>
+        <circle cx="28" cy="46" r="0.9" fill="#ffffff"/>
+        <path d="M74,45 C77,40 65,36 62,47 C64,54 72,52 74,45 Z" fill="url(#${prefix}-steel)" stroke="${strokeColor}" stroke-width="0.9"/>
+        <circle cx="72" cy="46" r="0.9" fill="#ffffff"/>
+        <!-- 왼팔 (약간 굽힌 주먹) -->
+        <path d="M27,48 L22,66 L26,68 L32,52 Z" fill="url(#${prefix}-skin)"/>
+        <rect x="22" y="60" width="5" height="6" rx="1" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.6"/>
+        <!-- 오른팔 (창을 쥔 팔) -->
+        <path d="M68,49 L77,66 L82,64 L73,48 Z" fill="url(#${prefix}-skin)"/>
+        <rect x="74" y="60" width="6" height="6" rx="1" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.6"/>
+      `;
+      const head = `
+        <!-- 목 -->
+        <path d="M46,37 L54,37 L55,42 L45,42 Z" fill="url(#${prefix}-skin)"/>
+        <!-- 얼굴 (비장한 전사 얼굴선) -->
+        <path d="M44,22 L56,22 L54,37 L46,37 Z" fill="url(#${prefix}-skin)"/>
+        <!-- 눈 코 입 -->
+        <line x1="47" y1="28" x2="49" y2="28" stroke="#331a08" stroke-width="0.8"/>
+        <line x1="51" y1="28" x2="53" y2="28" stroke="#331a08" stroke-width="0.8"/>
+        <path d="M50,28 L50,32 L48,33 L52,33" stroke="${strokeColor}" stroke-width="0.7" fill="none"/>
+        <!-- 솟구쳐오른 장엄한 로열 블루 말갈기 볏 코린토스 황금 투구 -->
+        <path d="M49,3 C40,3 34,14 42,22 C46,22 54,22 58,22 C66,14 60,3 49,3 Z" fill="url(#${prefix}-crest)" stroke="${strokeColor}" stroke-width="1.1"/>
+        <path d="M44,7 Q50,15 56,7 M45,12 Q50,18 55,12" stroke="#ffffff" stroke-width="0.8" fill="none"/>
+        <path d="M41,18 C39,30 43,36 50,38 C57,36 61,30 59,18 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1"/>
+        <path d="M46,22 L49,26 L51,26 L54,22" stroke="${strokeColor}" stroke-width="1" fill="none"/>
+      `;
+      const weapons = `
+        <!-- 비스듬히 쥔 펠레우스 물푸레나무 황금 장창 (Pelian Ash Spear) -->
+        <line x1="88" y1="18" x2="22" y2="116" stroke="url(#${prefix}-gold)" stroke-width="2.6"/>
+        <polygon points="90,14 84,24 93,20" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
+        <polygon points="90,14 87,20 90,20" fill="#ffffff"/>
+      `;
+      unitGraphic = renderHumanBody(torso, head, weapons);
+      break;
     }
 
-    return `
-      <svg viewBox="0 0 100 125" class="statue-svg aom-hero-svg" xmlns="http://www.w3.org/2000/svg">
-        ${defs}
-        <g class="statue-group">
-          ${aomAura}
-          ${heroFigure}
-          ${plinth}
-          ${badge}
-        </g>
-      </svg>
-    `;
+    // 2. 헥토르 (Hector) - 트로이 최강 수호자, 눈부신 말갈기 투구와 원형 방패, 장창
+    case 'hector': {
+      const torso = `
+        <!-- 흑요석-청동 근육 흉갑 -->
+        <path d="M33,48 C32,60 34,73 50,73 C66,73 68,60 67,48 C67,44 60,40 50,40 C40,40 33,44 33,48 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.2"/>
+        <path d="M38,53 Q44,58 48,53 M52,53 Q56,58 62,53" stroke="${strokeColor}" stroke-width="1" fill="none"/>
+        <line x1="50" y1="54" x2="50" y2="72" stroke="${strokeColor}" stroke-width="1"/>
+        <!-- 어깨 청동 견갑 -->
+        <path d="M26,45 C23,40 35,36 38,47 C36,54 28,52 26,45 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.9"/>
+        <path d="M74,45 C77,40 65,36 62,47 C64,54 72,52 74,45 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.9"/>
+        <!-- 왼팔 방패 파지 -->
+        <path d="M27,48 L18,66 L23,68 L32,52 Z" fill="url(#${prefix}-skin)"/>
+        <!-- 오른팔 창 파지 -->
+        <path d="M68,49 L76,66 L81,64 L73,48 Z" fill="url(#${prefix}-skin)"/>
+      `;
+      const head = `
+        <path d="M46,37 L54,37 L55,42 L45,42 Z" fill="url(#${prefix}-skin)"/>
+        <path d="M44,22 L56,22 L54,37 L46,37 Z" fill="url(#${prefix}-skin)"/>
+        <!-- 눈부신 흑적색 말갈기 투구 -->
+        <path d="M49,3 C40,3 34,14 42,22 C46,22 54,22 58,22 C66,14 60,3 49,3 Z" fill="url(#${prefix}-crest)" stroke="${strokeColor}" stroke-width="1.1"/>
+        <path d="M41,18 C39,30 43,36 50,38 C57,36 61,30 59,18 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1"/>
+        <path d="M45,24 L48,27 L52,27 L55,24" stroke="${strokeColor}" stroke-width="1" fill="none"/>
+      `;
+      const weapons = `
+        <!-- 트로이 청동 원형 방패 (왼팔) -->
+        <circle cx="22" cy="68" r="16" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.3"/>
+        <circle cx="22" cy="68" r="12" fill="none" stroke="url(#${prefix}-gold)" stroke-width="1"/>
+        <circle cx="22" cy="68" r="4.5" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
+        <!-- 트로이 청동 장창 (오른손) -->
+        <line x1="84" y1="10" x2="68" y2="110" stroke="url(#${prefix}-gold)" stroke-width="2.5"/>
+        <polygon points="85,6 80,16 89,14" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
+      `;
+      unitGraphic = renderHumanBody(torso, head, weapons);
+      break;
+    }
+
+    // 3. 대 아이아스 (Great Ajax) - 칠중 소가죽 청동 타워 실드와 거대한 장창
+    case 'ajax_great': {
+      const torso = `
+        <path d="M33,48 C32,60 34,73 50,73 C66,73 68,60 67,48 C67,44 60,40 50,40 C40,40 33,44 33,48 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.2"/>
+        <path d="M74,45 C77,40 65,36 62,47 C64,54 72,52 74,45 Z" fill="url(#${prefix}-steel)" stroke="${strokeColor}" stroke-width="0.9"/>
+        <path d="M68,49 L76,66 L81,64 L73,48 Z" fill="url(#${prefix}-skin)"/>
+      `;
+      const head = `
+        <path d="M44,22 L56,22 L54,37 L46,37 Z" fill="url(#${prefix}-skin)"/>
+        <!-- 중장갑 코린토스 각진 투구 -->
+        <path d="M42,16 C40,30 44,36 50,38 C56,36 60,30 58,16 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.2"/>
+        <polygon points="50,6 45,16 55,16" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
+      `;
+      const weapons = `
+        <!-- 거대한 칠중 청동 타워 실드 (좌측 전면 성벽) -->
+        <path d="M10,24 C10,18 36,18 36,24 L38,102 L8,102 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.4"/>
+        <ellipse cx="23" cy="62" rx="10" ry="24" fill="none" stroke="${strokeColor}" stroke-width="1" stroke-dasharray="3,2"/>
+        <circle cx="23" cy="62" r="5" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
+        <!-- 우측 어깨의 육중한 장창 -->
+        <line x1="82" y1="12" x2="72" y2="108" stroke="url(#${prefix}-gold)" stroke-width="2.6"/>
+        <polygon points="83,7 78,17 87,15" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
+      `;
+      unitGraphic = renderHumanBody(torso, head, weapons);
+      break;
+    }
+
+    // 4. 소 아이아스 (Lesser Ajax) - 날개 투구와 2자루 투창
+    case 'ajax_lesser': {
+      const torso = `
+        <path d="M33,48 C32,60 34,73 50,73 C66,73 68,60 67,48 C67,44 60,40 50,40 C40,40 33,44 33,48 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.1"/>
+        <path d="M26,45 C23,40 35,36 38,47 C36,54 28,52 26,45 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.8"/>
+        <path d="M74,45 C77,40 65,36 62,47 C64,54 72,52 74,45 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.8"/>
+        <!-- 양팔 투창 투척 자세 -->
+        <path d="M27,48 L18,62 L23,64 L30,50 Z" fill="url(#${prefix}-skin)"/>
+        <path d="M68,49 L77,63 L82,61 L73,48 Z" fill="url(#${prefix}-skin)"/>
+      `;
+      const head = `
+        <path d="M44,22 L56,22 L54,37 L46,37 Z" fill="url(#${prefix}-skin)"/>
+        <!-- 날개 달린 날렵한 투구 -->
+        <path d="M42,16 C40,30 44,36 50,38 C56,36 60,30 58,16 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1"/>
+        <path d="M32,18 Q42,22 38,28 M68,18 Q58,22 62,28" stroke="url(#${prefix}-gold)" stroke-width="1.4" fill="none"/>
+      `;
+      const weapons = `
+        <!-- X자로 교차된 2자루의 바람 투창 -->
+        <line x1="20" y1="20" x2="80" y2="108" stroke="url(#${prefix}-gold)" stroke-width="2"/>
+        <polygon points="18,17 17,25 24,22" fill="url(#${prefix}-gold)"/>
+        <line x1="80" y1="20" x2="20" y2="108" stroke="url(#${prefix}-gold)" stroke-width="2"/>
+        <polygon points="82,17 76,22 83,25" fill="url(#${prefix}-gold)"/>
+      `;
+      unitGraphic = renderHumanBody(torso, head, weapons);
+      break;
+    }
+
+    // 5. 파트로클로스 (Patroclus) - 청년 전차병 투구와 뽑아 든 장검
+    case 'patroclus': {
+      const torso = `
+        <path d="M33,48 C32,60 34,73 50,73 C66,73 68,60 67,48 C67,44 60,40 50,40 C40,40 33,44 33,48 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.1"/>
+        <path d="M26,45 C23,40 35,36 38,47 C36,54 28,52 26,45 Z" fill="url(#${prefix}-steel)" stroke="${strokeColor}" stroke-width="0.8"/>
+        <path d="M74,45 C77,40 65,36 62,47 C64,54 72,52 74,45 Z" fill="url(#${prefix}-steel)" stroke="${strokeColor}" stroke-width="0.8"/>
+        <path d="M27,48 L22,66 L26,68 L32,52 Z" fill="url(#${prefix}-skin)"/>
+        <path d="M68,49 L76,64 L81,62 L73,48 Z" fill="url(#${prefix}-skin)"/>
+      `;
+      const head = `
+        <path d="M44,22 L56,22 L54,37 L46,37 Z" fill="url(#${prefix}-skin)"/>
+        <!-- 전차마 볏 투구 -->
+        <path d="M50,8 C40,8 36,18 42,24 C46,24 54,24 58,24 C64,18 60,8 50,8 Z" fill="url(#${prefix}-crest)" stroke="${strokeColor}" stroke-width="1"/>
+        <path d="M42,18 C40,30 44,36 50,38 C56,36 60,30 58,18 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1"/>
+      `;
+      const weapons = `
+        <!-- 오른손의 청동 장검 (Xiphos) -->
+        <line x1="78" y1="62" x2="88" y2="24" stroke="url(#${prefix}-steel)" stroke-width="2.6"/>
+        <polygon points="89,20 85,28 92,26" fill="url(#${prefix}-steel)" stroke="${strokeColor}" stroke-width="0.7"/>
+        <line x1="74" y1="60" x2="82" y2="60" stroke="url(#${prefix}-gold)" stroke-width="1.8"/>
+      `;
+      unitGraphic = renderHumanBody(torso, head, weapons);
+      break;
+    }
+
+    // 6. 네스토르 (Nestor) - 원로 군주, 풍성한 은빛 수염과 지혜의 황금 지팡이
+    case 'nestor': {
+      const torso = `
+        <!-- 원로의 토가와 갑옷 -->
+        <path d="M33,48 C32,60 34,73 50,73 C66,73 68,60 67,48 C67,44 60,40 50,40 C40,40 33,44 33,48 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.1"/>
+        <path d="M26,45 C23,40 35,36 38,47 C36,54 28,52 26,45 Z" fill="url(#${prefix}-tunic)" stroke="${strokeColor}" stroke-width="0.8"/>
+        <!-- 오른손 지팡이 파지 -->
+        <path d="M68,49 L76,66 L81,64 L73,48 Z" fill="url(#${prefix}-skin)"/>
+      `;
+      const head = `
+        <!-- 풍성한 은빛 수염 -->
+        <path d="M43,30 C40,46 60,46 57,30 Z" fill="#e2e8f0" stroke="${strokeColor}" stroke-width="0.8"/>
+        <path d="M44,22 L56,22 L54,34 L46,34 Z" fill="url(#${prefix}-skin)"/>
+        <!-- 필로스 황금 투구 -->
+        <path d="M42,16 C40,28 44,32 50,33 C56,32 60,28 58,16 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1"/>
+      `;
+      const weapons = `
+        <!-- 지혜의 황금 지팡이 (Staff) -->
+        <line x1="80" y1="20" x2="80" y2="116" stroke="url(#${prefix}-gold)" stroke-width="2.4"/>
+        <circle cx="80" cy="18" r="4.5" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
+        <circle cx="80" cy="18" r="2" fill="#ffffff"/>
+      `;
+      unitGraphic = renderHumanBody(torso, head, weapons);
+      break;
+    }
+
+    // 7. 오디세우스 (Odysseus) - 필레우스 모자, 아테나 올빼미 브로치, 두루마리와 단검
+    case 'odysseus': {
+      const torso = `
+        <path d="M33,48 C32,60 34,73 50,73 C66,73 68,60 67,48 C67,44 60,40 50,40 C40,40 33,44 33,48 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.1"/>
+        <!-- 아테나의 올빼미 브로치 -->
+        <circle cx="44" cy="46" r="3.5" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
+        <!-- 양팔 두루마리 & 단검 파지 -->
+        <path d="M27,48 L22,64 L27,66 L32,52 Z" fill="url(#${prefix}-skin)"/>
+        <path d="M68,49 L76,64 L81,62 L73,48 Z" fill="url(#${prefix}-skin)"/>
+      `;
+      const head = `
+        <path d="M44,22 L56,22 L54,37 L46,37 Z" fill="url(#${prefix}-skin)"/>
+        <!-- 수염 -->
+        <path d="M45,32 C45,40 55,40 55,32 Z" fill="#64748b"/>
+        <!-- 필레우스 (Pilos) 지략 모자 -->
+        <path d="M40,24 C42,12 58,12 60,24 Z" fill="url(#${prefix}-steel)" stroke="${strokeColor}" stroke-width="1.1"/>
+      `;
+      const weapons = `
+        <!-- 왼손 파피루스 두루마리 -->
+        <rect x="18" y="56" width="6" height="16" rx="1.5" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.7"/>
+        <!-- 오른손 청동 단검 -->
+        <line x1="78" y1="62" x2="88" y2="40" stroke="url(#${prefix}-gold)" stroke-width="2.2"/>
+        <polygon points="89,37 86,43 92,42" fill="url(#${prefix}-gold)"/>
+      `;
+      unitGraphic = renderHumanBody(torso, head, weapons);
+      break;
+    }
+
+    // 8. 디오메데스 (Diomedes) - 아테나의 맹검, 사자 엠블럼 투구
+    case 'diomedes': {
+      const torso = `
+        <path d="M33,48 C32,60 34,73 50,73 C66,73 68,60 67,48 C67,44 60,40 50,40 C40,40 33,44 33,48 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.2"/>
+        <path d="M26,45 C23,40 35,36 38,47 C36,54 28,52 26,45 Z" fill="url(#${prefix}-steel)" stroke="${strokeColor}" stroke-width="0.9"/>
+        <path d="M74,45 C77,40 65,36 62,47 C64,54 72,52 74,45 Z" fill="url(#${prefix}-steel)" stroke="${strokeColor}" stroke-width="0.9"/>
+        <path d="M68,49 L76,64 L81,62 L73,48 Z" fill="url(#${prefix}-skin)"/>
+      `;
+      const head = `
+        <path d="M44,22 L56,22 L54,37 L46,37 Z" fill="url(#${prefix}-skin)"/>
+        <!-- 사자 문양 볏 투구 -->
+        <path d="M50,8 C40,8 36,18 42,24 C46,24 54,24 58,24 C64,18 60,8 50,8 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1"/>
+        <path d="M42,18 C40,30 44,36 50,38 C56,36 60,30 58,18 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1"/>
+      `;
+      const weapons = `
+        <!-- 번뜩이는 아테나의 청동 맹검 (Broadsword) -->
+        <line x1="78" y1="62" x2="88" y2="16" stroke="url(#${prefix}-steel)" stroke-width="3"/>
+        <polygon points="89,12 84,20 93,18" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
+        <line x1="73" y1="58" x2="83" y2="58" stroke="url(#${prefix}-gold)" stroke-width="2"/>
+      `;
+      unitGraphic = renderHumanBody(torso, head, weapons);
+      break;
+    }
+
+    // 9. 아가멤논 (Agamemnon) - 미케네 군주, 황금 홀과 진홍-블루 망토
+    case 'agamemnon': {
+      const torso = `
+        <!-- 총사령관 군주 망토 (Cloak) -->
+        <path d="M24,42 C20,70 24,105 28,112 M76,42 C80,70 76,105 72,112" stroke="${isWhite ? '#b91c1c' : '#7f1d1d'}" stroke-width="3" fill="none"/>
+        <path d="M33,48 C32,60 34,73 50,73 C66,73 68,60 67,48 C67,44 60,40 50,40 C40,40 33,44 33,48 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.2"/>
+        <circle cx="50" cy="58" r="6" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
+        <path d="M26,45 C23,40 35,36 38,47 C36,54 28,52 26,45 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1"/>
+        <path d="M74,45 C77,40 65,36 62,47 C64,54 72,52 74,45 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1"/>
+        <path d="M68,49 L76,66 L81,64 L73,48 Z" fill="url(#${prefix}-skin)"/>
+      `;
+      const head = `
+        <!-- 군주 수염 -->
+        <path d="M43,30 C40,44 60,44 57,30 Z" fill="#331a08"/>
+        <path d="M44,22 L56,22 L54,34 L46,34 Z" fill="url(#${prefix}-skin)"/>
+        <!-- 미케네 황금 마스크 성관 (Royal Diadem) -->
+        <path d="M40,24 L45,14 L50,8 L55,14 L60,24 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1.2"/>
+        <circle cx="50" cy="18" r="2.5" fill="#ffffff"/>
+      `;
+      const weapons = `
+        <!-- 총사령관의 황금 홀 (Scepter) -->
+        <line x1="80" y1="22" x2="80" y2="116" stroke="url(#${prefix}-gold)" stroke-width="2.6"/>
+        <circle cx="80" cy="18" r="5" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.9"/>
+        <polygon points="80,11 76,17 84,17" fill="url(#${prefix}-gold)"/>
+      `;
+      unitGraphic = renderHumanBody(torso, head, weapons);
+      break;
+    }
+
+    // 10. 미르미돈 (Myrmidon) - 아킬레우스 개미 전사대, 슬릿 투구, 원형 방패와 장창
+    case 'myrmidon': {
+      const torso = `
+        <path d="M33,48 C32,60 34,73 50,73 C66,73 68,60 67,48 C67,44 60,40 50,40 C40,40 33,44 33,48 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.1"/>
+        <path d="M26,45 C23,40 35,36 38,47 C36,54 28,52 26,45 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.8"/>
+        <path d="M74,45 C77,40 65,36 62,47 C64,54 72,52 74,45 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.8"/>
+        <path d="M68,49 L76,66 L81,64 L73,48 Z" fill="url(#${prefix}-skin)"/>
+      `;
+      const head = `
+        <!-- 코린토스 슬릿 안면 투구 -->
+        <path d="M42,16 C39,30 43,36 50,38 C57,36 61,30 58,16 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.1"/>
+        <path d="M46,24 L49,28 L51,28 L54,24" stroke="#000000" stroke-width="1.2" fill="none"/>
+        <path d="M49,5 C42,5 38,12 44,16 C48,16 52,16 56,16 C62,12 58,5 49,5 Z" fill="url(#${prefix}-crest)"/>
+      `;
+      const weapons = `
+        <!-- 미르미돈 청동 원형 방패 (왼팔) -->
+        <circle cx="24" cy="66" r="14" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.2"/>
+        <polygon points="24,58 20,72 28,72" fill="url(#${prefix}-gold)"/>
+        <!-- 전방을 겨눈 돌격 청동 창 -->
+        <line x1="84" y1="16" x2="72" y2="112" stroke="url(#${prefix}-gold)" stroke-width="2.2"/>
+        <polygon points="85,12 81,20 89,18" fill="url(#${prefix}-gold)"/>
+      `;
+      unitGraphic = renderHumanBody(torso, head, weapons);
+      break;
+    }
+
+    // 11. 스카이아 관문 (Scaean Gate) - 아폴론의 서쪽 요새 성탑 3D 모델
+    case 'scaean_gate': {
+      unitGraphic = `
+        <!-- 3D 성벽 요새 타워 본체 -->
+        <path d="M22,118 L24,42 L20,42 L20,24 L32,24 L32,32 L44,32 L44,24 L56,24 L56,32 L68,32 L68,24 L80,24 L80,42 L76,42 L78,118 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.4"/>
+        <!-- 성벽 석재 블록 라인 -->
+        <line x1="24" y1="56" x2="76" y2="56" stroke="${strokeColor}" stroke-width="0.8"/>
+        <line x1="23" y1="72" x2="77" y2="72" stroke="${strokeColor}" stroke-width="0.8"/>
+        <line x1="23" y1="88" x2="77" y2="88" stroke="${strokeColor}" stroke-width="0.8"/>
+        <!-- 아폴론의 황금 태양 엠블럼 -->
+        <circle cx="50" cy="50" r="7" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.9"/>
+        <line x1="50" y1="38" x2="50" y2="42" stroke="url(#${prefix}-gold)" stroke-width="1.5"/>
+        <line x1="50" y1="58" x2="50" y2="62" stroke="url(#${prefix}-gold)" stroke-width="1.5"/>
+        <line x1="38" y1="50" x2="42" y2="50" stroke="url(#${prefix}-gold)" stroke-width="1.5"/>
+        <line x1="58" y1="50" x2="62" y2="50" stroke="url(#${prefix}-gold)" stroke-width="1.5"/>
+        <!-- 난공불락 아치형 관문 -->
+        <path d="M38,118 L38,90 C38,82 62,82 62,90 L62,118 Z" fill="#0f0704" stroke="${strokeColor}" stroke-width="1.2"/>
+      `;
+      break;
+    }
+
+    // 12. 다르다니아 성탑 (Dardanian Tower) - 포세이돈의 동쪽 요새 타워 3D 모델
+    case 'dardanian_tower': {
+      unitGraphic = `
+        <path d="M22,118 L24,42 L20,42 L20,24 L32,24 L32,32 L44,32 L44,24 L56,24 L56,32 L68,32 L68,24 L80,24 L80,42 L76,42 L78,118 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.4"/>
+        <line x1="24" y1="56" x2="76" y2="56" stroke="${strokeColor}" stroke-width="0.8"/>
+        <line x1="23" y1="72" x2="77" y2="72" stroke="${strokeColor}" stroke-width="0.8"/>
+        <line x1="23" y1="88" x2="77" y2="88" stroke="${strokeColor}" stroke-width="0.8"/>
+        <!-- 포세이돈의 황금 삼지창 엠블럼 -->
+        <line x1="50" y1="40" x2="50" y2="62" stroke="url(#${prefix}-gold)" stroke-width="2"/>
+        <path d="M44,44 L44,52 L56,52 L56,44" stroke="url(#${prefix}-gold)" stroke-width="1.5" fill="none"/>
+        <line x1="44" y1="44" x2="44" y2="40" stroke="url(#${prefix}-gold)" stroke-width="1.5"/>
+        <line x1="56" y1="44" x2="56" y2="40" stroke="url(#${prefix}-gold)" stroke-width="1.5"/>
+        <!-- 청동 빗장 관문 -->
+        <path d="M38,118 L38,90 C38,82 62,82 62,90 L62,118 Z" fill="#24140b" stroke="${strokeColor}" stroke-width="1.2"/>
+        <line x1="36" y1="102" x2="64" y2="102" stroke="url(#${prefix}-gold)" stroke-width="1.8"/>
+      `;
+      break;
+    }
+
+    // 13. 아이네이아스 (Aeneas) - 사자 가죽을 두른 다르다니아 맹장, 청동 장검
+    case 'aeneas': {
+      const torso = `
+        <path d="M33,48 C32,60 34,73 50,73 C66,73 68,60 67,48 C67,44 60,40 50,40 C40,40 33,44 33,48 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.2"/>
+        <!-- 사자 가죽 어깨 망토 -->
+        <path d="M24,42 C18,60 22,80 26,86 M76,42 C82,60 78,80 74,86" stroke="url(#${prefix}-gold)" stroke-width="2.5" fill="none"/>
+        <path d="M68,49 L76,64 L81,62 L73,48 Z" fill="url(#${prefix}-skin)"/>
+      `;
+      const head = `
+        <path d="M44,22 L56,22 L54,37 L46,37 Z" fill="url(#${prefix}-skin)"/>
+        <!-- 다르다니아 맹장의 청동 투구 -->
+        <path d="M42,16 C39,30 43,36 50,38 C57,36 61,30 58,16 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.1"/>
+        <path d="M49,6 C40,6 36,15 42,22 C46,22 54,22 58,22 C64,15 60,6 49,6 Z" fill="url(#${prefix}-gold)"/>
+      `;
+      const weapons = `
+        <!-- 청동 장검 (Spatha) -->
+        <line x1="78" y1="62" x2="88" y2="20" stroke="url(#${prefix}-gold)" stroke-width="2.6"/>
+        <polygon points="89,16 85,24 92,22" fill="url(#${prefix}-gold)"/>
+        <line x1="74" y1="58" x2="82" y2="58" stroke="url(#${prefix}-armor)" stroke-width="1.8"/>
+      `;
+      unitGraphic = renderHumanBody(torso, head, weapons);
+      break;
+    }
+
+    // 14. 사르페돈 (Sarpedon) - 제우스 아들의 날개 투구와 거대한 양날 전투도끼
+    case 'sarpedon': {
+      const torso = `
+        <path d="M33,48 C32,60 34,73 50,73 C66,73 68,60 67,48 C67,44 60,40 50,40 C40,40 33,44 33,48 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.2"/>
+        <path d="M26,45 C23,40 35,36 38,47 C36,54 28,52 26,45 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.9"/>
+        <path d="M74,45 C77,40 65,36 62,47 C64,54 72,52 74,45 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.9"/>
+        <!-- 양손 도끼 파지 -->
+        <path d="M27,48 L20,62 L25,64 L32,50 Z" fill="url(#${prefix}-skin)"/>
+        <path d="M68,49 L76,64 L81,62 L73,48 Z" fill="url(#${prefix}-skin)"/>
+      `;
+      const head = `
+        <path d="M44,22 L56,22 L54,37 L46,37 Z" fill="url(#${prefix}-skin)"/>
+        <!-- 제우스 아들의 날개 왕관 투구 -->
+        <path d="M42,16 C39,30 43,36 50,38 C57,36 61,30 58,16 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.1"/>
+        <path d="M34,16 Q42,20 38,26 M66,16 Q58,20 62,26" stroke="url(#${prefix}-gold)" stroke-width="1.5" fill="none"/>
+      `;
+      const weapons = `
+        <!-- 거대한 양날 전투 도끼 (Labrys) -->
+        <line x1="20" y1="18" x2="80" y2="100" stroke="url(#${prefix}-gold)" stroke-width="2.6"/>
+        <!-- 좌측 도끼날 -->
+        <path d="M16,12 C10,20 10,32 18,38 L26,26 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
+        <!-- 우측 도끼날 -->
+        <path d="M28,8 C36,16 36,28 28,34 L20,22 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
+      `;
+      unitGraphic = renderHumanBody(torso, head, weapons);
+      break;
+    }
+
+    // 15. 파리스 (Paris) - 트로이 미남 왕자, 프리기안 캡과 아폴론의 황금 복합궁
+    case 'paris': {
+      const torso = `
+        <path d="M33,48 C32,60 34,73 50,73 C66,73 68,60 67,48 C67,44 60,40 50,40 C40,40 33,44 33,48 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.1"/>
+        <!-- 등 뒤의 화살통 스트랩 -->
+        <line x1="32" y1="46" x2="68" y2="72" stroke="url(#${prefix}-gold)" stroke-width="2"/>
+        <!-- 활 파지 팔 -->
+        <path d="M27,48 L18,64 L23,66 L30,52 Z" fill="url(#${prefix}-skin)"/>
+        <path d="M68,49 L76,64 L81,62 L73,48 Z" fill="url(#${prefix}-skin)"/>
+      `;
+      const head = `
+        <!-- 수염 없는 미남 왕자의 얼굴선 -->
+        <path d="M44,22 L56,22 L54,37 L46,37 Z" fill="url(#${prefix}-skin)"/>
+        <!-- 앞으로 굽어진 트로이 프리기안 캡 (Phrygian Cap) -->
+        <path d="M38,24 C36,12 48,6 56,8 C64,10 62,18 52,16 C48,18 44,20 38,24 Z" fill="url(#${prefix}-crest)" stroke="${strokeColor}" stroke-width="1.1"/>
+      `;
+      const weapons = `
+        <!-- 아폴론의 황금 복합궁 (Composite Bow) -->
+        <path d="M14,14 Q26,58 16,104" stroke="url(#${prefix}-gold)" stroke-width="2.6" fill="none"/>
+        <line x1="14" y1="14" x2="16" y2="104" stroke="#ffffff" stroke-width="0.7"/>
+      `;
+      unitGraphic = renderHumanBody(torso, head, weapons);
+      break;
+    }
+
+    // 16. 헬레노스 (Helenus) - 아폴론의 신탁 예언자, 카두케우스 뱀 지팡이
+    case 'helenus': {
+      const torso = `
+        <path d="M33,48 C32,60 34,73 50,73 C66,73 68,60 67,48 C67,44 60,40 50,40 C40,40 33,44 33,48 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.1"/>
+        <path d="M68,49 L76,66 L81,64 L73,48 Z" fill="url(#${prefix}-skin)"/>
+      `;
+      const head = `
+        <path d="M44,22 L56,22 L54,37 L46,37 Z" fill="url(#${prefix}-skin)"/>
+        <path d="M45,30 C45,40 55,40 55,30 Z" fill="#64748b"/>
+        <!-- 예언자의 신비로운 후드 -->
+        <path d="M38,20 C38,10 62,10 62,20 L64,36 C64,44 36,44 36,36 Z" fill="url(#${prefix}-crest)" stroke="${strokeColor}" stroke-width="1"/>
+      `;
+      const weapons = `
+        <!-- 두 마리 뱀이 감긴 황금 지팡이 (Caduceus) -->
+        <line x1="80" y1="20" x2="80" y2="116" stroke="url(#${prefix}-gold)" stroke-width="2.2"/>
+        <circle cx="80" cy="18" r="3.5" fill="url(#${prefix}-gold)"/>
+        <path d="M76,26 Q84,32 76,38 Q84,44 76,50" stroke="url(#${prefix}-gold)" stroke-width="1.3" fill="none"/>
+        <path d="M84,26 Q76,32 84,38 Q76,44 84,50" stroke="url(#${prefix}-gold)" stroke-width="1.3" fill="none"/>
+      `;
+      unitGraphic = renderHumanBody(torso, head, weapons);
+      break;
+    }
+
+    // 17. 프리아모스 (Priam) - 트로이 노왕, 티아라 왕관, 긴 은빛 수염과 보석 홀
+    case 'priam': {
+      const torso = `
+        <!-- 왕실 진홍빛 가운 -->
+        <path d="M24,42 C20,70 24,105 28,112 M76,42 C80,70 76,105 72,112" stroke="#7f1d1d" stroke-width="3" fill="none"/>
+        <path d="M33,48 C32,60 34,73 50,73 C66,73 68,60 67,48 C67,44 60,40 50,40 C40,40 33,44 33,48 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.2"/>
+        <circle cx="50" cy="58" r="5" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
+        <path d="M68,49 L76,66 L81,64 L73,48 Z" fill="url(#${prefix}-skin)"/>
+      `;
+      const head = `
+        <!-- 가슴까지 길게 내려오는 장엄한 은빛 수염 -->
+        <path d="M42,28 C38,50 62,50 58,28 Z" fill="#e2e8f0" stroke="${strokeColor}" stroke-width="0.8"/>
+        <path d="M44,20 L56,20 L54,32 L46,32 Z" fill="url(#${prefix}-skin)"/>
+        <!-- 트로이 프리기아 티아라 왕관 -->
+        <path d="M38,22 C40,10 50,6 56,8 C60,10 62,18 62,24 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1.2"/>
+        <circle cx="50" cy="16" r="2.5" fill="#ffffff"/>
+      `;
+      const weapons = `
+        <!-- 노왕의 보석 홀 (Scepter) -->
+        <line x1="80" y1="20" x2="80" y2="116" stroke="url(#${prefix}-gold)" stroke-width="2.6"/>
+        <polygon points="80,12 74,20 86,20" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
+        <circle cx="80" cy="20" r="3" fill="#f87171"/>
+      `;
+      unitGraphic = renderHumanBody(torso, head, weapons);
+      break;
+    }
+
+    // 18. 트로이 보병 (Trojan Phalanx) - 원추형 청동 투구, 타원형 방패와 장창
+    case 'trojan_phalanx':
+    default: {
+      const torso = `
+        <path d="M33,48 C32,60 34,73 50,73 C66,73 68,60 67,48 C67,44 60,40 50,40 C40,40 33,44 33,48 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.1"/>
+        <path d="M26,45 C23,40 35,36 38,47 C36,54 28,52 26,45 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.8"/>
+        <path d="M74,45 C77,40 65,36 62,47 C64,54 72,52 74,45 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="0.8"/>
+        <path d="M68,49 L76,66 L81,64 L73,48 Z" fill="url(#${prefix}-skin)"/>
+      `;
+      const head = `
+        <path d="M44,22 L56,22 L54,37 L46,37 Z" fill="url(#${prefix}-skin)"/>
+        <!-- 원추형 청동 투구 -->
+        <path d="M42,20 C42,12 50,6 58,20 Z" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.1"/>
+        <line x1="50" y1="6" x2="50" y2="2" stroke="url(#${prefix}-gold)" stroke-width="1.5"/>
+      `;
+      const weapons = `
+        <!-- 트로이 타원형 방패 (왼팔) -->
+        <ellipse cx="22" cy="66" rx="12" ry="18" fill="url(#${prefix}-armor)" stroke="${strokeColor}" stroke-width="1.2"/>
+        <ellipse cx="22" cy="66" rx="6" ry="10" fill="none" stroke="url(#${prefix}-gold)" stroke-width="1"/>
+        <!-- 전방 겨눈 트로이 장창 -->
+        <line x1="84" y1="16" x2="72" y2="112" stroke="url(#${prefix}-gold)" stroke-width="2.2"/>
+        <polygon points="85,12 81,20 89,18" fill="url(#${prefix}-gold)"/>
+      `;
+      unitGraphic = renderHumanBody(torso, head, weapons);
+      break;
+    }
   }
+
+  return `
+    <svg viewBox="0 0 100 135" class="statue-svg aom-unit-svg" xmlns="http://www.w3.org/2000/svg">
+      ${defs}
+      <g class="statue-group">
+        ${baseGround}
+        ${unitGraphic}
+        ${nameplate}
+        ${badge}
+      </g>
+    </svg>
+  `;
+}
+
+  const generateAomHeroSvg = generateAomHeroUnitSvg; // 하위 호환성 및 별칭 매핑
+
+  // ==========================================================================
   // 4. 메인 트로이 체스 게임 관리자 클래스 (TrojanChessGame)
   // ==========================================================================
   class TrojanChessGame {
@@ -782,8 +1055,9 @@
       this.specialMode = true;      // 트로이 서사 특수 모드 활성화 여부
       this.trojanHorseUsed = false; // 트로이 목마 전술 사용 여부
 
-      // 선택 상태
+      // 선택 및 드래그 상태
       this.selectedSquare = null;
+      this.draggedSquare = null;
       this.legalMovesForSelected = [];
       this.pendingPromotion = null; // 승급 대기 중인 착수 정보 { from, to }
 
@@ -936,7 +1210,7 @@
       }
     }
 
-    // 보드 렌더링
+    // 보드 렌더링 (고정 1:1 종횡비 및 AoM 전신 3D 유닛 모델 적용)
     render() {
       if (!this.boardEl) return;
       this.boardEl.innerHTML = "";
@@ -977,7 +1251,7 @@
             squareDiv.classList.add("in-check");
           }
 
-          // 4. 착수 가능 힌트 점 및 포획 링 표시
+          // 4. 착수 가능 힌트 점 및 포획 링 표시 (포획 대상일 때 명확한 붉은 링)
           const moveHint = this.legalMovesForSelected.find(m => m.to === squareName);
           if (moveHint) {
             if (moveHint.captured) {
@@ -991,7 +1265,7 @@
             }
           }
 
-          // 5. 기물 렌더링 (에이지 오브 미쏠로지 영웅 유닛 & 조각상 흉상 모델링)
+          // 5. 기물 렌더링 (에이지 오브 미쏠로지 전신 3D 유닛 모델링)
           if (piece) {
             const pieceDiv = document.createElement("div");
             const isWhite = piece.color === 'w';
@@ -1001,10 +1275,23 @@
             pieceDiv.className = `piece statue-piece ${isWhite ? "white-piece" : "black-piece"} ${hero ? hero.role : ""}`;
             pieceDiv.title = hero ? `${hero.name} — ${hero.title}` : "";
 
-            pieceDiv.innerHTML = generateAomHeroSvg(hero);
+            pieceDiv.innerHTML = generateAomHeroUnitSvg(hero);
 
             squareDiv.appendChild(pieceDiv);
+
+            // 드래그 앤 드롭: 플레이어 조작 가능한 턴 기물인 경우 draggable 활성화
+            const isMyTurnPiece = (this.gameMode !== "ai" || piece.color === this.playerColor) && piece.color === currentTurn;
+            if (isMyTurnPiece && !this.game.game_over() && !this.pendingPromotion) {
+              squareDiv.setAttribute("draggable", "true");
+              squareDiv.addEventListener("dragstart", (e) => this.handleDragStart(e, squareName));
+              squareDiv.addEventListener("dragend", (e) => this.handleDragEnd(e));
+            }
           }
+
+          // 드래그 대상 칸 이벤트 (모든 칸이 착수 목적지가 될 수 있으므로 등록)
+          squareDiv.addEventListener("dragover", (e) => this.handleDragOver(e, squareName));
+          squareDiv.addEventListener("dragleave", (e) => this.handleDragLeave(e, squareName));
+          squareDiv.addEventListener("drop", (e) => this.handleDrop(e, squareName));
 
           // 칸 클릭 이벤트
           squareDiv.addEventListener("click", () => this.handleSquareClick(squareName));
@@ -1016,7 +1303,7 @@
       this.updateStatusAndPanels();
     }
 
-    // 칸 클릭 인터랙션 처리
+    // 칸 클릭 인터랙션 처리 (클릭 착수 및 적 기물 포획 완벽 지원)
     handleSquareClick(squareName) {
       // 게임 종료 상태이거나 승급 대기 중이면 무시
       if (this.game.game_over() || this.pendingPromotion) return;
@@ -1028,36 +1315,179 @@
         return;
       }
 
-      // 이미 선택된 기물이 있고, 클릭한 칸이 유효한 이동 경로인 경우 -> 착수 진행
+      // 1. 이미 선택된 기물이 있는 경우
       if (this.selectedSquare) {
-        const targetMove = this.legalMovesForSelected.find(m => m.to === squareName);
+        // (1) 이미 선택된 기물을 다시 클릭한 경우 -> 선택 해제 (토글 지원)
+        if (this.selectedSquare === squareName) {
+          this.selectedSquare = null;
+          this.legalMovesForSelected = [];
+          this.render();
+          return;
+        }
 
+        // (2) 유효한 착수/포획 경로인지 확인
+        let targetMove = this.legalMovesForSelected.find(m => m.to === squareName);
+
+        // 앙파상 특수 처리: 사용자가 목표 빈 칸이 아닌 포획될 적 폰 위치를 직접 클릭한 경우 대응
+        if (!targetMove) {
+          const epMove = this.legalMovesForSelected.find(m => m.flags.includes('e'));
+          if (epMove && squareName === epMove.to[0] + this.selectedSquare[1]) {
+            targetMove = epMove;
+          }
+        }
+
+        // 유효한 이동 경로인 경우 -> 착수 진행
         if (targetMove) {
           // 승급(Promotion) 여부 확인
           if (targetMove.flags.includes('p')) {
-            this.pendingPromotion = { from: this.selectedSquare, to: squareName };
+            this.pendingPromotion = { from: this.selectedSquare, to: targetMove.to };
             this.openPromotionModal(currentTurn);
             return;
           }
 
-          this.executeMove(this.selectedSquare, squareName);
+          this.executeMove(this.selectedSquare, targetMove.to);
           this.selectedSquare = null;
           this.legalMovesForSelected = [];
           return;
         }
       }
 
-      // 기물 선택 처리
+      // 2. 기물 선택 처리 (현재 차례의 기물만 선택 가능)
       const pieceAtSquare = this.game.get(squareName);
       if (pieceAtSquare && pieceAtSquare.color === currentTurn) {
         this.selectedSquare = squareName;
         this.legalMovesForSelected = this.game.moves({ square: squareName, verbose: true });
         this.render();
       } else {
-        // 빈 칸이거나 상대 기물 클릭 시 선택 해제
+        // 빈 칸이거나 선택 불가능한 상대 기물 클릭 시 선택 해제
         this.selectedSquare = null;
         this.legalMovesForSelected = [];
         this.render();
+      }
+    }
+
+    // 드래그 앤 드롭 시작 핸들러
+    handleDragStart(e, squareName) {
+      if (this.game.game_over() || this.pendingPromotion) {
+        e.preventDefault();
+        return;
+      }
+      const currentTurn = this.game.turn();
+      if (this.gameMode === "ai" && currentTurn !== this.playerColor) {
+        e.preventDefault();
+        return;
+      }
+      const piece = this.game.get(squareName);
+      if (!piece || piece.color !== currentTurn) {
+        e.preventDefault();
+        return;
+      }
+
+      this.draggedSquare = squareName;
+      this.selectedSquare = squareName;
+      this.legalMovesForSelected = this.game.moves({ square: squareName, verbose: true });
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", squareName);
+
+      // 드래그 중인 칸 시각 피드백
+      e.currentTarget.classList.add("dragging");
+
+      // 이동 가능 경로 힌트 표시 (기존 DOM 유지하여 드래그 중단 방지)
+      this.highlightLegalSquares();
+    }
+
+    // 드래그 오버 핸들러 (착수 가능 칸이면 drop 허용 및 시각 피드백)
+    handleDragOver(e, squareName) {
+      if (!this.draggedSquare) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+
+      if (this.isLegalTarget(this.draggedSquare, squareName)) {
+        e.currentTarget.classList.add("drag-over");
+      }
+    }
+
+    // 드래그 리브 핸들러
+    handleDragLeave(e, squareName) {
+      e.currentTarget.classList.remove("drag-over");
+    }
+
+    // 드롭 핸들러 (기물 착수 및 적 기물 포획 처리)
+    handleDrop(e, squareName) {
+      e.preventDefault();
+      e.currentTarget.classList.remove("drag-over");
+      if (!this.draggedSquare) return;
+
+      const fromSquare = this.draggedSquare;
+      this.draggedSquare = null;
+
+      let targetMove = this.legalMovesForSelected.find(m => m.to === squareName);
+      if (!targetMove) {
+        const epMove = this.legalMovesForSelected.find(m => m.flags.includes('e'));
+        if (epMove && squareName === epMove.to[0] + fromSquare[1]) {
+          targetMove = epMove;
+        }
+      }
+
+      if (targetMove) {
+        if (targetMove.flags.includes('p')) {
+          this.pendingPromotion = { from: fromSquare, to: targetMove.to };
+          this.openPromotionModal(this.game.turn());
+          return;
+        }
+        this.executeMove(fromSquare, targetMove.to);
+        this.selectedSquare = null;
+        this.legalMovesForSelected = [];
+      } else {
+        this.selectedSquare = null;
+        this.legalMovesForSelected = [];
+        this.render();
+      }
+    }
+
+    // 드래그 종료 핸들러
+    handleDragEnd(e) {
+      this.draggedSquare = null;
+      if (e.currentTarget) {
+        e.currentTarget.classList.remove("dragging");
+      }
+      if (this.boardEl) {
+        this.boardEl.querySelectorAll(".drag-over").forEach(el => el.classList.remove("drag-over"));
+        this.boardEl.querySelectorAll(".dragging").forEach(el => el.classList.remove("dragging"));
+      }
+    }
+
+    // 이동 유효성 확인 헬퍼
+    isLegalTarget(fromSquare, toSquare) {
+      if (!this.legalMovesForSelected || this.legalMovesForSelected.length === 0) return false;
+      if (this.legalMovesForSelected.some(m => m.to === toSquare)) return true;
+      const epMove = this.legalMovesForSelected.find(m => m.flags.includes('e'));
+      if (epMove && toSquare === epMove.to[0] + fromSquare[1]) return true;
+      return false;
+    }
+
+    // DOM을 파괴하지 않고 착수 힌트 표시 (HTML5 드래그 보존)
+    highlightLegalSquares() {
+      if (!this.boardEl) return;
+      this.boardEl.querySelectorAll(".move-dot, .capture-ring").forEach(el => el.remove());
+      this.boardEl.querySelectorAll(".square.selected").forEach(el => el.classList.remove("selected"));
+
+      const fromSq = this.boardEl.querySelector(`[data-square="${this.selectedSquare}"]`);
+      if (fromSq) fromSq.classList.add("selected");
+
+      for (const move of this.legalMovesForSelected) {
+        const targetSq = this.boardEl.querySelector(`[data-square="${move.to}"]`);
+        if (targetSq) {
+          if (move.captured) {
+            const ring = document.createElement("div");
+            ring.className = "capture-ring";
+            targetSq.appendChild(ring);
+          } else {
+            const dot = document.createElement("div");
+            dot.className = "move-dot";
+            targetSq.appendChild(dot);
+          }
+        }
       }
     }
 
