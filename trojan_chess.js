@@ -1599,354 +1599,6 @@
   const generateAomHeroSvg = generateAomHeroUnitSvg; // 하위 호환성 및 별칭 매핑
 
   // ==========================================================================
-  // 3.5. 내부 공유기(LAN) 및 온라인 P2P 대전 매니저 (LanMatchManager)
-  // ==========================================================================
-  class LanMatchManager {
-    constructor(game) {
-      this.game = game;
-      this.roomCode = null;
-      this.role = null; // 'host' (White) | 'guest' (Black)
-      this.connected = false;
-      this.peer = null;
-      this.conn = null;
-      this.broadcastChannel = null;
-      this.httpPollTimer = null;
-      this.lastPollMoveId = 0;
-      this.processedMsgIds = new Set();
-    }
-
-    isConnected() {
-      return this.connected;
-    }
-
-    setConnected(status, message = "") {
-      this.connected = status;
-      if (this.game.lanStatusBadge && this.game.lanStatusText) {
-        if (status) {
-          this.game.lanStatusBadge.classList.add("connected");
-          this.game.lanStatusBadge.classList.remove("waiting");
-          this.game.lanStatusText.textContent = message || "⚔️ 대국 연결됨 (실시간 동기화 중)";
-        } else {
-          this.game.lanStatusBadge.classList.remove("connected");
-          this.game.lanStatusBadge.classList.add("waiting");
-          this.game.lanStatusText.textContent = message || "대기 중...";
-        }
-      }
-      this.game.updateStatusAndPanels();
-    }
-
-    // 방 만들기 (Host - White)
-    createRoom(roomCode) {
-      this.cleanup();
-      this.roomCode = roomCode;
-      this.role = 'host';
-      this.setConnected(false, `방 [${roomCode}] 대기실 개설됨 (전우 접속 대기 중...)`);
-
-      // 1. 같은 브라우저 다중 탭 즉시 통신 (BroadcastChannel)
-      if (typeof BroadcastChannel !== 'undefined') {
-        try {
-          this.broadcastChannel = new BroadcastChannel(`troy_chess_room_${roomCode}`);
-          this.broadcastChannel.onmessage = (e) => this.handleIncomingMessage(e.data);
-        } catch (e) {
-          console.warn("BroadcastChannel 초기화 실패:", e);
-        }
-      }
-
-      // 2. PeerJS WebRTC P2P (공유기 및 인터넷 직결)
-      if (typeof Peer !== 'undefined') {
-        try {
-          const peerId = `troy-chess-${roomCode}`;
-          this.peer = new Peer(peerId, { debug: 1 });
-          this.peer.on('open', (id) => {
-            console.log(`[LAN P2P] 호스트 Peer 준비 완료: ${id}`);
-          });
-          this.peer.on('connection', (conn) => {
-            console.log(`[LAN P2P] 게스트가 접속했습니다!`);
-            this.conn = conn;
-            this.setupDataConnection(conn);
-          });
-          this.peer.on('error', (err) => {
-            console.warn(`[LAN P2P] 호스트 Peer 경고:`, err);
-          });
-        } catch (e) {
-          console.warn("PeerJS 호스트 생성 예외:", e);
-        }
-      }
-
-      // 3. 로컬 LAN 서버 중계 폴링 (lan_server.js 가동 환경)
-      if (typeof window !== 'undefined' && window.location.protocol.startsWith('http')) {
-        fetch('/api/room/create', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code: roomCode })
-        }).then(r => r.json()).then(data => {
-          if (data && data.ok) {
-            this.startHttpPolling(roomCode);
-          }
-        }).catch(() => {});
-      }
-    }
-
-    // 방 참가하기 (Guest - Black)
-    joinRoom(roomCode) {
-      this.cleanup();
-      this.roomCode = roomCode;
-      this.role = 'guest';
-      this.setConnected(false, `방 [${roomCode}] 호스트에 연결 시도 중...`);
-
-      // 1. BroadcastChannel 초기화 및 접속 알림
-      if (typeof BroadcastChannel !== 'undefined') {
-        try {
-          this.broadcastChannel = new BroadcastChannel(`troy_chess_room_${roomCode}`);
-          this.broadcastChannel.onmessage = (e) => this.handleIncomingMessage(e.data);
-          // 호스트에게 게스트 입장 메시지 전송
-          setTimeout(() => {
-            this.sendMessage({ type: 'join_request', code: roomCode, sender: 'guest' });
-          }, 300);
-        } catch (e) {
-          console.warn("BroadcastChannel 초기화 실패:", e);
-        }
-      }
-
-      // 2. PeerJS WebRTC P2P 접속 시도
-      if (typeof Peer !== 'undefined') {
-        try {
-          this.peer = new Peer({ debug: 1 });
-          this.peer.on('open', (id) => {
-            console.log(`[LAN P2P] 게스트 Peer 생성됨: ${id}`);
-            const hostPeerId = `troy-chess-${roomCode}`;
-            const conn = this.peer.connect(hostPeerId, { reliable: true });
-            this.conn = conn;
-            this.setupDataConnection(conn);
-          });
-          this.peer.on('error', (err) => {
-            console.warn(`[LAN P2P] 게스트 Peer 경고:`, err);
-          });
-        } catch (e) {
-          console.warn("PeerJS 게스트 접속 예외:", e);
-        }
-      }
-
-      // 3. 로컬 LAN 서버 접속 (lan_server.js 가동 환경)
-      if (typeof window !== 'undefined' && window.location.protocol.startsWith('http')) {
-        fetch('/api/room/join', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code: roomCode })
-        }).then(r => r.json()).then(data => {
-          if (data && data.ok) {
-            this.setConnected(true, `방 [${roomCode}] 입장 완료! (트로이 수호군/후공)`);
-            this.startHttpPolling(roomCode);
-          }
-        }).catch(() => {});
-      }
-    }
-
-    // WebRTC DataChannel 이벤트 리스너 바인딩
-    setupDataConnection(conn) {
-      conn.on('open', () => {
-        console.log("[LAN P2P] DataChannel 개방됨!");
-        this.setConnected(true, `전우와 연결되었습니다! 대국을 시작합니다.`);
-        if (this.role === 'guest') {
-          this.sendMessage({ type: 'join_request', code: this.roomCode, sender: 'guest' });
-        } else {
-          this.sendMessage({ type: 'ready_response', code: this.roomCode, sender: 'host' });
-        }
-      });
-
-      conn.on('data', (data) => {
-        this.handleIncomingMessage(data);
-      });
-
-      conn.on('close', () => {
-        console.log("[LAN P2P] DataChannel 종료됨");
-        this.setConnected(false, "전우와의 연결이 끊어졌습니다.");
-      });
-
-      conn.on('error', (err) => {
-        console.warn("[LAN P2P] DataChannel 에러:", err);
-      });
-    }
-
-    // 메시지 브로드캐스팅 전송 (DataChannel + BroadcastChannel + HTTP 중계)
-    sendMessage(payload) {
-      if (!payload.msgId) {
-        payload.msgId = `${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
-      }
-      this.processedMsgIds.add(payload.msgId);
-
-      // (1) BroadcastChannel 전송
-      if (this.broadcastChannel) {
-        try {
-          this.broadcastChannel.postMessage(payload);
-        } catch (e) {}
-      }
-
-      // (2) PeerJS WebRTC DataChannel 전송
-      if (this.conn && this.conn.open) {
-        try {
-          this.conn.send(payload);
-        } catch (e) {}
-      }
-
-      // (3) 로컬 HTTP 서버 전송 (이동 착수의 경우)
-      if (payload.type === 'move' && typeof window !== 'undefined' && window.location.protocol.startsWith('http')) {
-        fetch('/api/room/move', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            code: this.roomCode,
-            from: payload.from,
-            to: payload.to,
-            promotion: payload.promotion,
-            player: this.role
-          })
-        }).catch(() => {});
-      } else if (payload.type && typeof window !== 'undefined' && window.location.protocol.startsWith('http')) {
-        fetch('/api/room/action', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            code: this.roomCode,
-            type: payload.type,
-            sender: this.role,
-            payload: payload
-          })
-        }).catch(() => {});
-      }
-    }
-
-    // 수신된 메시지 처리 및 중복 방지
-    handleIncomingMessage(data) {
-      if (!data || typeof data !== 'object') return;
-      if (data.msgId && this.processedMsgIds.has(data.msgId)) return;
-      if (data.msgId) this.processedMsgIds.add(data.msgId);
-
-      switch (data.type) {
-        case 'join_request':
-          console.log("[LAN Match] 상대방 입장 요청 수신");
-          this.setConnected(true, `전우가 참전했습니다! (아카이아 연합군 선공)`);
-          this.sendMessage({ type: 'ready_response', code: this.roomCode, sender: 'host' });
-          break;
-
-        case 'ready_response':
-          console.log("[LAN Match] 호스트 준비 응답 수신");
-          this.setConnected(true, `대국이 시작되었습니다! (트로이 수호군 후공)`);
-          break;
-
-        case 'move':
-          console.log("[LAN Match] 상대방 착수 수신:", data.from, "->", data.to);
-          this.game.executeRemoteMove(data.from, data.to, data.promotion || 'q');
-          break;
-
-        case 'resign':
-          this.game.handleRemoteResign(data.sender);
-          break;
-
-        case 'undo_request':
-          if (confirm("상대방 전우가 한 수 무르기를 요청했습니다. 수락하시겠습니까?")) {
-            this.sendMessage({ type: 'undo_accept', sender: this.role });
-            this.game.executeRemoteUndo();
-          } else {
-            this.sendMessage({ type: 'undo_reject', sender: this.role });
-          }
-          break;
-
-        case 'undo_accept':
-          alert("상대방이 무르기 요청을 수락했습니다.");
-          this.game.executeRemoteUndo();
-          break;
-
-        case 'undo_reject':
-          alert("상대방이 무르기 요청을 거절했습니다.");
-          break;
-
-        case 'rematch':
-          if (confirm("상대방이 재대결을 요청했습니다. 새로 시작하시겠습니까?")) {
-            this.sendMessage({ type: 'rematch_accept', sender: this.role });
-            this.game.resetGame(false);
-          }
-          break;
-
-        case 'rematch_accept':
-          alert("재대결이 성사되었습니다. 새로운 대국을 시작합니다!");
-          this.game.resetGame(false);
-          break;
-
-        case 'trojan_horse':
-          console.log("[LAN Match] 상대방의 트로이 목마 전술 발동 수신");
-          this.game.activateTrojanHorse(true);
-          break;
-      }
-    }
-
-    // HTTP 폴링 루프 (lan_server.js 전용 백업)
-    startHttpPolling(roomCode) {
-      if (this.httpPollTimer) clearInterval(this.httpPollTimer);
-      this.httpPollTimer = setInterval(async () => {
-        try {
-          const res = await fetch(`/api/room/poll?code=${encodeURIComponent(roomCode)}&since=${this.lastPollMoveId}`);
-          if (!res.ok) return;
-          const data = await res.json();
-          if (!data || !data.ok) return;
-
-          // 호스트/게스트 연결 상태 갱신
-          if (!this.connected && data.hostConnected && data.guestConnected) {
-            this.setConnected(true, `대국 연결 완료 (LAN 중계 서버)`);
-          }
-
-          // 신규 착수 동기화
-          if (Array.isArray(data.moves)) {
-            for (const m of data.moves) {
-              if (m.id > this.lastPollMoveId) {
-                this.lastPollMoveId = m.id;
-                // 자신이 보낸 수가 아닐 때만 적용
-                if (m.player !== this.role) {
-                  this.game.executeRemoteMove(m.from, m.to, m.promotion || 'q');
-                }
-              }
-            }
-          }
-
-          // 신규 액션(항복, 무르기 등) 동기화
-          if (data.lastAction && data.lastAction.sender !== this.role) {
-            this.handleIncomingMessage({
-              type: data.lastAction.type,
-              sender: data.lastAction.sender,
-              msgId: `http_action_${data.lastAction.type}_${data.lastUpdate}`
-            });
-          }
-        } catch (e) {}
-      }, 750);
-    }
-
-    // 연결 종료 및 정리
-    cleanup() {
-      if (this.httpPollTimer) {
-        clearInterval(this.httpPollTimer);
-        this.httpPollTimer = null;
-      }
-      if (this.broadcastChannel) {
-        try { this.broadcastChannel.close(); } catch (e) {}
-        this.broadcastChannel = null;
-      }
-      if (this.conn) {
-        try { this.conn.close(); } catch (e) {}
-        this.conn = null;
-      }
-      if (this.peer) {
-        try { this.peer.destroy(); } catch (e) {}
-        this.peer = null;
-      }
-      this.connected = false;
-      this.roomCode = null;
-      this.role = null;
-      this.processedMsgIds.clear();
-      this.lastPollMoveId = 0;
-    }
-  }
-
-  // ==========================================================================
   // 4. 메인 트로이 체스 게임 관리자 클래스 (TrojanChessGame)
   // ==========================================================================
   class TrojanChessGame {
@@ -1980,11 +1632,6 @@
       this.piecePositions = { ...INITIAL_PIECE_MAP };
       this.positionHistory = [];
 
-      // 내부 공유기(LAN) 및 온라인 P2P 대전 상태
-      this.lanManager = new LanMatchManager(this);
-      this.lanMyColor = 'w';        // LAN 모드에서 내 진영 ('w': 백, 'b': 흑)
-      this.lanRole = null;          // 'host' | 'guest'
-      this.lanRoomCodeVal = '';
 
       // DOM 요소 캐싱
       this.initDomElements();
@@ -2020,19 +1667,6 @@
       this.btnSoundToggle = document.getElementById("btnSoundToggle");
       this.btnTrojanHorse = document.getElementById("btnTrojanHorse");
 
-      // 내부 공유기(LAN) 대기실 및 대국 UI 요소 캐싱
-      this.lanMatchPanel = document.getElementById("lanMatchPanel");
-      this.lanStatusBadge = document.getElementById("lanStatusBadge");
-      this.lanStatusText = document.getElementById("lanStatusText");
-      this.btnLanCreateRoom = document.getElementById("btnLanCreateRoom");
-      this.lanRoomDisplay = document.getElementById("lanRoomDisplay");
-      this.lanRoomCodeEl = document.getElementById("lanRoomCode");
-      this.btnCopyRoomCode = document.getElementById("btnCopyRoomCode");
-      this.inputRoomCode = document.getElementById("inputRoomCode");
-      this.btnLanJoinRoom = document.getElementById("btnLanJoinRoom");
-      this.lanTurnBanner = document.getElementById("lanTurnBanner");
-      this.lanTurnIcon = document.getElementById("lanTurnIcon");
-      this.lanTurnText = document.getElementById("lanTurnText");
 
       // 프로모션 모달
       this.promoModal = document.getElementById("promotionModal");
@@ -2053,44 +1687,15 @@
         this.selectGameMode.addEventListener("change", (e) => {
           this.gameMode = e.target.value;
           const isAi = this.gameMode === "ai";
-          const isLan = this.gameMode === "lan";
 
           if (this.selectDifficulty) {
             this.selectDifficulty.parentElement.style.display = isAi ? "flex" : "none";
           }
           if (this.selectSide) {
-            this.selectSide.parentElement.style.display = isLan ? "none" : "flex";
-          }
-          if (this.lanMatchPanel) {
-            this.lanMatchPanel.style.display = isLan ? "block" : "none";
-          }
-
-          if (isLan) {
-            this.detectLanInfo();
-          } else {
-            if (this.lanManager) this.lanManager.cleanup();
-            if (this.lanTurnBanner) this.lanTurnBanner.style.display = "none";
-            if (this.lanRoomDisplay) this.lanRoomDisplay.style.display = "none";
-            if (this.lanStatusText) this.lanStatusText.textContent = "대국 대기실 미입장";
+            this.selectSide.parentElement.style.display = "flex";
           }
           this.resetGame();
         });
-      }
-
-      // LAN 대국 버튼 이벤트
-      if (this.btnLanCreateRoom) {
-        this.btnLanCreateRoom.addEventListener("click", () => this.handleLanCreateRoom());
-      }
-      if (this.btnLanJoinRoom) {
-        this.btnLanJoinRoom.addEventListener("click", () => this.handleLanJoinRoom());
-      }
-      if (this.inputRoomCode) {
-        this.inputRoomCode.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") this.handleLanJoinRoom();
-        });
-      }
-      if (this.btnCopyRoomCode) {
-        this.btnCopyRoomCode.addEventListener("click", () => this.handleCopyRoomCode());
       }
 
       if (this.selectDifficulty) {
@@ -2114,9 +1719,6 @@
       // 버튼 이벤트
       if (this.btnNewGame) {
         this.btnNewGame.addEventListener("click", () => {
-          if (this.gameMode === "lan" && this.lanManager && this.lanManager.isConnected()) {
-            this.lanManager.sendMessage({ type: 'rematch', sender: this.lanRole });
-          }
           this.resetGame();
         });
       }
@@ -2205,8 +1807,8 @@
       const isCheck = this.game.in_check();
       const currentTurn = this.game.turn();
 
-      // 뷰 방향: 플레이어가 흑(b)이면 보드를 뒤집어서 표시 (LAN 모드에서는 내 진영 lanMyColor 반영)
-      const isFlipped = (this.gameMode === "lan") ? (this.lanMyColor === 'b') : (this.playerColor === 'b');
+      // 뷰 방향: 플레이어가 흑(b)이면 보드를 뒤집어서 표시
+      const isFlipped = (this.playerColor === 'b');
 
       for (let r = 0; r < 8; r++) {
         for (let c = 0; c < 8; c++) {
@@ -2275,9 +1877,7 @@
             squareDiv.appendChild(pieceDiv);
 
             // 드래그 앤 드롭: 플레이어 조작 가능한 턴 기물인 경우 draggable 활성화
-            const isMyTurnPiece = (this.gameMode === "lan")
-              ? (piece.color === this.lanMyColor && currentTurn === this.lanMyColor && this.lanManager && this.lanManager.isConnected())
-              : ((this.gameMode !== "ai" || piece.color === this.playerColor) && piece.color === currentTurn);
+            const isMyTurnPiece = ((this.gameMode !== "ai" || piece.color === this.playerColor) && piece.color === currentTurn);
 
             if (isMyTurnPiece && !this.game.game_over() && !this.pendingPromotion) {
               squareDiv.setAttribute("draggable", "true");
@@ -2318,17 +1918,6 @@
         return;
       }
 
-      // LAN 모드일 때: 상대방 턴이거나 아직 연결되지 않았으면 클릭 조작 차단
-      if (this.gameMode === "lan") {
-        if (!this.lanManager || !this.lanManager.isConnected()) {
-          this.setDialogue("⚠️ 아직 전우(상대방)가 대국실에 입장하지 않았습니다. 대기해주세요.");
-          return;
-        }
-        if (currentTurn !== this.lanMyColor) {
-          this.setDialogue("🛡️ 지금은 상대방(전우)의 착수 차례입니다.");
-          return;
-        }
-      }
 
       // 1. 이미 선택된 기물이 있는 경우
       if (this.selectedSquare) {
@@ -2392,16 +1981,6 @@
       if (this.gameMode === "ai" && currentTurn !== this.playerColor) {
         e.preventDefault();
         return;
-      }
-      if (this.gameMode === "lan") {
-        if (!this.lanManager || !this.lanManager.isConnected()) {
-          e.preventDefault();
-          return;
-        }
-        if (currentTurn !== this.lanMyColor) {
-          e.preventDefault();
-          return;
-        }
       }
       const piece = this.game.get(squareName);
       if (!piece || piece.color !== currentTurn) {
@@ -2649,16 +2228,6 @@
 
       if (!move) return;
 
-      // LAN 모드에서 로컬 사용자의 착수일 때: 원격 상대방에게 실시간 브로드캐스트
-      if (!isRemote && this.gameMode === "lan" && this.lanManager) {
-        this.lanManager.sendMessage({
-          type: 'move',
-          from: from,
-          to: to,
-          promotion: promotionPiece,
-          player: this.lanRole
-        });
-      }
 
       // 3. 무르기(Undo) 지원을 위해 착수 전 위치 스냅샷 보관
       this.positionHistory.push({ ...this.piecePositions });
@@ -2764,15 +2333,6 @@
 
     // 한 수 무르기 (Undo)
     undoMove(isRemote = false) {
-      if (!isRemote && this.gameMode === "lan") {
-        if (this.lanManager && this.lanManager.isConnected()) {
-          this.lanManager.sendMessage({ type: 'undo_request', sender: this.lanRole });
-          this.setDialogue("상대방에게 한 수 무르기 요청을 보냈습니다. 승인을 기다립니다...");
-        } else {
-          alert("LAN 대국 중에는 연결된 전우가 있을 때만 무르기를 요청할 수 있습니다.");
-        }
-        return;
-      }
 
       if (this.gameMode === "ai") {
         // AI 모드에서는 플레이어의 직전 수와 AI의 수 둘 다 취소 (총 2수)
@@ -2802,12 +2362,8 @@
     // 기권 (Resign)
     resignGame() {
       if (this.game.game_over()) return;
-      const resignedColor = (this.gameMode === "lan") ? this.lanMyColor : this.game.turn();
+      const resignedColor = (this.gameMode === "ai") ? this.playerColor : this.game.turn();
       const winner = resignedColor === 'w' ? 'b' : 'w';
-
-      if (this.gameMode === "lan" && this.lanManager) {
-        this.lanManager.sendMessage({ type: 'resign', sender: this.lanRole });
-      }
 
       this.setDialogue(`${HERO_DATA[resignedColor].leader}이(가) 백기를 들고 항복을 선언했습니다. ${HERO_DATA[winner].name}의 대승!`);
       this.sound.playVictory();
@@ -2822,16 +2378,7 @@
 
       // 발동 권한 검증 (자신의 턴에만 발동 가능)
       if (!isRemote) {
-        if (this.gameMode === "lan") {
-          if (!this.lanManager || !this.lanManager.isConnected()) {
-            alert("전우가 대국실에 입장한 후 트로이 목마 전술을 발동할 수 있습니다.");
-            return;
-          }
-          if (currentTurn !== this.lanMyColor) {
-            alert("자신의 착수 차례에만 트로이 목마 전술을 발동할 수 있습니다.");
-            return;
-          }
-        } else if (this.gameMode === "ai") {
+        if (this.gameMode === "ai") {
           if (currentTurn !== this.playerColor) {
             alert("자신의 착수 차례에만 트로이 목마 전술을 발동할 수 있습니다.");
             return;
@@ -2924,13 +2471,6 @@
         this.btnTrojanHorse.textContent = "목마 작전 완료";
       }
 
-      // LAN 모드 상대방 브로드캐스트
-      if (!isRemote && this.gameMode === "lan" && this.lanManager) {
-        this.lanManager.sendMessage({
-          type: 'trojan_horse',
-          sender: this.lanRole
-        });
-      }
 
       // 체스판 기습 진동 효과
       if (this.boardEl) {
@@ -3022,30 +2562,7 @@
         this.historyListEl.scrollTop = this.historyListEl.scrollHeight;
       }
 
-      // 5. 내부 공유기(LAN) 모드 턴 배너 및 상태 실시간 갱신
-      if (this.gameMode === "lan" && this.lanTurnBanner) {
-        this.lanTurnBanner.style.display = "flex";
-        if (!this.lanManager || !this.lanManager.isConnected()) {
-          if (this.lanTurnIcon) this.lanTurnIcon.textContent = "⏳";
-          if (this.lanTurnText) {
-            this.lanTurnText.textContent = this.lanRole === 'host'
-              ? `방 [${this.lanRoomCodeVal || '----'}] 대기실 생성됨: 상대방이 방 번호로 접속하기를 기다리는 중...`
-              : "호스트 전장에 연결을 시도하는 중...";
-          }
-        } else {
-          const isMyTurn = (turn === this.lanMyColor);
-          if (this.lanTurnIcon) this.lanTurnIcon.textContent = isMyTurn ? "⚔️" : "🛡️";
-          if (this.lanTurnText) {
-            const mySideName = this.lanMyColor === 'w' ? '아카이아 연합군 (백)' : '트로이 수호군 (흑)';
-            const oppSideName = this.lanMyColor === 'w' ? '트로이 수호군 (흑)' : '아카이아 연합군 (백)';
-            this.lanTurnText.textContent = isMyTurn
-              ? `【나의 턴】 당신(${mySideName})의 차례입니다. 전장의 기물을 착수하세요!`
-              : `【상대방 턴】 상대방(${oppSideName})이 착수를 고심하고 있습니다...`;
-          }
-        }
-      } else if (this.lanTurnBanner) {
-        this.lanTurnBanner.style.display = "none";
-      }
+
     }
 
     // 승급 모달 팝업 열기
@@ -3067,97 +2584,6 @@
       }
     }
 
-    // ========================================================================
-    // 내부 공유기(LAN) / 온라인 P2P 대전 헬퍼 메서드
-    // ========================================================================
-
-    // 방 생성 (Host)
-    handleLanCreateRoom() {
-      const code = String(Math.floor(1000 + Math.random() * 9000));
-      this.lanRoomCodeVal = code;
-      this.lanMyColor = 'w';
-      this.playerColor = 'w';
-      this.lanRole = 'host';
-
-      if (this.lanRoomDisplay) this.lanRoomDisplay.style.display = "flex";
-      if (this.lanRoomCodeEl) this.lanRoomCodeEl.textContent = code;
-
-      this.lanManager.createRoom(code);
-      this.resetGame(false);
-      this.setDialogue(`🏛️ 대국 대기실 [${code}]이 생성되었습니다! 같은 공유기나 브라우저의 전우에게 방 번호를 알려주세요.`);
-    }
-
-    // 방 참여 (Guest)
-    handleLanJoinRoom() {
-      const code = (this.inputRoomCode ? this.inputRoomCode.value.trim() : "");
-      if (!code || code.length < 4) {
-        alert("4자리 방 번호를 올바르게 입력해주세요. (예: 1234)");
-        return;
-      }
-      this.lanRoomCodeVal = code;
-      this.lanMyColor = 'b';
-      this.playerColor = 'b';
-      this.lanRole = 'guest';
-
-      this.lanManager.joinRoom(code);
-      this.resetGame(false);
-      this.setDialogue(`🛡️ 방 [${code}] 접속을 시도합니다. 트로이 수호군(흑/후공)으로 참전합니다.`);
-    }
-
-    // 방 번호 복사
-    handleCopyRoomCode() {
-      if (!this.lanRoomCodeVal) return;
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(this.lanRoomCodeVal).then(() => {
-          if (this.btnCopyRoomCode) {
-            const original = this.btnCopyRoomCode.textContent;
-            this.btnCopyRoomCode.textContent = "✅ 복사됨!";
-            setTimeout(() => { if (this.btnCopyRoomCode) this.btnCopyRoomCode.textContent = original; }, 1500);
-          }
-        }).catch(() => {
-          prompt("방 번호를 수동으로 복사하세요:", this.lanRoomCodeVal);
-        });
-      } else {
-        prompt("방 번호를 수동으로 복사하세요:", this.lanRoomCodeVal);
-      }
-    }
-
-    // LAN 서버 주소 감지 및 접속 안내 표시
-    detectLanInfo() {
-      if (typeof window === 'undefined' || !window.location.protocol.startsWith('http')) return;
-      fetch('/api/lan-info')
-        .then(r => r.json())
-        .then(data => {
-          if (data && data.ok && Array.isArray(data.ips) && data.ips.length > 0) {
-            const ip = data.ips[0];
-            const port = data.port || 3000;
-            const lanUrl = `http://${ip}:${port}`;
-            const descEl = this.lanMatchPanel ? this.lanMatchPanel.querySelector('.lan-desc') : null;
-            if (descEl) {
-              descEl.innerHTML = `같은 Wi-Fi 내의 스마트폰/PC에서 <strong>${lanUrl}</strong> 로 접속하여 함께 대국할 수 있습니다.`;
-            }
-          }
-        })
-        .catch(() => {});
-    }
-
-    // 원격 상대방의 착수 실행
-    executeRemoteMove(from, to, promotion = 'q') {
-      this.executeMove(from, to, promotion, true);
-    }
-
-    // 원격 무르기 실행
-    executeRemoteUndo() {
-      this.undoMove(true);
-    }
-
-    // 상대방 기권 수신 처리
-    handleRemoteResign(sender) {
-      if (this.game.game_over()) return;
-      const winner = this.lanMyColor === 'w' ? '아카이아 연합군 (백)' : '트로이 수호군 (흑)';
-      this.sound.playVictory();
-      this.setDialogue(`🏳️ 상대방이 기권을 선언했습니다! ${winner}의 명예로운 승리!`);
-    }
   }
 
   // ==========================================================================
