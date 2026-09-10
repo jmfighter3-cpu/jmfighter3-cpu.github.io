@@ -348,6 +348,211 @@
   }
 
   // ==========================================================================
+  // 3-1. 고대 그리스 & 트로이 영웅 흉상 조각상(Bust Statue) SVG 렌더러
+  // ==========================================================================
+  function generateStatueSvg(type, color, heroInfo) {
+    const isWhite = color === 'w';
+    const prefix = isWhite ? 'st-wh' : 'st-bl';
+    const strokeColor = isWhite ? '#b45309' : '#d97706';
+    const baseStroke = isWhite ? '#92400e' : '#f59e0b';
+    const nameColor = isWhite ? '#78350f' : '#fde68a';
+    const badgeBg = isWhite ? 'rgba(255, 255, 255, 0.92)' : 'rgba(28, 25, 23, 0.95)';
+    const badgeColor = isWhite ? '#b45309' : '#fbbf24';
+
+    const defs = isWhite ? `
+      <defs>
+        <linearGradient id="${prefix}-body" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="35%" stop-color="#f8f4ec"/>
+          <stop offset="75%" stop-color="#e8decb"/>
+          <stop offset="100%" stop-color="#c4b59f"/>
+        </linearGradient>
+        <linearGradient id="${prefix}-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#fbbf24"/>
+          <stop offset="50%" stop-color="#d97706"/>
+          <stop offset="100%" stop-color="#92400e"/>
+        </linearGradient>
+        <linearGradient id="${prefix}-plinth" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="25%" stop-color="#f3ebe0"/>
+          <stop offset="100%" stop-color="#d5c4af"/>
+        </linearGradient>
+      </defs>
+    ` : `
+      <defs>
+        <linearGradient id="${prefix}-body" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#785c49"/>
+          <stop offset="35%" stop-color="#4a3424"/>
+          <stop offset="75%" stop-color="#241710"/>
+          <stop offset="100%" stop-color="#0f0905"/>
+        </linearGradient>
+        <linearGradient id="${prefix}-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#f59e0b"/>
+          <stop offset="50%" stop-color="#b45309"/>
+          <stop offset="100%" stop-color="#78350f"/>
+        </linearGradient>
+        <linearGradient id="${prefix}-plinth" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#4a392d"/>
+          <stop offset="25%" stop-color="#2c1e14"/>
+          <stop offset="100%" stop-color="#140c07"/>
+        </linearGradient>
+      </defs>
+    `;
+
+    // 고대 그리스 주춧돌 받침대 (Classical Plinth)
+    const plinth = `
+      <rect x="20" y="86" width="60" height="5" rx="1.5" fill="url(#${prefix}-plinth)" stroke="${baseStroke}" stroke-width="0.8"/>
+      <rect x="23" y="91" width="54" height="15" fill="url(#${prefix}-plinth)" stroke="${baseStroke}" stroke-width="0.8"/>
+      <rect x="16" y="106" width="68" height="7" rx="2" fill="url(#${prefix}-plinth)" stroke="${baseStroke}" stroke-width="1"/>
+      <text x="50" y="102" font-family="'Cinzel', 'Pretendard Variable', serif" font-size="7" font-weight="900" fill="${nameColor}" text-anchor="middle" letter-spacing="0.02em">${heroInfo.shortName}</text>
+    `;
+
+    // 체스 역할 인장 뱃지 (우측 상단)
+    const badge = `
+      <g transform="translate(74, 5)">
+        <circle cx="9" cy="9" r="9" fill="${badgeBg}" stroke="${baseStroke}" stroke-width="1"/>
+        <text x="9" y="13" font-size="11" font-weight="900" fill="${badgeColor}" text-anchor="middle">${heroInfo.symbol}</text>
+      </g>
+    `;
+
+    let bustContent = "";
+
+    if (isWhite) {
+      // === 아카이아 연합군 (White / 파로스 백색 대리석 흉상) ===
+      switch (type) {
+        case 'k': // 아가멤논 (황금관, 풍성한 곱슬 턱수염, 왕의 망토)
+          bustContent = `
+            <path d="M22,86 C24,68 34,64 50,64 C66,64 76,68 78,86 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
+            <path d="M34,65 C38,76 44,86 44,86 M66,65 C62,76 56,86 56,86" stroke="${strokeColor}" stroke-width="0.7" fill="none"/>
+            <rect x="43" y="52" width="14" height="15" rx="2" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.8"/>
+            <path d="M36,46 C35,66 65,66 64,46 C64,42 36,42 36,46 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
+            <path d="M42,50 C44,58 48,64 50,65 C52,64 56,58 58,50" stroke="${strokeColor}" stroke-width="0.8" fill="none"/>
+            <path d="M38,36 C38,48 62,48 62,36 C62,28 38,28 38,36 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
+            <path d="M50,34 L50,42 L47,44 L53,44" stroke="${strokeColor}" stroke-width="0.9" fill="none"/>
+            <path d="M34,26 L42,32 L50,22 L58,32 L66,26 L64,36 L36,36 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1"/>
+            <circle cx="50" cy="29" r="2.5" fill="#ffffff" stroke="${strokeColor}" stroke-width="0.6"/>
+          `;
+          break;
+        case 'q': // 아킬레우스 (솟구친 깃털 코린토스 투구, 전사의 눈빛, 근육 흉갑)
+          bustContent = `
+            <path d="M22,86 C24,66 32,62 50,62 C68,62 76,66 78,86 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
+            <path d="M36,70 C42,75 48,75 50,78 C52,75 58,75 64,70" stroke="${strokeColor}" stroke-width="0.8" fill="none"/>
+            <rect x="43" y="52" width="14" height="13" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.8"/>
+            <path d="M50,6 C38,6 30,15 36,28 C42,28 58,28 64,28 C70,15 62,6 50,6 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1"/>
+            <path d="M42,10 Q50,18 58,10 M44,16 Q50,23 56,16" stroke="#ffffff" stroke-width="0.8" fill="none"/>
+            <path d="M34,28 C32,46 36,60 50,63 C64,60 68,46 66,28 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
+            <path d="M40,38 L48,38 L48,48 L44,53 L56,53 L52,48 L52,38 L60,38" fill="#451a03" stroke="${strokeColor}" stroke-width="0.8"/>
+          `;
+          break;
+        case 'b': // 오디세우스 (원뿔형 필레우스 모자, 지혜로운 수염, 날카로운 눈매)
+          bustContent = `
+            <path d="M22,86 C25,70 35,66 50,66 C65,66 75,70 78,86 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
+            <circle cx="34" cy="70" r="3" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
+            <path d="M37,48 C36,65 64,65 63,48 C63,42 37,42 37,48 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
+            <path d="M38,36 C38,48 62,48 62,36 C62,28 38,28 38,36 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
+            <path d="M49,34 L49,42 L46,44 L54,44" stroke="${strokeColor}" stroke-width="0.9" fill="none"/>
+            <path d="M34,36 C36,16 64,16 66,36 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1.1"/>
+            <path d="M33,36 Q38,40 37,44 M67,36 Q62,40 63,44" stroke="${strokeColor}" stroke-width="1.2" fill="none"/>
+          `;
+          break;
+        case 'n': // 파트로클로스 (전차마 볏 투구의 젊은 영웅)
+          bustContent = `
+            <path d="M22,86 C24,68 34,63 50,63 C66,63 76,68 78,86 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
+            <path d="M50,8 C40,8 34,18 42,26 C46,26 54,26 58,26 C66,18 60,8 50,8 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.9"/>
+            <path d="M46,12 C48,8 52,8 54,12" stroke="#ffffff" stroke-width="0.8" fill="none"/>
+            <path d="M36,26 C34,44 40,58 50,60 C60,58 66,44 64,26 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
+            <path d="M42,36 C42,48 58,48 58,36 Z" fill="#f8f4ec" stroke="${strokeColor}" stroke-width="0.7"/>
+            <path d="M50,38 L50,44 L48,46 L52,46" stroke="${strokeColor}" stroke-width="0.8" fill="none"/>
+          `;
+          break;
+        case 'r': // 대·소 아이아스 (등 뒤의 거대한 칠중 방패와 육중한 흉상)
+          bustContent = `
+            <path d="M18,24 C18,16 82,16 82,24 L84,86 L16,86 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1.3"/>
+            <circle cx="50" cy="45" r="24" fill="none" stroke="${strokeColor}" stroke-width="1" stroke-dasharray="3,2"/>
+            <circle cx="50" cy="45" r="8" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1"/>
+            <path d="M26,86 C28,66 36,60 50,60 C64,60 72,66 74,86 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
+            <path d="M37,28 C35,46 38,58 50,60 C62,58 65,46 63,28 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
+            <path d="M43,40 L48,40 L48,48 L52,48 L52,40 L57,40" stroke="#3b2210" stroke-width="1.2" fill="none"/>
+          `;
+          break;
+        case 'p': // 미르미돈 (코린토스 투구의 정예 개미 보병)
+          bustContent = `
+            <path d="M24,86 C26,70 34,66 50,66 C66,66 74,70 76,86 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
+            <path d="M36,24 C34,44 38,60 50,63 C62,60 66,44 64,24 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
+            <path d="M40,38 L48,38 L48,50 L45,54 L55,54 L52,50 L52,38 L60,38" fill="#3b2210" stroke="${strokeColor}" stroke-width="0.8"/>
+            <path d="M36,24 C42,18 58,18 64,24" stroke="${strokeColor}" stroke-width="1.2" fill="none"/>
+          `;
+          break;
+      }
+    } else {
+      // === 트로이 수호군 (Black / 일리온 앤틱 청동 & 흑요석 흉상) ===
+      switch (type) {
+        case 'k': // 프리아모스 (트로이 티아라 왕관, 긴 수염, 위엄 있는 노왕)
+          bustContent = `
+            <path d="M22,86 C24,68 34,64 50,64 C66,64 76,68 78,86 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
+            <path d="M35,46 C34,70 66,70 65,46 C65,42 35,42 35,46 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
+            <path d="M42,52 C45,62 48,72 50,75 C52,72 55,62 58,52" stroke="${strokeColor}" stroke-width="0.9" fill="none"/>
+            <path d="M38,36 C38,48 62,48 62,36 C62,28 38,28 38,36 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
+            <path d="M50,34 L50,42 L47,44 L53,44" stroke="${strokeColor}" stroke-width="0.9" fill="none"/>
+            <path d="M34,30 C36,14 48,10 56,12 C62,14 66,22 66,32 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1.1"/>
+            <circle cx="50" cy="22" r="2.5" fill="#fde68a" stroke="${strokeColor}" stroke-width="0.6"/>
+          `;
+          break;
+        case 'q': // 헥토르 (눈부신 말갈기 깃털 투구, 트로이 원형 방패)
+          bustContent = `
+            <path d="M22,86 C24,66 32,62 50,62 C68,62 76,66 78,86 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1.1"/>
+            <path d="M20,60 C24,54 32,54 36,60 L32,86 L18,86 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.9"/>
+            <path d="M50,6 C36,6 28,15 35,28 C42,28 58,28 65,28 C72,15 64,6 50,6 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1.1"/>
+            <path d="M34,28 C32,46 36,60 50,63 C64,60 68,46 66,28 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1.1"/>
+            <path d="M40,38 L48,38 L48,48 L44,53 L56,53 L52,48 L52,38 L60,38" fill="#d97706" stroke="${strokeColor}" stroke-width="0.8"/>
+          `;
+          break;
+        case 'b': // 파리스 (앞으로 굽은 프리기안 캡, 미남 왕자)
+          bustContent = `
+            <path d="M22,86 C25,70 35,66 50,66 C65,66 75,70 78,86 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
+            <path d="M38,36 C38,52 62,52 62,36 C62,26 38,26 38,36 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
+            <path d="M50,34 L50,42 L47,44 L53,44" stroke="${strokeColor}" stroke-width="0.9" fill="none"/>
+            <path d="M34,34 C34,16 48,8 58,10 C68,12 66,24 54,20 C48,22 42,26 34,34 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1.1"/>
+          `;
+          break;
+        case 'n': // 아이네이아스 (다르다니아 영웅, 명장의 투구)
+          bustContent = `
+            <path d="M22,86 C24,68 34,63 50,63 C66,63 76,68 78,86 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
+            <path d="M50,8 C40,8 34,18 42,26 C46,26 54,26 58,26 C66,18 60,8 50,8 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="1"/>
+            <path d="M36,26 C34,44 40,58 50,60 C60,58 66,44 64,26 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
+            <path d="M42,36 C42,48 58,48 58,36 Z" fill="#2c1e14" stroke="${strokeColor}" stroke-width="0.7"/>
+            <path d="M50,38 L50,44 L48,46 L52,46" stroke="${strokeColor}" stroke-width="0.8" fill="none"/>
+          `;
+          break;
+        case 'r': // 트로이 성벽 (스카이아 문 성탑 흉벽 요새 조각상)
+          bustContent = `
+            <path d="M24,86 L28,40 L22,40 L22,22 L34,22 L34,30 L44,30 L44,22 L56,22 L56,30 L66,30 L66,22 L78,22 L78,40 L72,40 L76,86 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1.2"/>
+            <path d="M30,50 L70,50 M28,62 L72,62 M26,74 L74,74" stroke="${strokeColor}" stroke-width="0.7" fill="none"/>
+            <path d="M42,86 L42,66 C42,60 58,60 58,66 L58,86 Z" fill="#000000" stroke="${strokeColor}" stroke-width="1"/>
+          `;
+          break;
+        case 'p': // 트로이 보병 (원뿔형 청동 투구의 팔랑크스 수호병)
+          bustContent = `
+            <path d="M24,86 C26,70 34,66 50,66 C66,66 74,70 76,86 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="0.9"/>
+            <path d="M36,32 C38,16 62,16 64,32 C66,48 62,60 50,63 C38,60 34,48 36,32 Z" fill="url(#${prefix}-body)" stroke="${strokeColor}" stroke-width="1"/>
+            <path d="M48,16 L50,8 L52,16 Z" fill="url(#${prefix}-gold)" stroke="${strokeColor}" stroke-width="0.8"/>
+            <path d="M40,38 L48,38 L48,48 L52,48 L52,38 L60,38" stroke="${strokeColor}" stroke-width="1" fill="none"/>
+          `;
+          break;
+      }
+    }
+
+    return `
+      <svg viewBox="0 0 100 115" class="statue-svg" xmlns="http://www.w3.org/2000/svg">
+        ${defs}
+        <g class="statue-group">
+          ${bustContent}
+          ${plinth}
+          ${badge}
+        </g>
+      </svg>
+    `;
+  }
   // 4. 메인 트로이 체스 게임 관리자 클래스 (TrojanChessGame)
   // ==========================================================================
   class TrojanChessGame {
@@ -571,24 +776,16 @@
             }
           }
 
-          // 5. 기물 렌더링 (3D 입체 모델링 메달리온)
+          // 5. 기물 렌더링 (고대 그리스 & 트로이 대리석/청동 조각상 흉상 모델링)
           if (piece) {
             const pieceDiv = document.createElement("div");
             const isWhite = piece.color === 'w';
             const heroInfo = HERO_DATA[piece.color].pieces[piece.type];
 
-            pieceDiv.className = `piece 3d-piece ${isWhite ? "white-piece" : "black-piece"} ${heroInfo ? heroInfo.roleClass : ""}`;
-            pieceDiv.title = `${heroInfo.name} — ${heroInfo.title}`;
+            pieceDiv.className = `piece statue-piece ${isWhite ? "white-piece" : "black-piece"} ${heroInfo ? heroInfo.roleClass : ""}`;
+            pieceDiv.title = `${heroInfo ? heroInfo.name : ""} — ${heroInfo ? heroInfo.title : ""}`;
 
-            pieceDiv.innerHTML = `
-              <div class="piece-disc">
-                <div class="piece-inner-ring">
-                  <span class="piece-hero-crest">${heroInfo ? heroInfo.heroCrest : ""}</span>
-                  <span class="piece-type-badge">${heroInfo ? heroInfo.symbol : ""}</span>
-                </div>
-                <span class="piece-nameplate">${heroInfo ? heroInfo.shortName : ""}</span>
-              </div>
-            `;
+            pieceDiv.innerHTML = generateStatueSvg(piece.type, piece.color, heroInfo);
 
             squareDiv.appendChild(pieceDiv);
           }
