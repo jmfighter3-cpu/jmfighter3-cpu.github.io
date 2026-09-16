@@ -10,3 +10,9 @@ Thumbs.db
 # 임시 작업 파일
 temp_*
 
+# 보안 및 환경 변수 파일 (API 키 및 비밀키 보호)
+.env
+.env.*
+*.pem
+*.key
+*serviceAccount*.json
