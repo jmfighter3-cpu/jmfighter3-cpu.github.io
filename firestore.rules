@@ -33,8 +33,8 @@ service cloud.firestore {
                     && request.resource.data.message.size() > 0
                     && request.resource.data.message.size() <= 300
                     
-                    // ④ 테마 스타일(style) 검증: 3대 고대 그리스 지정 테마(테라코타, 파로스 대리석, 올림포스 황금판)만 허용
-                    && request.resource.data.style in ['terracotta', 'paros', 'olympus'];
+                    // ④ 테마 스타일(style) 검증: 3대 고대 그리스 지정 테마(테라코타, 파로스 대리석, 올림포스 황금판) 허용
+                    && request.resource.data.style in ['terracotta', 'parian', 'olympian', 'paros', 'olympus'];
 
       // [3] 수정 및 삭제 권한 전면 차단:
       //     - 이미 광장에 새겨진 도편은 일반 웹 방문자가 임의로 변조하거나 삭제할 수 없습니다 (영구 불변성 보장).
