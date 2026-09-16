@@ -810,4 +810,207 @@ document.addEventListener("DOMContentLoaded", () => {
     updateConnectionStatusUI();
   }
 
+  // ==========================================================================
+  // 7. ⚡ 올림포스 제우스 벼락 결계 및 보안 방어 시스템 (Zeus Defense System)
+  // F12 개발자 도구, 소스 보기(Ctrl+U), 검사 도구(Ctrl+Shift+I/J/C), 마우스 우클릭 등
+  // 웹사이트 무단 조작 및 코드 열람 시도를 감지하여 제우스의 벼락 효과와 함께 차단합니다.
+  // ==========================================================================
+  function initZeusDefenseSystem() {
+    const zeusOverlay = document.getElementById("zeusLightningOverlay");
+    const zeusModal = document.getElementById("zeusWarningModal");
+    const btnDismissZeus = document.getElementById("btnDismissZeus");
+
+    // 연속 발동 방지 쿨다운 (2초)
+    let lastZeusStrikeTime = 0;
+    const STRIKE_COOLDOWN = 2000;
+
+    // Web Audio API 기반 순수 절차적 천둥 사운드 신시사이저 (외부 음원 파일 불필요)
+    function playZeusThunder() {
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return;
+        const audioCtx = new AudioContextClass();
+
+        // 브라우저 자동 재생 정책 해제
+        if (audioCtx.state === "suspended") {
+          audioCtx.resume();
+        }
+
+        const now = audioCtx.currentTime;
+
+        // 1) 번개 파열음 (White Noise Burst + Bandpass Filter)
+        const burstDuration = 0.35;
+        const burstBufferSize = audioCtx.sampleRate * burstDuration;
+        const burstBuffer = audioCtx.createBuffer(1, burstBufferSize, audioCtx.sampleRate);
+        const burstData = burstBuffer.getChannelData(0);
+        for (let i = 0; i < burstBufferSize; i++) {
+          burstData[i] = Math.random() * 2 - 1;
+        }
+
+        const burstSource = audioCtx.createBufferSource();
+        burstSource.buffer = burstBuffer;
+
+        const burstFilter = audioCtx.createBiquadFilter();
+        burstFilter.type = "bandpass";
+        burstFilter.frequency.setValueAtTime(1400, now);
+        burstFilter.frequency.exponentialRampToValueAtTime(320, now + burstDuration);
+
+        const burstGain = audioCtx.createGain();
+        burstGain.gain.setValueAtTime(0.7, now);
+        burstGain.gain.exponentialRampToValueAtTime(0.01, now + burstDuration);
+
+        burstSource.connect(burstFilter);
+        burstFilter.connect(burstGain);
+        burstGain.connect(audioCtx.destination);
+        burstSource.start(now);
+
+        // 2) 지축을 울리는 묵직한 천둥 폭발음 (Sawtooth Pitch Sweep + Lowpass Filter)
+        const boomOsc = audioCtx.createOscillator();
+        boomOsc.type = "sawtooth";
+        boomOsc.frequency.setValueAtTime(130, now);
+        boomOsc.frequency.exponentialRampToValueAtTime(26, now + 1.6);
+
+        const boomFilter = audioCtx.createBiquadFilter();
+        boomFilter.type = "lowpass";
+        boomFilter.frequency.setValueAtTime(280, now);
+        boomFilter.frequency.linearRampToValueAtTime(65, now + 1.6);
+
+        const boomGain = audioCtx.createGain();
+        boomGain.gain.setValueAtTime(0.85, now);
+        boomGain.gain.exponentialRampToValueAtTime(0.001, now + 1.6);
+
+        boomOsc.connect(boomFilter);
+        boomFilter.connect(boomGain);
+        boomGain.connect(audioCtx.destination);
+        boomOsc.start(now);
+        boomOsc.stop(now + 1.6);
+
+        // 3) 원거리에서 은은하게 구르는 천둥 여운 (Rolling Rumble)
+        const rumbleDuration = 2.0;
+        const rumbleBufferSize = audioCtx.sampleRate * rumbleDuration;
+        const rumbleBuffer = audioCtx.createBuffer(1, rumbleBufferSize, audioCtx.sampleRate);
+        const rumbleData = rumbleBuffer.getChannelData(0);
+        for (let i = 0; i < rumbleBufferSize; i++) {
+          rumbleData[i] = Math.random() * 2 - 1;
+        }
+
+        const rumbleSource = audioCtx.createBufferSource();
+        rumbleSource.buffer = rumbleBuffer;
+
+        const rumbleFilter = audioCtx.createBiquadFilter();
+        rumbleFilter.type = "lowpass";
+        rumbleFilter.frequency.setValueAtTime(160, now + 0.2);
+        rumbleFilter.frequency.linearRampToValueAtTime(50, now + rumbleDuration);
+
+        const rumbleGain = audioCtx.createGain();
+        rumbleGain.gain.setValueAtTime(0.001, now);
+        rumbleGain.gain.linearRampToValueAtTime(0.4, now + 0.3);
+        rumbleGain.gain.exponentialRampToValueAtTime(0.001, now + rumbleDuration);
+
+        rumbleSource.connect(rumbleFilter);
+        rumbleFilter.connect(rumbleGain);
+        rumbleGain.connect(audioCtx.destination);
+        rumbleSource.start(now + 0.1);
+      } catch (err) {
+        // 일부 브라우저의 오디오 정책 제약 시 콘솔 경고만 출력하고 화면 효과는 정상 유지
+        console.warn("제우스의 천둥 사운드 재생 생략:", err);
+      }
+    }
+
+    // 제우스의 벼락 효과 및 경고 모달 발동 함수
+    function triggerZeusWrath() {
+      const now = Date.now();
+      if (now - lastZeusStrikeTime < STRIKE_COOLDOWN) {
+        return; // 연속 연타 시 쿨다운 보호
+      }
+      lastZeusStrikeTime = now;
+
+      // 1) 벼락 천둥 음향 재생
+      playZeusThunder();
+
+      // 2) 화면 섬광 및 지진 진동 효과
+      if (zeusOverlay) {
+        zeusOverlay.classList.remove("active");
+        void zeusOverlay.offsetWidth; // Reflow 트리거로 애니메이션 리셋
+        zeusOverlay.classList.add("active");
+
+        document.body.classList.remove("zeus-screen-shake");
+        void document.body.offsetWidth;
+        document.body.classList.add("zeus-screen-shake");
+
+        setTimeout(() => {
+          zeusOverlay.classList.remove("active");
+          document.body.classList.remove("zeus-screen-shake");
+        }, 800);
+      }
+
+      // 3) 올림포스 경고 모달 현현
+      if (zeusModal) {
+        setTimeout(() => {
+          zeusModal.classList.add("active");
+          zeusModal.setAttribute("aria-hidden", "false");
+          if (btnDismissZeus) btnDismissZeus.focus();
+        }, 220);
+      }
+    }
+
+    // 경고 모달 닫기 함수
+    function dismissZeusModal() {
+      if (zeusModal) {
+        zeusModal.classList.remove("active");
+        zeusModal.setAttribute("aria-hidden", "true");
+      }
+    }
+
+    if (btnDismissZeus) {
+      btnDismissZeus.addEventListener("click", dismissZeusModal);
+    }
+
+    if (zeusModal) {
+      const backdrop = zeusModal.querySelector(".zeus-modal-backdrop");
+      if (backdrop) {
+        backdrop.addEventListener("click", dismissZeusModal);
+      }
+    }
+
+    // ESC 키 입력 시 모달 닫기
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && zeusModal && zeusModal.classList.contains("active")) {
+        dismissZeusModal();
+      }
+    });
+
+    // 키보드 보안 위협 단축키 감지 및 원천 차단
+    window.addEventListener("keydown", (e) => {
+      // 1. F12 키
+      const isF12 = e.key === "F12" || e.keyCode === 123;
+
+      // 2. Ctrl + Shift + I / J / C (개발자 도구 Elements, Console, Inspect)
+      const isInspectTools = (e.ctrlKey || e.metaKey) && e.shiftKey &&
+        ["I", "i", "J", "j", "C", "c"].includes(e.key);
+
+      // 3. Ctrl + U (소스 코드 보기)
+      const isViewSource = (e.ctrlKey || e.metaKey) && (e.key === "U" || e.key === "u");
+
+      if (isF12 || isInspectTools || isViewSource) {
+        e.preventDefault();
+        e.stopPropagation();
+        triggerZeusWrath();
+        return false;
+      }
+    }, true); // useCapture 단계에서 최우선 가로채기
+
+    // 마우스 우클릭(컨텍스트 메뉴) 차단 및 벼락 발동
+    window.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      triggerZeusWrath();
+      return false;
+    }, true);
+  }
+
+  // 제우스 벼락 결계 초기화 실행
+  initZeusDefenseSystem();
+
 });
+

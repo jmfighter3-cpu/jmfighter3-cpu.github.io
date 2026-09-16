@@ -681,7 +681,54 @@
   </footer>
 
   <!-- ======================================================================
-       6. Google Firebase SDK 및 인터랙션 자바스크립트 연결
+       6. ⚡ 올림포스 제우스 벼락 결계 및 보안 경고 모달
+       ====================================================================== -->
+  <!-- 제우스 벼락 섬광 및 볼트 오버레이 -->
+  <div id="zeusLightningOverlay" class="zeus-overlay" aria-hidden="true">
+    <div class="zeus-flash"></div>
+    <svg class="zeus-bolt-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <path class="zeus-bolt-glow" d="M 50 0 L 44 32 L 58 35 L 40 68 L 52 70 L 32 100" />
+      <path class="zeus-bolt-core" d="M 50 0 L 44 32 L 58 35 L 40 68 L 52 70 L 32 100" />
+      <path class="zeus-branch-glow" d="M 44 32 L 30 46 M 40 68 L 62 76" />
+      <path class="zeus-branch-core" d="M 44 32 L 30 46 M 40 68 L 62 76" />
+    </svg>
+  </div>
+
+  <!-- 올림포스 최고신 제우스 칙령 경고 모달 다이얼로그 -->
+  <div id="zeusWarningModal" class="zeus-modal" role="dialog" aria-modal="true" aria-labelledby="zeusModalTitle" aria-hidden="true">
+    <div class="zeus-modal-backdrop"></div>
+    <div class="zeus-modal-content">
+      <div class="zeus-modal-inner">
+        <div class="zeus-emblem">⚡ 🏛️ ⚡</div>
+        <h2 id="zeusModalTitle" class="zeus-title">올림포스 최고신 제우스의 칙령</h2>
+        <div class="zeus-subtitle">경고: 성스러운 신전 결계 침범 감지</div>
+
+        <div class="zeus-modal-body">
+          <p class="zeus-greek-quote">
+            “Τὰ πάντα κυβερνᾷ κεραυνός”<br>
+            <span class="zeus-quote-trans">[벼락이 만물을 조타한다 — 헤라클레이토스]</span>
+          </p>
+          <p class="zeus-warning-text">
+            감히 필멸자의 미약한 손길로 성스러운 올림포스의 코드를 엿보고 조작하려 하는가!<br>
+            신들의 규율과 아고라의 질서를 어지럽히는 자에게는<br>
+            <strong>케라우노스(Κεραυνός, 제우스의 벼락)</strong>의 준엄한 심판이 내릴 것이니라.
+          </p>
+          <p class="zeus-warning-subtext">
+            불경한 조작 시도를 즉시 멈추고 올림포스의 안녕을 경배하라.
+          </p>
+        </div>
+
+        <div class="zeus-modal-footer">
+          <button type="button" id="btnDismissZeus" class="btn-zeus-dismiss">
+            ⚡ 참회하며 물러나기 (Close)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       7. Google Firebase SDK 및 인터랙션 자바스크립트 연결
        ====================================================================== -->
   <!-- Firebase v10 Compat SDK (글로벌 실시간 데이터베이스 연동 지원) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
