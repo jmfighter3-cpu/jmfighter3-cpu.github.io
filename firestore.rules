@@ -6,17 +6,28 @@ service cloud.firestore {
       // 1. 누구나 광장의 도편을 조회(읽기)할 수 있습니다.
       allow read: if true;
 
-      // 2. 새 도편 작성(생성) 시 검증:
-      //    - 작성자명(author)과 본문(message)이 문자열이어야 함
-      //    - 도편 본문은 1자 이상 300자 이하여야 함 (도배 및 대량 데이터 방지)
-      allow create: if request.resource.data.author is string
+      // 2. 새 도편 작성(생성) 시 엄격한 데이터 검증:
+      //    - 허용된 6개 필드만 포함 (임의의 비인가 필드 주입 원천 차단)
+      //    - 작성자명(author): 1자 이상 30자 이하 문자열 (대량 텍스트 소모 공격 방지)
+      //    - 본문(message): 1자 이상 300자 이하 문자열 (도배 방지)
+      //    - 테마 스타일(style): 3대 고대 그리스 지정 테마 화이트리스트 검증
+      allow create: if request.resource.data.keys().hasOnly(['author', 'badge', 'date', 'style', 'message', 'createdAt'])
+                    && request.resource.data.author is string
+                    && request.resource.data.author.size() > 0
+                    && request.resource.data.author.size() <= 30
                     && request.resource.data.message is string
+                    && request.resource.data.message.size() > 0
                     && request.resource.data.message.size() <= 300
-                    && request.resource.data.message.size() > 0;
+                    && request.resource.data.style in ['terracotta', 'paros', 'olympus'];
 
       // 3. 이미 새겨진 도편의 수정 및 삭제는 금지 (위조/훼손 방지)
       //    (관리자는 Firebase 콘솔 웹 화면에서 언제든 직접 삭제/수정 가능)
       allow update, delete: if false;
+    }
+
+    // 4. ostraka 외 다른 임의의 컬렉션 접근 전면 차단 (기본 거부 원칙)
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
